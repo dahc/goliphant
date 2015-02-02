@@ -6,10 +6,20 @@ import static org.junit.Assert.assertEquals;
 
 public class BoardTest {
     public Board stdBoard;
+    public Board asymBoard;
 
     @Before
     public void setup() {
         stdBoard = new StockBoard(19, 19);
+        asymBoard = new StockBoard(13, 21);
+    }
+
+    @Test
+    public void testSizeGetters() {
+        assertEquals(stdBoard.getRows(), 19);
+        assertEquals(stdBoard.getColumns(), 19);
+        assertEquals(asymBoard.getRows(), 13);
+        assertEquals(asymBoard.getColumns(), 21);
     }
 
     @Test
@@ -30,7 +40,7 @@ public class BoardTest {
     @Test
     public void testCopyAccuracy() {
         playSomeStuff(stdBoard);
-        Board copy = stdBoard.independentCopy();
+        Board copy = new StockBoard(stdBoard);
         for (int i = 0; i < 19; i++)
             for (int j = 0; j < 19; j++)
                 assertEquals(copy.getColorAt(i, j), stdBoard.getColorAt(i, j));
@@ -38,7 +48,7 @@ public class BoardTest {
 
     @Test
     public void testCopyIndependence() {
-        Board copy = stdBoard.independentCopy();
+        Board copy = new StockBoard(stdBoard);
         playSomeStuff(stdBoard);
         for (int i = 0; i < 19; i++)
             for (int j = 0; j < 19; j++)
@@ -47,11 +57,11 @@ public class BoardTest {
     }
 
     private void playSomeStuff(Board board) {
-        stdBoard.fastPlay(new Move(Color.Black, 3, 3));
-        stdBoard.fastPlay(new Move(Color.White, 3, 16));
-        stdBoard.fastPlay(new Move(Color.Black, 4, 17));
-        stdBoard.fastPlay(new Move(Color.White, 2, 2));
-        stdBoard.fastPlay(new Move(Color.Black, 15, 3));
-        stdBoard.fastPlay(new Move(Color.White, 8, 7));
+        board.fastPlay(new Move(Color.Black, 3, 3));
+        board.fastPlay(new Move(Color.White, 3, 16));
+        board.fastPlay(new Move(Color.Black, 4, 17));
+        board.fastPlay(new Move(Color.White, 2, 2));
+        board.fastPlay(new Move(Color.Black, 15, 3));
+        board.fastPlay(new Move(Color.White, 8, 7));
     }
 }

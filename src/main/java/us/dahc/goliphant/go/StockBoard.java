@@ -18,6 +18,10 @@ public class StockBoard implements Board {
         this.columns = columns;
     }
 
+    public StockBoard(StockBoard board) {
+        this(board.getRows(), board.getColumns());
+    }
+
     public void fastPlay(Move move) {
         stones[move.getRow()][move.getColumn()] = new Stone(move);
     }
@@ -43,8 +47,12 @@ public class StockBoard implements Board {
         return stones[row][column].getColor();
     }
 
-    public Board independentCopy() {
-        return this;
+    public int getRows() {
+        return rows;
+    }
+
+    public int getColumns() {
+        return columns;
     }
 
     protected class Stone extends Move {
@@ -93,6 +101,11 @@ public class StockBoard implements Board {
             pseudoLiberties = 0;
             stones = new ArrayList<Stone>();
             stones.add(stone);
+        }
+
+        public Group(Group group) {
+            pseudoLiberties = group.pseudoLiberties;
+            stones = new ArrayList<Stone>(group.stones);
         }
 
         public void add(Stone stone) {

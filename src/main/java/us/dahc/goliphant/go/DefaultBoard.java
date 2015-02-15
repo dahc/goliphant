@@ -2,6 +2,7 @@ package us.dahc.goliphant.go;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +12,6 @@ public class DefaultBoard implements Board {
     private Intersection[][] intersect;
     private Map<Intersection, Color> colors;
     private Map<Intersection, Group> groups;
-    private Map<Intersection, Group> references;
 
     public DefaultBoard(int rows, int columns) {
         this.rows = rows;
@@ -19,41 +19,28 @@ public class DefaultBoard implements Board {
         intersect = new Intersection[rows][columns];
         colors = new HashMap<Intersection, Color>();
         groups = new HashMap<Intersection, Group>();
-        references = new HashMap<Intersection, Group>();
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
+        for (int i = 0; i < rows; i++)
+            for (int j = 0; j < columns; j++)
                 intersect[i][j] = new Intersection(i, j);
-            }
-        }
     }
 
     public DefaultBoard(DefaultBoard board) {
         rows = board.getRows();
         columns = board.getColumns();
         intersect = board.intersect;
-        colors = new HashMap<Intersection, Color>(board.colors.size());
+        colors = new HashMap<Intersection, Color>(board.colors);
         groups = new HashMap<Intersection, Group>(board.groups.size());
-        references = new HashMap<Intersection, Group>(board.references.size());
-        for (Group group : board.references.values()) {
-            references.put(group.getReference(), new Group(group));
-        }
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                if (board.colors.containsKey(intersect[i][j])) {
-                    colors.put(intersect[i][j], board.colors.get(intersect[i][j]));
-                    groups.put(intersect[i][j], references.get(board.groups.get(intersect[i][j]).getReference()));
-                }
-            }
-        }
+        for (Group group : new HashSet<Group>(board.groups.values()))
+            groups.put(group.getReference(), new Group(group));
+        for (Intersection stone : colors.keySet())
+            groups.put(stone, groups.get(board.groups.get(stone).getReference()));
     }
 
     public void fastPlay(Move move) {
         // TODO: (simple) ko flow should be in here somewhere
         Intersection stone = intersect[move.getRow()][move.getColumn()];
         colors.put(stone, move.getColor());
-        Group initialGroup = new Group(stone);
-        references.put(stone, initialGroup);
-        groups.put(stone, initialGroup);
+        groups.put(stone, new Group(stone));
         for (Intersection neighbor : stone.getNeighbors()) {
             if (move.getColor() == colors.get(neighbor))
                 touchFriend(stone, neighbor);
@@ -134,7 +121,6 @@ public class DefaultBoard implements Board {
                     pseudoLiberties--;
             for (Intersection member : members) {
                 groups.put(member, this);
-                references.remove(group.reference);
             }
         }
 

@@ -16,25 +16,25 @@ public class DefaultBoardTest {
 
     @Test
     public void testSizeGetters() {
-        assertEquals(stdBoard.getRows(), 19);
-        assertEquals(stdBoard.getColumns(), 19);
-        assertEquals(asymBoard.getRows(), 13);
-        assertEquals(asymBoard.getColumns(), 21);
+        assertEquals(19, stdBoard.getRows());
+        assertEquals(19, stdBoard.getColumns());
+        assertEquals(13, asymBoard.getRows());
+        assertEquals(21, asymBoard.getColumns());
     }
 
     @Test
     public void testInitialState() {
-        assertEquals(stdBoard.getLegalMoves(Color.Black).size(), 19 * 19);
-        assertEquals(stdBoard.getLegalMovesIgnoringSuperKo(Color.Black).size(), 19 * 19);
+        assertEquals(19 * 19, stdBoard.getLegalMoves(Color.Black).size());
+        assertEquals(19 * 19, stdBoard.getLegalMovesIgnoringSuperKo(Color.Black).size());
     }
 
     @Test
     public void testFastPlay() {
-        assertEquals(stdBoard.getColorAt(3, 3), null);
+        assertEquals(null, stdBoard.getColorAt(3, 3));
         stdBoard.fastPlay(new Move(Color.Black, 3, 3));
-        assertEquals(stdBoard.getColorAt(3, 3), Color.Black);
-        assertEquals(stdBoard.getLegalMoves(Color.White).size(), 19 * 19 - 1);
-        assertEquals(stdBoard.getLegalMovesIgnoringSuperKo(Color.White).size(), 19 * 19 - 1);
+        assertEquals(Color.Black, stdBoard.getColorAt(3, 3));
+        assertEquals(19 * 19 - 1, stdBoard.getLegalMoves(Color.White).size());
+        assertEquals(19 * 19 - 1, stdBoard.getLegalMovesIgnoringSuperKo(Color.White).size());
     }
 
     @Test
@@ -43,7 +43,7 @@ public class DefaultBoardTest {
         Board copy = new DefaultBoard(stdBoard);
         for (int i = 0; i < 19; i++)
             for (int j = 0; j < 19; j++)
-                assertEquals(copy.getColorAt(i, j), stdBoard.getColorAt(i, j));
+                assertEquals(stdBoard.getColorAt(i, j), copy.getColorAt(i, j));
     }
 
     @Test
@@ -52,8 +52,8 @@ public class DefaultBoardTest {
         playSomeStuff(stdBoard);
         for (int i = 0; i < 19; i++)
             for (int j = 0; j < 19; j++)
-                assertEquals(copy.getColorAt(i, j), null);
-        assertEquals(copy.getLegalMoves(Color.Black).size(), 19 * 19);
+                assertEquals(null, copy.getColorAt(i, j));
+        assertEquals(19 * 19, copy.getLegalMoves(Color.Black).size());
     }
 
     private void playSomeStuff(Board board) {

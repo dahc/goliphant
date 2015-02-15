@@ -48,7 +48,7 @@ public class DefaultBoard implements Board {
     }
 
     public void fastPlay(Move move) {
-    	// TODO: (simple) ko flow should be in here somewhere
+        // TODO: (simple) ko flow should be in here somewhere
         Intersection stone = intersect[move.getRow()][move.getColumn()];
         colors.put(stone, move.getColor());
         Group initialGroup = new Group(stone);
@@ -95,69 +95,87 @@ public class DefaultBoard implements Board {
     }
 
     private void touchFriend(Intersection move, Intersection touched) {
-        // TODO: associate groups and such
+        groups.get(touched).absorb(groups.get(move));
     }
 
     private void touchEnemy(Intersection move, Intersection touched) {
         // TODO: handle potential captures
     }
 
-    public class Group {
+    protected class Group {
         private int pseudoLiberties;
-        private List<Intersection> stones;
+        private List<Intersection> members;
         private Intersection reference;
 
-        public Group(Intersection stone) {
-            pseudoLiberties = 0;
-            stones = new ArrayList<Intersection>();
-            stones.add(stone);
+        protected Group(Intersection stone) {
+            members = new ArrayList<Intersection>();
+            members.add(stone);
             reference = stone;
+            pseudoLiberties = 0;
+            for (Intersection neighbor : stone.getNeighbors())
+                if (colors.get(neighbor) == null)
+                    pseudoLiberties++;
         }
 
-        public Group(Group group) {
-            pseudoLiberties = group.pseudoLiberties;
-            stones = new ArrayList<Intersection>(group.stones);
+        protected Group(Group group) {
+            members = new ArrayList<Intersection>(group.members);
             reference = group.reference;
+            pseudoLiberties = group.pseudoLiberties;
         }
 
-        public void add(Intersection stone) {
-            stones.add(stone);
+        protected void absorb(Group group) {
+            if (this.equals(group))
+                return;
+            members.addAll(group.members);
+            pseudoLiberties += group.pseudoLiberties;
+            Intersection move = group.members.get(group.members.size() - 1);
+            for (Intersection neighbor : move.getNeighbors())
+                if (this.equals(groups.get(neighbor)))
+                    pseudoLiberties--;
+            for (Intersection member : members) {
+                groups.put(member, this);
+                references.remove(group.reference);
+            }
         }
 
-        public int getPseudoLiberties() {
+        protected int getPseudoLiberties() {
             return pseudoLiberties;
         }
 
-        public Intersection getReference() {
+        protected Intersection getReference() {
             return reference;
         }
 
-        public boolean equals(Group group) {
+        protected int getSize() {
+            return members.size();
+        }
+
+        protected boolean equals(Group group) {
             return reference.equals(group.reference);
         }
     }
 
-    public class Intersection {
+    protected class Intersection {
         private int row;
         private int column;
         private List<Intersection> neighbors;
         private List<Intersection> diagonals;
 
-        public Intersection(int row, int column) {
+        protected Intersection(int row, int column) {
             this.row = row;
             this.column = column;
             initGeometry();
         }
 
-        public Intersection(Move move) {
+        protected Intersection(Move move) {
             this(move.getRow(), move.getColumn());
         }
 
-        public List<Intersection> getNeighbors() {
+        protected List<Intersection> getNeighbors() {
             return neighbors;
         }
 
-        public List<Intersection> getDiagonals() {
+        protected List<Intersection> getDiagonals() {
             return diagonals;
         }
 

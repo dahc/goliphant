@@ -8,70 +8,76 @@ import java.util.Map;
 public class DefaultBoard implements Board {
     private final int rows;
     private final int columns;
-    private Stone[][] stones;
-    private Map<Stone, Group> groups;
-    private Map<Stone, Group> references;
+    private Location[][] locations;
+    private Map<Location, Color> colors;
+    private Map<Location, Group> groups;
+    private Map<Location, Group> references;
 
     public DefaultBoard(int rows, int columns) {
         this.rows = rows;
         this.columns = columns;
-        stones = new Stone[rows][columns];
-        for (int i = 0; i < rows; i++)
-            for (int j = 0; j < columns; j++)
-                stones[i][j] = new Stone(Color.Empty, i, j);
-        groups = new HashMap<Stone, Group>();
-        references = new HashMap<Stone, Group>();
+        locations = new Location[rows][columns];
+        colors = new HashMap<Location, Color>();
+        groups = new HashMap<Location, Group>();
+        references = new HashMap<Location, Group>();
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                locations[i][j] = new Location(i, j);
+            }
+        }
     }
 
     public DefaultBoard(DefaultBoard board) {
         rows = board.getRows();
         columns = board.getColumns();
-        stones = new Stone[rows][columns];
-        groups = new HashMap<Stone, Group>(board.groups.size());
-        references = new HashMap<Stone, Group>(board.references.size());
+        locations = board.locations;
+        colors = new HashMap<Location, Color>(board.colors.size());
+        groups = new HashMap<Location, Group>(board.groups.size());
+        references = new HashMap<Location, Group>(board.references.size());
         for (Group group : board.references.values()) {
             references.put(group.getReference(), new Group(group));
         }
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                stones[i][j] = board.stones[i][j];
-                if (stones[i][j].getColor() != Color.Empty) {
-                    groups.put(stones[i][j], references.get(board.groups.get(stones[i][j]).getReference()));
+                if (board.colors.containsKey(locations[i][j])) {
+                    colors.put(locations[i][j], board.colors.get(locations[i][j]));
+                    groups.put(locations[i][j], references.get(board.groups.get(locations[i][j]).getReference()));
                 }
             }
         }
     }
 
     public void fastPlay(Move move) {
-        Stone stone = new Stone(move);
-        stones[move.getRow()][move.getColumn()] = stone;
-        for (Stone neighbor : stone.getNeighbors()) {
-            if (neighbor.getColor() == stone.getColor())
-                touchFriend(stone, neighbor);
+        Location location = locations[move.getRow()][move.getColumn()];
+        for (Location neighbor : location.getNeighbors()) {
+            if (colors.get(location) == colors.get(neighbor))
+                touchFriend(location, neighbor);
             else
-                touchEnemy(stone, neighbor);
+                touchEnemy(location, neighbor);
         }
     }
 
     public void strictPlay(Move move) throws IllegalMoveException {
-        stones[move.getRow()][move.getColumn()] = new Stone(move);
+    	// TODO: check move validity, including superko trials
+        fastPlay(move);
     }
 
-    public List<Move> getLegalMoves() {
-        return getLegalMovesIgnoringSuperKo();
+    public List<Move> getLegalMoves(Color player) {
+    	// TODO: superko tracking...
+        return getLegalMovesIgnoringSuperKo(player);
     }
 
-    public List<Move> getLegalMovesIgnoringSuperKo() {
+    public List<Move> getLegalMovesIgnoringSuperKo(Color player) {
         List<Move> result = new ArrayList<Move>(rows * columns);
         for (int i = 0; i < rows; i++)
             for (int j = 0; j < columns; j++)
-                if (stones[i][j].getColor() == Color.Empty)
-                    result.add(stones[i][j]);
+                if (!colors.containsKey(locations[i][j]))
+                    result.add(new Move(player, i, j));
         return result;
     }
 
     public Color getColorAt(int row, int column) {
-        return stones[row][column].getColor();
+        return colors.get(locations[row][column]);
     }
 
     public int getRows() {
@@ -82,39 +88,41 @@ public class DefaultBoard implements Board {
         return columns;
     }
 
-    private void touchFriend(Stone move, Stone touched) {
+    private void touchFriend(Location move, Location touched) {
+    	// TODO: associate groups and such
     }
 
-    private void touchEnemy(Stone move, Stone touched) {
+    private void touchEnemy(Location move, Location touched) {
+    	// TODO: handle potential captures
     }
 
     public class Group {
         private int pseudoLiberties;
-        private List<Stone> stones;
-        private Stone reference;
+        private List<Location> stones;
+        private Location reference;
 
-        public Group(Stone stone) {
+        public Group(Location location) {
             pseudoLiberties = 0;
-            stones = new ArrayList<Stone>();
-            stones.add(stone);
-            reference = stone;
+            stones = new ArrayList<Location>();
+            stones.add(location);
+            reference = location;
         }
 
         public Group(Group group) {
             pseudoLiberties = group.pseudoLiberties;
-            stones = new ArrayList<Stone>(group.stones);
+            stones = new ArrayList<Location>(group.stones);
             reference = group.reference;
         }
 
-        public void add(Stone stone) {
-            stones.add(stone);
+        public void add(Location location) {
+            stones.add(location);
         }
 
         public int getPseudoLiberties() {
             return pseudoLiberties;
         }
 
-        public Stone getReference() {
+        public Location getReference() {
             return reference;
         }
 
@@ -123,30 +131,32 @@ public class DefaultBoard implements Board {
         }
     }
 
-    public class Stone extends Move {
-        private List<Stone> neighbors;
-        private List<Stone> diagonals;
+    public class Location {
+    	private int row;
+    	private int column;
+        private List<Location> neighbors;
+        private List<Location> diagonals;
 
-        public Stone(Color color, int row, int column) {
-            super(color, row, column);
+        public Location(int row, int column) {
+        	this.row = row;
+        	this.column = column;
             initGeometry();
         }
 
-        public Stone(Move move) {
-            super(move.getColor(), move.getRow(), move.getColumn());
-            initGeometry();
+        public Location(Move move) {
+            this(move.getRow(), move.getColumn());
         }
 
-        public List<Stone> getNeighbors() {
+        public List<Location> getNeighbors() {
             return neighbors;
         }
 
-        public List<Stone> getDiagonals() {
+        public List<Location> getDiagonals() {
             return diagonals;
         }
 
         private void initGeometry() {
-            neighbors = new ArrayList<Stone>(4);
+            neighbors = new ArrayList<Location>(4);
             if (north() != null)
                 neighbors.add(north());
             if (east() != null)
@@ -165,60 +175,60 @@ public class DefaultBoard implements Board {
                 diagonals.add(northwest());
         }
 
-        private Stone north() {
+        private Location north() {
             if (row == 0)
                 return null;
             else
-                return stones[row - 1][column];
+                return locations[row - 1][column];
         }
 
-        private Stone south() {
+        private Location south() {
             if (row + 1 == rows)
                 return null;
             else
-                return stones[row + 1][column];
+                return locations[row + 1][column];
         }
 
-        private Stone east() {
+        private Location east() {
             if (column + 1 == columns)
                 return null;
             else
-                return stones[row][column + 1];
+                return locations[row][column + 1];
         }
 
-        private Stone west() {
+        private Location west() {
             if (column == 0)
                 return null;
             else
-                return stones[row][column - 1];
+                return locations[row][column - 1];
         }
 
-        private Stone northeast() {
+        private Location northeast() {
             if (column + 1 == columns || row == 0)
                 return null;
             else
-                return stones[row - 1][column + 1];
+                return locations[row - 1][column + 1];
         }
 
-        private Stone southeast() {
+        private Location southeast() {
             if (column + 1 == columns || row + 1 == rows)
                 return null;
             else
-                return stones[row + 1][column + 1];
+                return locations[row + 1][column + 1];
         }
 
-        private Stone southwest() {
+        private Location southwest() {
             if (column == 0 || row + 1 == rows)
                 return null;
             else
-                return stones[row + 1][column - 1];
+                return locations[row + 1][column - 1];
         }
 
-        private Stone northwest() {
+        private Location northwest() {
             if (column == 0 || row == 0)
                 return null;
             else
-                return stones[row - 1][column - 1];
+                return locations[row - 1][column - 1];
         }
     }
 }

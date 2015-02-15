@@ -1,17 +1,12 @@
 package us.dahc.goliphant.go;
 
-// null indicates "off board", hence the need for Empty
 public enum Color {
-    Black, White, Empty;
+    Black, White;
 
     public Color getOpponent() {
-        switch (this) {
-        case White:
+    	if (this == White)
             return Black;
-        case Black:
+    	else
             return White;
-        default:
-            return null;
-        }
     }
 }

@@ -24,17 +24,17 @@ public class DefaultBoardTest {
 
     @Test
     public void testInitialState() {
-        assertEquals(stdBoard.getLegalMoves().size(), 19 * 19);
-        assertEquals(stdBoard.getLegalMovesIgnoringSuperKo().size(), 19 * 19);
+        assertEquals(stdBoard.getLegalMoves(Color.Black).size(), 19 * 19);
+        assertEquals(stdBoard.getLegalMovesIgnoringSuperKo(Color.Black).size(), 19 * 19);
     }
 
     @Test
     public void testFastPlay() {
-        assertEquals(stdBoard.getColorAt(3, 3), Color.Empty);
+        assertEquals(stdBoard.getColorAt(3, 3), null);
         stdBoard.fastPlay(new Move(Color.Black, 3, 3));
         assertEquals(stdBoard.getColorAt(3, 3), Color.Black);
-        assertEquals(stdBoard.getLegalMoves().size(), 19 * 19 - 1);
-        assertEquals(stdBoard.getLegalMovesIgnoringSuperKo().size(), 19 * 19 - 1);
+        assertEquals(stdBoard.getLegalMoves(Color.White).size(), 19 * 19 - 1);
+        assertEquals(stdBoard.getLegalMovesIgnoringSuperKo(Color.White).size(), 19 * 19 - 1);
     }
 
     @Test
@@ -52,8 +52,8 @@ public class DefaultBoardTest {
         playSomeStuff(stdBoard);
         for (int i = 0; i < 19; i++)
             for (int j = 0; j < 19; j++)
-                assertEquals(copy.getColorAt(i, j), Color.Empty);
-        assertEquals(copy.getLegalMoves().size(), 19 * 19);
+                assertEquals(copy.getColorAt(i, j), null);
+        assertEquals(copy.getLegalMoves(Color.Black).size(), 19 * 19);
     }
 
     private void playSomeStuff(Board board) {

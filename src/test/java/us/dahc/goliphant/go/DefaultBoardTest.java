@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
-public class BoardTest {
+public class DefaultBoardTest {
     public DefaultBoard stdBoard;
     public DefaultBoard asymBoard;
 

@@ -2,7 +2,6 @@ package us.dahc.goliphant.go;
 
 import java.util.ArrayList;
 import java.util.List;
-import us.dahc.goliphant.go.exceptions.IllegalMoveException;
 
 public class DefaultBoard implements Board {
     private final int rows;

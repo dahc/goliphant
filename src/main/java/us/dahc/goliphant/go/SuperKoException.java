@@ -1,3 +1,5 @@
-package us.dahc.goliphant.go.exceptions;
+package us.dahc.goliphant.go;
 
+
+@SuppressWarnings("serial")
 public class SuperKoException extends IllegalMoveException {}

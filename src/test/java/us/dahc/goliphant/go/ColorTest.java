@@ -9,6 +9,5 @@ public class ColorTest {
     public void testOpponent() {
         assertTrue(Color.White.getOpponent() == Color.Black);
         assertTrue(Color.Black.getOpponent() == Color.White);
-        assertTrue(Color.Empty.getOpponent() == null);
     }
 }

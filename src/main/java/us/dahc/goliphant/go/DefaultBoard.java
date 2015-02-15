@@ -31,9 +31,9 @@ public class DefaultBoard implements Board {
         colors = new HashMap<Intersection, Color>(board.colors);
         groups = new HashMap<Intersection, Group>(board.groups.size());
         for (Group group : new HashSet<Group>(board.groups.values()))
-            groups.put(group.getReference(), new Group(group));
+            groups.put(group.getRepresentative(), new Group(group));
         for (Intersection stone : colors.keySet())
-            groups.put(stone, groups.get(board.groups.get(stone).getReference()));
+            groups.put(stone, groups.get(board.groups.get(stone).getRepresentative()));
     }
 
     public void fastPlay(Move move) {
@@ -42,10 +42,12 @@ public class DefaultBoard implements Board {
         colors.put(stone, move.getColor());
         groups.put(stone, new Group(stone));
         for (Intersection neighbor : stone.getNeighbors()) {
-            if (move.getColor() == colors.get(neighbor))
-                touchFriend(stone, neighbor);
-            else
-                touchEnemy(stone, neighbor);
+            if (colors.containsKey(neighbor)) {
+                if (colors.get(neighbor) == move.getColor())
+                    groups.get(neighbor).absorbFriend(groups.get(stone));
+                else
+                    groups.get(neighbor).contactEnemy(groups.get(stone));
+            }
         }
     }
 
@@ -81,23 +83,15 @@ public class DefaultBoard implements Board {
         return columns;
     }
 
-    private void touchFriend(Intersection move, Intersection touched) {
-        groups.get(touched).absorb(groups.get(move));
-    }
-
-    private void touchEnemy(Intersection move, Intersection touched) {
-        // TODO: handle potential captures
-    }
-
     protected class Group {
         private int pseudoLiberties;
         private List<Intersection> members;
-        private Intersection reference;
+        private Intersection representative;
 
         protected Group(Intersection stone) {
             members = new ArrayList<Intersection>();
             members.add(stone);
-            reference = stone;
+            representative = stone;
             pseudoLiberties = 0;
             for (Intersection neighbor : stone.getNeighbors())
                 if (colors.get(neighbor) == null)
@@ -106,11 +100,11 @@ public class DefaultBoard implements Board {
 
         protected Group(Group group) {
             members = new ArrayList<Intersection>(group.members);
-            reference = group.reference;
+            representative = group.representative;
             pseudoLiberties = group.pseudoLiberties;
         }
 
-        protected void absorb(Group group) {
+        protected void absorbFriend(Group group) {
             if (this.equals(group))
                 return;
             members.addAll(group.members);
@@ -124,12 +118,19 @@ public class DefaultBoard implements Board {
             }
         }
 
+        protected void contactEnemy(Group group) {
+            pseudoLiberties--;
+            if (pseudoLiberties > 0)
+                return;
+            // TODO: capture stuff!
+        }
+
         protected int getPseudoLiberties() {
             return pseudoLiberties;
         }
 
-        protected Intersection getReference() {
-            return reference;
+        protected Intersection getRepresentative() {
+            return representative;
         }
 
         protected int getSize() {
@@ -137,7 +138,7 @@ public class DefaultBoard implements Board {
         }
 
         protected boolean equals(Group group) {
-            return reference.equals(group.reference);
+            return representative.equals(group.representative);
         }
     }
 

@@ -5,13 +5,13 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class BoardTest {
-    public Board stdBoard;
-    public Board asymBoard;
+    public DefaultBoard stdBoard;
+    public DefaultBoard asymBoard;
 
     @Before
     public void setup() {
-        stdBoard = new StockBoard(19, 19);
-        asymBoard = new StockBoard(13, 21);
+        stdBoard = new DefaultBoard(19, 19);
+        asymBoard = new DefaultBoard(13, 21);
     }
 
     @Test
@@ -40,7 +40,7 @@ public class BoardTest {
     @Test
     public void testCopyAccuracy() {
         playSomeStuff(stdBoard);
-        Board copy = new StockBoard(stdBoard);
+        Board copy = new DefaultBoard(stdBoard);
         for (int i = 0; i < 19; i++)
             for (int j = 0; j < 19; j++)
                 assertEquals(copy.getColorAt(i, j), stdBoard.getColorAt(i, j));
@@ -48,7 +48,7 @@ public class BoardTest {
 
     @Test
     public void testCopyIndependence() {
-        Board copy = new StockBoard(stdBoard);
+        Board copy = new DefaultBoard(stdBoard);
         playSomeStuff(stdBoard);
         for (int i = 0; i < 19; i++)
             for (int j = 0; j < 19; j++)

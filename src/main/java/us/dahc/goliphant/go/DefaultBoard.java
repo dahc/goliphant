@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import us.dahc.goliphant.go.exceptions.IllegalMoveException;
 
-public class StockBoard implements Board {
+public class DefaultBoard implements Board {
     private final int rows;
     private final int columns;
     private Stone[][] stones;
 
-    public StockBoard(int rows, int columns) {
+    public DefaultBoard(int rows, int columns) {
         stones = new Stone[rows][columns];
         for (int i = 0; i < rows; i++)
             for (int j = 0; j < columns; j++)
@@ -18,7 +18,7 @@ public class StockBoard implements Board {
         this.columns = columns;
     }
 
-    public StockBoard(StockBoard board) {
+    public DefaultBoard(DefaultBoard board) {
         this(board.getRows(), board.getColumns());
     }
 

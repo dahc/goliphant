@@ -48,12 +48,17 @@ public class DefaultBoard implements Board {
     }
 
     public void fastPlay(Move move) {
-        Intersection location = intersect[move.getRow()][move.getColumn()];
-        for (Intersection neighbor : location.getNeighbors()) {
-            if (colors.get(location) == colors.get(neighbor))
-                touchFriend(location, neighbor);
+    	// TODO: (simple) ko flow should be in here somewhere
+        Intersection stone = intersect[move.getRow()][move.getColumn()];
+        colors.put(stone, move.getColor());
+        Group initialGroup = new Group(stone);
+        references.put(stone, initialGroup);
+        groups.put(stone, initialGroup);
+        for (Intersection neighbor : stone.getNeighbors()) {
+            if (move.getColor() == colors.get(neighbor))
+                touchFriend(stone, neighbor);
             else
-                touchEnemy(location, neighbor);
+                touchEnemy(stone, neighbor);
         }
     }
 
@@ -102,11 +107,11 @@ public class DefaultBoard implements Board {
         private List<Intersection> stones;
         private Intersection reference;
 
-        public Group(Intersection location) {
+        public Group(Intersection stone) {
             pseudoLiberties = 0;
             stones = new ArrayList<Intersection>();
-            stones.add(location);
-            reference = location;
+            stones.add(stone);
+            reference = stone;
         }
 
         public Group(Group group) {
@@ -115,8 +120,8 @@ public class DefaultBoard implements Board {
             reference = group.reference;
         }
 
-        public void add(Intersection location) {
-            stones.add(location);
+        public void add(Intersection stone) {
+            stones.add(stone);
         }
 
         public int getPseudoLiberties() {

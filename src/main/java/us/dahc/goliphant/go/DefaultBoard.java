@@ -12,6 +12,9 @@ public class DefaultBoard implements Board {
     private Intersection[][] intersect;
     private Map<Intersection, Color> colors;
     private Map<Intersection, Group> groups;
+    private int blackCaptures = 0;
+    private int whiteCaptures = 0;
+    private Intersection koIntersection = null;
 
     public DefaultBoard(int rows, int columns) {
         this.rows = rows;
@@ -22,6 +25,9 @@ public class DefaultBoard implements Board {
         for (int i = 0; i < rows; i++)
             for (int j = 0; j < columns; j++)
                 intersect[i][j] = new Intersection(i, j);
+        for (int i = 0; i < rows; i++)
+            for (int j = 0; j < columns; j++)
+                intersect[i][j].initGeometry();
     }
 
     public DefaultBoard(DefaultBoard board) {
@@ -34,13 +40,23 @@ public class DefaultBoard implements Board {
             groups.put(group.getRepresentative(), new Group(group));
         for (Intersection stone : colors.keySet())
             groups.put(stone, groups.get(board.groups.get(stone).getRepresentative()));
+        blackCaptures = board.blackCaptures;
+        whiteCaptures = board.whiteCaptures;
+        koIntersection = board.koIntersection;
+    }
+
+    public int getStonesCapturedBy(Color player) {
+        if (player == Color.Black)
+            return blackCaptures;
+        else
+            return whiteCaptures;
     }
 
     public void fastPlay(Move move) {
-        // TODO: (simple) ko flow should be in here somewhere
         Intersection stone = intersect[move.getRow()][move.getColumn()];
         colors.put(stone, move.getColor());
         groups.put(stone, new Group(stone));
+        koIntersection = null;
         for (Intersection neighbor : stone.getNeighbors()) {
             if (colors.containsKey(neighbor)) {
                 if (colors.get(neighbor) == move.getColor())
@@ -56,17 +72,20 @@ public class DefaultBoard implements Board {
         fastPlay(move);
     }
 
+    public boolean isLegal(Move move) {
+        return isLegal(move.getColor(), intersect[move.getRow()][move.getColumn()]);
+    }
+
     public List<Move> getLegalMoves(Color player) {
         // TODO: superko tracking...
         return getLegalMovesIgnoringSuperKo(player);
     }
 
     public List<Move> getLegalMovesIgnoringSuperKo(Color player) {
-        // TODO: Actual legality checking, nevermind superko
         List<Move> result = new ArrayList<Move>(rows * columns);
         for (int i = 0; i < rows; i++)
             for (int j = 0; j < columns; j++)
-                if (!colors.containsKey(intersect[i][j]))
+                if (isLegal(player, intersect[i][j]))
                     result.add(new Move(player, i, j));
         return result;
     }
@@ -81,6 +100,18 @@ public class DefaultBoard implements Board {
 
     public int getColumns() {
         return columns;
+    }
+
+    private boolean isLegal(Color color, Intersection intersection) {
+        if (colors.containsKey(intersection) || intersection == koIntersection)
+            return false;
+        for (Intersection neighbor : intersection.getNeighbors())
+            if (!colors.containsKey(neighbor))
+                return true;
+
+        // TODO: Actual legality checking...
+
+        return false;
     }
 
     protected class Group {
@@ -120,9 +151,20 @@ public class DefaultBoard implements Board {
 
         protected void contactEnemy(Group group) {
             pseudoLiberties--;
-            if (pseudoLiberties > 0)
-                return;
-            // TODO: capture stuff!
+            if (pseudoLiberties == 0) {
+                for (Intersection member : members) {
+                    groups.remove(member);
+                    Color captured = colors.remove(member);
+                    if (captured == Color.White)
+                        blackCaptures++;
+                    else
+                        whiteCaptures++;
+                    for (Intersection neighbor : member.getNeighbors())
+                        groups.get(neighbor).pseudoLiberties++;
+                }
+                if (members.size() == 1 && group.members.size() == 1 && group.pseudoLiberties == 1)
+                    koIntersection = members.get(0);
+            }
         }
 
         protected int getPseudoLiberties() {
@@ -143,19 +185,14 @@ public class DefaultBoard implements Board {
     }
 
     protected class Intersection {
-        private int row;
-        private int column;
+        private final int row;
+        private final int column;
         private List<Intersection> neighbors;
         private List<Intersection> diagonals;
 
         protected Intersection(int row, int column) {
             this.row = row;
             this.column = column;
-            initGeometry();
-        }
-
-        protected Intersection(Move move) {
-            this(move.getRow(), move.getColumn());
         }
 
         protected List<Intersection> getNeighbors() {
@@ -166,7 +203,19 @@ public class DefaultBoard implements Board {
             return diagonals;
         }
 
-        private void initGeometry() {
+        protected int getRow() {
+            return row;
+        }
+
+        protected int getColumn() {
+            return column;
+        }
+
+        protected boolean equals(Intersection intersection) {
+            return row == intersection.row && column == intersection.column;
+        }
+
+        protected void initGeometry() {
             neighbors = new ArrayList<Intersection>(4);
             if (north() != null)
                 neighbors.add(north());

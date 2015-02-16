@@ -111,9 +111,13 @@ public class DefaultBoardTest {
     public void testCornerIntersections() {
         DefaultBoard.Intersection[] corners = new DefaultBoard.Intersection[] {
             stdBoard.new Intersection(0, 0),
-            stdBoard.new Intersection(0, 18),
-            stdBoard.new Intersection(18, 0),
-            stdBoard.new Intersection(18, 18)
+            stdBoard.new Intersection(0, stdBoard.getColumns() - 1),
+            stdBoard.new Intersection(stdBoard.getRows() - 1, 0),
+            stdBoard.new Intersection(stdBoard.getRows() - 1, stdBoard.getColumns() - 1),
+            asymBoard.new Intersection(0, 0),
+            asymBoard.new Intersection(0, asymBoard.getColumns() - 1),
+            asymBoard.new Intersection(asymBoard.getRows() - 1, 0),
+            asymBoard.new Intersection(asymBoard.getRows() - 1, asymBoard.getColumns() - 1)
         };
         for (DefaultBoard.Intersection corner : corners) {
             corner.initGeometry();
@@ -126,12 +130,20 @@ public class DefaultBoardTest {
 
     @Test
     public void testEdgeIntersections() {
-        List<DefaultBoard.Intersection> edges = new ArrayList<DefaultBoard.Intersection>(17 * 4);
-        for (int i = 1; i < 18; i++) {
+        List<DefaultBoard.Intersection> edges = new ArrayList<DefaultBoard.Intersection>();
+        for (int i = 1; i < stdBoard.getRows() - 1; i++) {
             edges.add(stdBoard.new Intersection(i, 0));
-            edges.add(stdBoard.new Intersection(i, 18));
+            edges.add(stdBoard.new Intersection(i, stdBoard.getColumns() - 1));
             edges.add(stdBoard.new Intersection(0, i));
-            edges.add(stdBoard.new Intersection(18, i));
+            edges.add(stdBoard.new Intersection(stdBoard.getRows() - 1, i));
+        }
+        for (int i = 1; i < asymBoard.getRows() - 1; i++) {
+            edges.add(asymBoard.new Intersection(i, 0));
+            edges.add(asymBoard.new Intersection(i, asymBoard.getColumns() - 1));
+        }
+        for (int i = 1; i < asymBoard.getColumns() - 1 ; i++) {
+            edges.add(asymBoard.new Intersection(0, i));
+            edges.add(asymBoard.new Intersection(asymBoard.getRows() - 1, i));
         }
         for (DefaultBoard.Intersection edge : edges) {
             edge.initGeometry();
@@ -144,10 +156,13 @@ public class DefaultBoardTest {
 
     @Test
     public void testMiddleIntersections() {
-        List<DefaultBoard.Intersection> mids = new ArrayList<DefaultBoard.Intersection>(17 * 17);
-        for (int i = 1; i < 18; i++)
-            for (int j = 1; j < 18; j++)
+        List<DefaultBoard.Intersection> mids = new ArrayList<DefaultBoard.Intersection>();
+        for (int i = 1; i < stdBoard.getRows() - 1; i++)
+            for (int j = 1; j < stdBoard.getColumns() - 1; j++)
                 mids.add(stdBoard.new Intersection(i, j));
+        for (int i = 1; i < asymBoard.getRows() - 1; i++)
+            for (int j = 1; j < asymBoard.getColumns() - 1; j++)
+                mids.add(asymBoard.new Intersection(i, j));
         for (DefaultBoard.Intersection mid : mids) {
             mid.initGeometry();
             assertThat("neighbors of (" + mid.getRow() + ", " + mid.getColumn() + ")",

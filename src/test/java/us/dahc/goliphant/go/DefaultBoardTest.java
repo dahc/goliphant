@@ -37,24 +37,55 @@ public class DefaultBoardTest {
                 assertThat("initial (" + i + ", " + j + ") emptiness",
                         stdBoard.getColorAt(i, j), is(nullValue()));
                 assertThat("initial (" + i + ", " + j + ") legality",
-                        stdBoard.isLegal(new Move(Color.Black, i, j)), is(true));
+                        stdBoard.isLegal(new Move(Color.Black, i, j)));
             }
         }
         assertEquals(19 * 19, stdBoard.getLegalMoves(Color.Black).size());
     }
 
     @Test
-    public void testFastPlay() {
+    public void testPlay() {
         assertEquals(null, stdBoard.getColorAt(3, 3));
         stdBoard.play(new Move(Color.Black, 3, 3));
         assertEquals(Color.Black, stdBoard.getColorAt(3, 3));
-        assertThat("play on other stone", stdBoard.isLegal(new Move(Color.White, 3, 3)), is(false));
+        assertThat("play on other stone", !stdBoard.isLegal(new Move(Color.White, 3, 3)));
         for (int i = 0; i < stdBoard.getRows(); i++)
             for (int j = 0; j < stdBoard.getColumns(); j++)
                 if (i != 3 || j != 3)
                     assertThat("wide open square (" + i + ", " + j + ") legality",
-                            stdBoard.isLegal(new Move(Color.White, i, j)), is(true));
+                            stdBoard.isLegal(new Move(Color.White, i, j)));
         assertEquals(19 * 19 - 1, stdBoard.getLegalMoves(Color.White).size());
+    }
+
+    @Test
+    public void testCornerCapture() {
+        stdBoard.play(new Move(Color.Black, 0, 1));
+        stdBoard.play(new Move(Color.White, 0, 0));
+        stdBoard.play(new Move(Color.Black, 1, 0));
+        assertThat("stone was captured", stdBoard.getColorAt(0, 0), is(nullValue()));
+        assertThat("black did capture", stdBoard.getStonesCapturedBy(Color.Black), is(equalTo(1)));
+        assertThat("white did not capture", stdBoard.getStonesCapturedBy(Color.White), is(equalTo(0)));
+        assertThat("capturing stones remain", stdBoard.getColorAt(0, 1), is(Color.Black));
+        assertThat("capturing stones remain", stdBoard.getColorAt(1, 0), is(Color.Black));
+        assertThat("corner now illegal for white", !stdBoard.isLegal(new Move(Color.White, 0, 0)));
+        assertThat("corner legal for black", stdBoard.isLegal(new Move(Color.Black, 0, 0)));
+    }
+
+    @Test
+    public void testSimpleKo() {
+        stdBoard.play(new Move(Color.Black, 5, 5));
+        stdBoard.play(new Move(Color.White, 5, 6));
+        stdBoard.play(new Move(Color.Black, 6, 4));
+        stdBoard.play(new Move(Color.White, 6, 7));
+        stdBoard.play(new Move(Color.Black, 7, 5));
+        stdBoard.play(new Move(Color.White, 7, 6));
+        stdBoard.play(new Move(Color.Black, 6, 6));
+        assertThat("surrounded but capturing", stdBoard.isLegal(new Move(Color.White, 6, 5)));
+        stdBoard.play(new Move(Color.White, 6, 5));
+        assertThat("initial capture occurred", stdBoard.getColorAt(6, 6), is(nullValue()));
+        assertThat("simple ko", !stdBoard.isLegal(new Move(Color.Black, 6, 6)));
+        stdBoard.play(new Move(Color.Black, 8, 8));
+        assertThat("no longer ko", stdBoard.isLegal(new Move(Color.Black, 6, 6)));
     }
 
     @Test

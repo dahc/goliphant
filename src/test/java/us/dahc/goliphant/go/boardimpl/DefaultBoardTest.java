@@ -1,4 +1,4 @@
-package us.dahc.goliphant.go;
+package us.dahc.goliphant.go.boardimpl;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -12,9 +12,13 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import us.dahc.goliphant.go.Color;
+import us.dahc.goliphant.go.Move;
+
 public class DefaultBoardTest {
-    public DefaultBoard stdBoard;
-    public DefaultBoard asymBoard;
+
+    private DefaultBoard stdBoard;
+    private DefaultBoard asymBoard;
 
     @Before
     public void setup() {

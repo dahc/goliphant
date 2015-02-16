@@ -2,7 +2,7 @@ package us.dahc.goliphant.go;
 
 import java.util.List;
 
-public interface MinimalBoard {
+public interface MinimumBoard {
     public int getRows();
     public int getColumns();
     public Color getColorAt(int row, int column);

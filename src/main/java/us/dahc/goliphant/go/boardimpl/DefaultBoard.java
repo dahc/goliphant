@@ -1,4 +1,4 @@
-package us.dahc.goliphant.go;
+package us.dahc.goliphant.go.boardimpl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,7 +6,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-public class DefaultBoard implements MinimalBoard {
+import us.dahc.goliphant.go.Color;
+import us.dahc.goliphant.go.MinimumBoard;
+import us.dahc.goliphant.go.Move;
+
+public class DefaultBoard implements MinimumBoard {
+
     private final int rows;
     private final int columns;
     private Intersection[][] intersect;

@@ -1,9 +1,13 @@
 package us.dahc.goliphant.go;
 
 public class Move {
+
     private static final String columnNames = "ABCDEFGHJKLMNOPRSTUVWXYZ";
+
     final Color color;
+
     final int row;
+
     final int column;
 
     public Move(Color color, int row, int column) {

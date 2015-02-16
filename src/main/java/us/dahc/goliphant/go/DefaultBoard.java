@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-public class DefaultBoard implements Board {
+public class DefaultBoard implements MinimalBoard {
     private final int rows;
     private final int columns;
     private Intersection[][] intersect;
@@ -15,6 +15,7 @@ public class DefaultBoard implements Board {
     private int blackCaptures = 0;
     private int whiteCaptures = 0;
     private Intersection koIntersection = null;
+    private long zobristHash = 0L;
 
     public DefaultBoard(int rows, int columns) {
         this.rows = rows;
@@ -43,6 +44,7 @@ public class DefaultBoard implements Board {
         blackCaptures = board.blackCaptures;
         whiteCaptures = board.whiteCaptures;
         koIntersection = board.koIntersection;
+        zobristHash = board.zobristHash;
     }
 
     public int getStonesCapturedBy(Color player) {
@@ -52,7 +54,7 @@ public class DefaultBoard implements Board {
             return whiteCaptures;
     }
 
-    public void fastPlay(Move move) {
+    public void play(Move move) {
         Intersection stone = intersect[move.getRow()][move.getColumn()];
         colors.put(stone, move.getColor());
         groups.put(stone, new Group(stone));
@@ -67,21 +69,11 @@ public class DefaultBoard implements Board {
         }
     }
 
-    public void strictPlay(Move move) throws IllegalMoveException {
-        // TODO: check move validity, including superko trials
-        fastPlay(move);
-    }
-
     public boolean isLegal(Move move) {
         return isLegal(move.getColor(), intersect[move.getRow()][move.getColumn()]);
     }
 
     public List<Move> getLegalMoves(Color player) {
-        // TODO: superko tracking...
-        return getLegalMovesIgnoringSuperKo(player);
-    }
-
-    public List<Move> getLegalMovesIgnoringSuperKo(Color player) {
         List<Move> result = new ArrayList<Move>(rows * columns);
         for (int i = 0; i < rows; i++)
             for (int j = 0; j < columns; j++)
@@ -102,15 +94,35 @@ public class DefaultBoard implements Board {
         return columns;
     }
 
+    public long getZobristHash() {
+        return zobristHash;
+    }
+
     private boolean isLegal(Color color, Intersection intersection) {
         if (colors.containsKey(intersection) || intersection == koIntersection)
             return false;
-        for (Intersection neighbor : intersection.getNeighbors())
+        List<Intersection> neighbors = intersection.getNeighbors();
+        for (Intersection neighbor : neighbors)
             if (!colors.containsKey(neighbor))
                 return true;
-
-        // TODO: Actual legality checking...
-
+        int[] affectedPseudoLiberties = new int[4];
+        Group[] neighboringGroups = new Group[4];
+        for (int i = 0; i < neighbors.size(); i++)
+            neighboringGroups[i] = groups.get(neighbors.get(i));
+        for (int i = 0; i < neighbors.size(); i++) {
+            affectedPseudoLiberties[i] = 0;
+            for (int j = 0; j < neighbors.size(); j++)
+                if (neighboringGroups[i] == neighboringGroups[j])
+                    affectedPseudoLiberties[i]++;
+        }
+        for (int i = 0; i < neighbors.size(); i++) {
+            if (colors.get(neighbors.get(i)) == color
+                    && groups.get(neighbors.get(i)).getPseudoLiberties() > affectedPseudoLiberties[i])
+                return true;
+            if (colors.get(neighbors.get(i)) == color.getOpponent()
+                    && groups.get(neighbors.get(i)).getPseudoLiberties() == affectedPseudoLiberties[i])
+                return true;
+        }
         return false;
     }
 
@@ -195,26 +207,6 @@ public class DefaultBoard implements Board {
             this.column = column;
         }
 
-        protected List<Intersection> getNeighbors() {
-            return neighbors;
-        }
-
-        protected List<Intersection> getDiagonals() {
-            return diagonals;
-        }
-
-        protected int getRow() {
-            return row;
-        }
-
-        protected int getColumn() {
-            return column;
-        }
-
-        protected boolean equals(Intersection intersection) {
-            return row == intersection.row && column == intersection.column;
-        }
-
         protected void initGeometry() {
             neighbors = new ArrayList<Intersection>(4);
             if (north() != null)
@@ -234,6 +226,26 @@ public class DefaultBoard implements Board {
                 diagonals.add(southwest());
             if (northwest() != null)
                 diagonals.add(northwest());
+        }
+
+        protected List<Intersection> getNeighbors() {
+            return neighbors;
+        }
+
+        protected List<Intersection> getDiagonals() {
+            return diagonals;
+        }
+
+        protected int getRow() {
+            return row;
+        }
+
+        protected int getColumn() {
+            return column;
+        }
+
+        protected boolean equals(Intersection intersection) {
+            return row == intersection.row && column == intersection.column;
         }
 
         private Intersection north() {

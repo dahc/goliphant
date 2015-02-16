@@ -41,13 +41,12 @@ public class DefaultBoardTest {
             }
         }
         assertEquals(19 * 19, stdBoard.getLegalMoves(Color.Black).size());
-        assertEquals(19 * 19, stdBoard.getLegalMovesIgnoringSuperKo(Color.Black).size());
     }
 
     @Test
     public void testFastPlay() {
         assertEquals(null, stdBoard.getColorAt(3, 3));
-        stdBoard.fastPlay(new Move(Color.Black, 3, 3));
+        stdBoard.play(new Move(Color.Black, 3, 3));
         assertEquals(Color.Black, stdBoard.getColorAt(3, 3));
         assertThat("play on other stone", stdBoard.isLegal(new Move(Color.White, 3, 3)), is(false));
         for (int i = 0; i < stdBoard.getRows(); i++)
@@ -56,13 +55,12 @@ public class DefaultBoardTest {
                     assertThat("wide open square (" + i + ", " + j + ") legality",
                             stdBoard.isLegal(new Move(Color.White, i, j)), is(true));
         assertEquals(19 * 19 - 1, stdBoard.getLegalMoves(Color.White).size());
-        assertEquals(19 * 19 - 1, stdBoard.getLegalMovesIgnoringSuperKo(Color.White).size());
     }
 
     @Test
     public void testCopyAccuracy() {
         playSomeStuff(stdBoard);
-        Board copy = new DefaultBoard(stdBoard);
+        DefaultBoard copy = new DefaultBoard(stdBoard);
         for (int i = 0; i < 19; i++)
             for (int j = 0; j < 19; j++)
                 assertEquals(stdBoard.getColorAt(i, j), copy.getColorAt(i, j));
@@ -70,7 +68,7 @@ public class DefaultBoardTest {
 
     @Test
     public void testCopyIndependence() {
-        Board copy = new DefaultBoard(stdBoard);
+        DefaultBoard copy = new DefaultBoard(stdBoard);
         playSomeStuff(stdBoard);
         for (int i = 0; i < 19; i++)
             for (int j = 0; j < 19; j++)
@@ -128,12 +126,12 @@ public class DefaultBoardTest {
         }
     }
 
-    private void playSomeStuff(Board board) {
-        board.fastPlay(new Move(Color.Black, 3, 3));
-        board.fastPlay(new Move(Color.White, 3, 16));
-        board.fastPlay(new Move(Color.Black, 4, 17));
-        board.fastPlay(new Move(Color.White, 2, 2));
-        board.fastPlay(new Move(Color.Black, 15, 3));
-        board.fastPlay(new Move(Color.White, 8, 7));
+    private void playSomeStuff(DefaultBoard board) {
+        board.play(new Move(Color.Black, 3, 3));
+        board.play(new Move(Color.White, 3, 16));
+        board.play(new Move(Color.Black, 4, 17));
+        board.play(new Move(Color.White, 2, 2));
+        board.play(new Move(Color.Black, 15, 3));
+        board.play(new Move(Color.White, 8, 7));
     }
 }

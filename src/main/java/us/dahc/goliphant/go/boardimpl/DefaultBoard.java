@@ -6,25 +6,36 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import us.dahc.goliphant.go.Board;
 import us.dahc.goliphant.go.Color;
-import us.dahc.goliphant.go.MinimumBoard;
 import us.dahc.goliphant.go.Move;
+import us.dahc.goliphant.go.hashing.ZobristTable;
 
-public class DefaultBoard implements MinimumBoard {
+public class DefaultBoard implements Board {
 
     private final int rows;
+
     private final int columns;
+
     private Intersection[][] intersect;
+
     private Map<Intersection, Color> colors;
+
     private Map<Intersection, Group> groups;
+
     private int blackCaptures = 0;
+
     private int whiteCaptures = 0;
+
     private Intersection koIntersection = null;
+
+    private ZobristTable zobristTable;
+
     private long zobristHash = 0L;
 
-    public DefaultBoard(int rows, int columns) {
-        this.rows = rows;
-        this.columns = columns;
+    public DefaultBoard(ZobristTable zobristTable) {
+        rows = zobristTable.getRows();
+        columns = zobristTable.getColumns();
         intersect = new Intersection[rows][columns];
         colors = new HashMap<Intersection, Color>();
         groups = new HashMap<Intersection, Group>();
@@ -34,6 +45,7 @@ public class DefaultBoard implements MinimumBoard {
         for (int i = 0; i < rows; i++)
             for (int j = 0; j < columns; j++)
                 intersect[i][j].initGeometry();
+        this.zobristTable = zobristTable;
     }
 
     public DefaultBoard(DefaultBoard board) {
@@ -49,6 +61,7 @@ public class DefaultBoard implements MinimumBoard {
         blackCaptures = board.blackCaptures;
         whiteCaptures = board.whiteCaptures;
         koIntersection = board.koIntersection;
+        zobristTable = board.zobristTable;
         zobristHash = board.zobristHash;
     }
 

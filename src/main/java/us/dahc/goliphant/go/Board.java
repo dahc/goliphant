@@ -2,7 +2,7 @@ package us.dahc.goliphant.go;
 
 import java.util.List;
 
-public interface MinimumBoard {
+public interface Board {
 
     public int getRows();
 

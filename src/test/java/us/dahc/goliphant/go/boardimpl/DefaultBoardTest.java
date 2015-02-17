@@ -9,6 +9,8 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,13 +19,17 @@ import us.dahc.goliphant.go.Move;
 
 public class DefaultBoardTest {
 
+    @Inject
+    private DefaultBoardFactory boardFactory;
+
     private DefaultBoard stdBoard;
+
     private DefaultBoard asymBoard;
 
     @Before
     public void setup() {
-        stdBoard = new DefaultBoard(19, 19);
-        asymBoard = new DefaultBoard(13, 21);
+        stdBoard = (DefaultBoard) boardFactory.create(19, 19);
+        asymBoard = (DefaultBoard) boardFactory.create(13, 21);
     }
 
     @Test

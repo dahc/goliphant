@@ -11,7 +11,7 @@ public class ZobristTableTest {
 
     @Before
     public void setup() {
-        zobTab = new ZobristTable(13, 21);
+        zobTab = new ZobristTable(new long[2][13][21]);
     }
 
     @Test
@@ -19,10 +19,5 @@ public class ZobristTableTest {
         assertEquals(13, zobTab.getRows());
         assertEquals(21, zobTab.getColumns());
     }
-
-    /*@Test
-    public void randomInitTest() {
-        zobTab.initializeRandomly();
-    }*/
 
 }

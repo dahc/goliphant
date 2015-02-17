@@ -8,19 +8,17 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
+import java.util.Random;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import us.dahc.goliphant.go.Color;
 import us.dahc.goliphant.go.Move;
+import us.dahc.goliphant.go.hashing.RandomZobristTableSource;
+import us.dahc.goliphant.go.hashing.ZobristTableSource;
 
 public class DefaultBoardTest {
-
-    @Inject
-    private DefaultBoardFactory boardFactory;
 
     private DefaultBoard stdBoard;
 
@@ -28,8 +26,9 @@ public class DefaultBoardTest {
 
     @Before
     public void setup() {
-        stdBoard = (DefaultBoard) boardFactory.create(19, 19);
-        asymBoard = (DefaultBoard) boardFactory.create(13, 21);
+        ZobristTableSource zts = new RandomZobristTableSource(new Random());
+        stdBoard = new DefaultBoard(zts.get(19, 19));
+        asymBoard = new DefaultBoard(zts.get(13, 21));
     }
 
     @Test

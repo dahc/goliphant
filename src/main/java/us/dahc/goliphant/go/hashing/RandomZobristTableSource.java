@@ -8,12 +8,13 @@ import javax.inject.Inject;
 
 public class RandomZobristTableSource implements ZobristTableSource {
 
-    @Inject
-    private Random rand;
-
     private Map<Size, ZobristTable> tableSpace;
 
-    public RandomZobristTableSource() {
+    private Random rand;
+
+    @Inject
+    public RandomZobristTableSource(Random rand) {
+        this.rand = rand;
         tableSpace = new HashMap<Size, ZobristTable>();
     }
 

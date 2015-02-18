@@ -76,6 +76,7 @@ public class DefaultBoard implements Board {
         Intersection stone = intersect[move.getRow()][move.getColumn()];
         colors.put(stone, move.getColor());
         groups.put(stone, new Group(stone));
+        zobristHash ^= zobristTable.getEntry(move.getColor(), move.getRow(), move.getColumn());
         koIntersection = null;
         for (Intersection neighbor : stone.getNeighbors()) {
             if (colors.containsKey(neighbor)) {
@@ -185,6 +186,7 @@ public class DefaultBoard implements Board {
                 for (Intersection member : members) {
                     groups.remove(member);
                     Color captured = colors.remove(member);
+                    zobristHash ^= zobristTable.getEntry(captured, member.getRow(), member.getColumn());
                     if (captured == Color.White)
                         blackCaptures++;
                     else

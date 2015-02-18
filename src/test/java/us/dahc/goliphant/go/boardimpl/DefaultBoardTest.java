@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +51,7 @@ public class DefaultBoardTest {
             }
         }
         assertEquals(19 * 19, stdBoard.getLegalMoves(Color.Black).size());
+        assertEquals(0L, stdBoard.getZobristHash());
     }
 
     @Test
@@ -64,6 +66,7 @@ public class DefaultBoardTest {
                     assertThat("wide open square (" + i + ", " + j + ") legality",
                             stdBoard.isLegal(new Move(Color.White, i, j)));
         assertEquals(19 * 19 - 1, stdBoard.getLegalMoves(Color.White).size());
+        assertNotEquals(0L, stdBoard.getZobristHash());
     }
 
     @Test
@@ -104,6 +107,7 @@ public class DefaultBoardTest {
         for (int i = 0; i < 19; i++)
             for (int j = 0; j < 19; j++)
                 assertEquals(stdBoard.getColorAt(i, j), copy.getColorAt(i, j));
+        assertEquals(stdBoard.getZobristHash(), copy.getZobristHash());
     }
 
     @Test

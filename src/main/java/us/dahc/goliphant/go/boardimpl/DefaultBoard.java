@@ -149,6 +149,19 @@ public class DefaultBoard implements Board {
         return zobristHash;
     }
 
+    @Override
+    public int hashCode() {
+        return (int) zobristHash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof Board)
+            return zobristHash == ((Board) object).getZobristHash();
+        else
+            return false;
+    }
+
     private boolean isLegal(Color color, Intersection intersection) {
         if (colors.containsKey(intersection) || intersection == koIntersection)
             return false;

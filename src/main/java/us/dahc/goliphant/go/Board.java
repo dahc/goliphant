@@ -1,7 +1,7 @@
 package us.dahc.goliphant.go;
 
 import javax.annotation.Nullable;
-import java.util.List;
+import java.util.Collection;
 
 public interface Board {
 
@@ -23,7 +23,7 @@ public interface Board {
 
     public boolean isLegal(Move move);
 
-    public List<Move> getLegalMoves(Color player);
+    public Collection<Move> getLegalMoves(Color player);
 
     public void play(Move move);
 

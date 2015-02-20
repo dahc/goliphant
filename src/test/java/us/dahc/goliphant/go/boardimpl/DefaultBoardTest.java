@@ -65,6 +65,7 @@ public class DefaultBoardTest {
         assertEquals(null, stdBoard.getColorAt(3, 3));
         stdBoard.play(new Move(Color.Black, 3, 3));
         assertEquals(Color.Black, stdBoard.getColorAt(3, 3));
+        assertEquals(new Move(Color.Black, 3, 3), stdBoard.getLastMove());
         assertThat("play on other stone", !stdBoard.isLegal(new Move(Color.White, 3, 3)));
         for (int i = 0; i < stdBoard.getRows(); i++)
             for (int j = 0; j < stdBoard.getColumns(); j++)

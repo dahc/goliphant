@@ -37,8 +37,14 @@ public class Move {
         return column;
     }
 
-    public boolean equals(Move move) {
-        return (color == move.color) && (row == move.row) && (column == move.column);
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof Move) {
+            Move move = (Move) object;
+            return (color == move.color) && (row == move.row) && (column == move.column);
+        } else {
+            return false;
+        }
     }
 
     @Override

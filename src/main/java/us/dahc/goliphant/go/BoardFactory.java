@@ -4,6 +4,6 @@ public interface BoardFactory {
 
     public Board create(int rows, int columns);
 
-    public Board copy(Board board) throws IncompatibleBoardsException;
+    public Board copy(Board board);
 
 }

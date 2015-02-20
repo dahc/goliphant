@@ -39,9 +39,19 @@ public class RandomZobristTableSource implements ZobristTableSource {
             size = (rows << 16) + columns;
         }
 
-        protected boolean equals(Size other) {
+        @Override
+        public int hashCode() {
+            return size;
+        }
+
+        @Override
+        public boolean equals(Object object) {
+            Size other;
+            if (object instanceof Size)
+                other = (Size) object;
+            else
+                return false;
             return size == other.size;
         }
     }
-
 }

@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import us.dahc.goliphant.go.Board;
 import us.dahc.goliphant.go.Color;
 import us.dahc.goliphant.go.Move;
@@ -27,28 +29,22 @@ public class DefaultBoard implements Board {
 
     private int whiteCaptures = 0;
 
+    private Move lastMove = null;
+
     private Intersection koIntersection = null;
 
     private ZobristTable zobristTable;
 
     private long zobristHash = 0L;
 
-    public DefaultBoard(ZobristTable zobristTable) {
+    protected DefaultBoard(ZobristTable zobristTable) {
+        this.zobristTable = zobristTable;
         rows = zobristTable.getRows();
         columns = zobristTable.getColumns();
-        intersect = new Intersection[rows][columns];
-        colors = new HashMap<Intersection, Color>();
-        groups = new HashMap<Intersection, Group>();
-        for (int i = 0; i < rows; i++)
-            for (int j = 0; j < columns; j++)
-                intersect[i][j] = new Intersection(i, j);
-        for (int i = 0; i < rows; i++)
-            for (int j = 0; j < columns; j++)
-                intersect[i][j].initGeometry();
-        this.zobristTable = zobristTable;
+        initializeNewStructures();
     }
 
-    public DefaultBoard(DefaultBoard board) {
+    protected DefaultBoard(DefaultBoard board) {
         rows = board.getRows();
         columns = board.getColumns();
         intersect = board.intersect;
@@ -60,9 +56,31 @@ public class DefaultBoard implements Board {
             groups.put(stone, groups.get(board.groups.get(stone).getRepresentative()));
         blackCaptures = board.blackCaptures;
         whiteCaptures = board.whiteCaptures;
+        lastMove = board.lastMove;
         koIntersection = board.koIntersection;
         zobristTable = board.zobristTable;
         zobristHash = board.zobristHash;
+    }
+
+    protected DefaultBoard(ZobristTable zobristTable, Board board) {
+        this.zobristTable = zobristTable;
+        rows = board.getRows();
+        columns = board.getColumns();
+        blackCaptures = board.getStonesCapturedBy(Color.Black);
+        whiteCaptures = board.getStonesCapturedBy(Color.White);
+        lastMove = board.getLastMove();
+        if (board.getKoMove() != null)
+            koIntersection = intersect[board.getKoMove().getRow()][board.getKoMove().getColumn()];
+        initializeNewStructures();
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                if (board.getColorAt(i, j) != null) {
+                    colors.put(intersect[i][j], board.getColorAt(i, j));
+                    zobristHash ^= zobristTable.getEntry(board.getColorAt(i, j), i, j);
+                }
+            }
+        }
+        computeGroups();
     }
 
     public int getStonesCapturedBy(Color player) {
@@ -72,11 +90,23 @@ public class DefaultBoard implements Board {
             return whiteCaptures;
     }
 
+    @Nullable
+    public Move getLastMove() {
+        return lastMove;
+    }
+
+    @Nullable
+    public Move getKoMove() {
+        if (koIntersection == null)
+            return null;
+        else
+            return new Move(lastMove.getColor().getOpponent(), koIntersection.getRow(), koIntersection.getColumn());
+    }
+
     public void play(Move move) {
         Intersection stone = intersect[move.getRow()][move.getColumn()];
         colors.put(stone, move.getColor());
         groups.put(stone, new Group(stone));
-        zobristHash ^= zobristTable.getEntry(move.getColor(), move.getRow(), move.getColumn());
         koIntersection = null;
         for (Intersection neighbor : stone.getNeighbors()) {
             if (colors.containsKey(neighbor)) {
@@ -86,6 +116,8 @@ public class DefaultBoard implements Board {
                     groups.get(neighbor).contactEnemy(groups.get(stone));
             }
         }
+        zobristHash ^= zobristTable.getEntry(move.getColor(), move.getRow(), move.getColumn());
+        lastMove = move;
     }
 
     public boolean isLegal(Move move) {
@@ -143,6 +175,31 @@ public class DefaultBoard implements Board {
                 return true;
         }
         return false;
+    }
+
+    private void initializeNewStructures() {
+        intersect = new Intersection[rows][columns];
+        colors = new HashMap<Intersection, Color>();
+        groups = new HashMap<Intersection, Group>();
+        for (int i = 0; i < rows; i++)
+            for (int j = 0; j < columns; j++)
+                intersect[i][j] = new Intersection(i, j);
+        for (int i = 0; i < rows; i++)
+            for (int j = 0; j < columns; j++)
+                intersect[i][j].initGeometry();
+    }
+
+    private void computeGroups() {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                if (!groups.containsKey(intersect[i][j])) {
+                    Group group = new Group(intersect[i][j]);
+                    groups.put(intersect[i][j], group);
+                    group.searchNeighbors(intersect[i][j]);
+                    group.reComputePseudoLiberties();
+                }
+            }
+        }
     }
 
     protected class Group {
@@ -207,12 +264,35 @@ public class DefaultBoard implements Board {
             return representative;
         }
 
-        protected int getSize() {
-            return members.size();
+
+        @Override
+        public boolean equals(Object object) {
+            if (object instanceof Group)
+                return representative.equals(((Group) object).representative);
+            else
+                return false;
         }
 
-        protected boolean equals(Group group) {
-            return representative.equals(group.representative);
+        @Override
+        public int hashCode() {
+            return representative.hashCode();
+        }
+
+        void searchNeighbors(Intersection current) {
+            for (Intersection neighbor : current.getNeighbors()) {
+                if (colors.get(neighbor) == colors.get(representative) && !members.contains(neighbor)) {
+                    members.add(neighbor);
+                    searchNeighbors(neighbor);
+                }
+            }
+        }
+
+        void reComputePseudoLiberties() {
+            pseudoLiberties = 0;
+            for (Intersection member : members)
+                for (Intersection neighbor : member.getNeighbors())
+                    if (colors.get(neighbor) != colors.get(member))
+                        pseudoLiberties++;
         }
     }
 
@@ -264,8 +344,17 @@ public class DefaultBoard implements Board {
             return column;
         }
 
-        protected boolean equals(Intersection intersection) {
-            return row == intersection.row && column == intersection.column;
+        @Override
+        public boolean equals(Object object) {
+            if (object instanceof Intersection)
+                return row == ((Intersection) object).row && column == ((Intersection) object).column;
+            else
+                return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return (row << 16) + column;
         }
 
         private Intersection north() {

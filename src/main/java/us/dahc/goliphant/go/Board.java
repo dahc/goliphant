@@ -1,5 +1,6 @@
 package us.dahc.goliphant.go;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public interface Board {
@@ -13,6 +14,12 @@ public interface Board {
     public int getStonesCapturedBy(Color player);
 
     public long getZobristHash();
+
+    @Nullable
+    public Move getLastMove();
+
+    @Nullable
+    public Move getKoMove();
 
     public boolean isLegal(Move move);
 

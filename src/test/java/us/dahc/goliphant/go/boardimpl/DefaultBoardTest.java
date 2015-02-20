@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 
+import us.dahc.goliphant.go.Board;
 import us.dahc.goliphant.go.Color;
 import us.dahc.goliphant.go.Move;
 import us.dahc.goliphant.go.hashing.RandomZobristTableSource;
@@ -25,9 +27,11 @@ public class DefaultBoardTest {
 
     private DefaultBoard asymBoard;
 
+    private ZobristTableSource zts;
+
     @Before
     public void setup() {
-        ZobristTableSource zts = new RandomZobristTableSource(new Random());
+        zts = new RandomZobristTableSource(new Random());
         stdBoard = new DefaultBoard(zts.get(19, 19));
         asymBoard = new DefaultBoard(zts.get(13, 21));
     }
@@ -52,6 +56,8 @@ public class DefaultBoardTest {
         }
         assertEquals(19 * 19, stdBoard.getLegalMoves(Color.Black).size());
         assertEquals(0L, stdBoard.getZobristHash());
+        assertNull(stdBoard.getLastMove());
+        assertNull(stdBoard.getKoMove());
     }
 
     @Test
@@ -95,7 +101,8 @@ public class DefaultBoardTest {
         assertThat("surrounded but capturing", stdBoard.isLegal(new Move(Color.White, 6, 5)));
         stdBoard.play(new Move(Color.White, 6, 5));
         assertThat("initial capture occurred", stdBoard.getColorAt(6, 6), is(nullValue()));
-        assertThat("simple ko", !stdBoard.isLegal(new Move(Color.Black, 6, 6)));
+        assertThat("simple ko fact", stdBoard.getKoMove().equals(new Move(Color.Black, 6, 6)));
+        assertThat("simple ko illegality", !stdBoard.isLegal(new Move(Color.Black, 6, 6)));
         stdBoard.play(new Move(Color.Black, 8, 8));
         assertThat("no longer ko", stdBoard.isLegal(new Move(Color.Black, 6, 6)));
     }
@@ -108,12 +115,38 @@ public class DefaultBoardTest {
             for (int j = 0; j < 19; j++)
                 assertEquals(stdBoard.getColorAt(i, j), copy.getColorAt(i, j));
         assertEquals(stdBoard.getZobristHash(), copy.getZobristHash());
+        assertEquals(stdBoard.getLastMove(), copy.getLastMove());
+        assertEquals(stdBoard.getKoMove(), copy.getKoMove());
     }
 
     @Test
     public void testCopyIndependence() {
         DefaultBoard copy = new DefaultBoard(stdBoard);
         playSomeStuff(stdBoard);
+        for (int i = 0; i < 19; i++)
+            for (int j = 0; j < 19; j++)
+                assertEquals(null, copy.getColorAt(i, j));
+        assertEquals(19 * 19, copy.getLegalMoves(Color.Black).size());
+    }
+
+    @Test
+    public void testInterfaceCopyAccuracy() {
+        playSomeStuff(stdBoard);
+        Board iBoard = stdBoard;
+        DefaultBoard copy = new DefaultBoard(zts.get(19, 19), iBoard);
+        for (int i = 0; i < 19; i++)
+            for (int j = 0; j < 19; j++)
+                assertEquals(iBoard.getColorAt(i, j), copy.getColorAt(i, j));
+        assertEquals(iBoard.getZobristHash(), copy.getZobristHash());
+        assertEquals(iBoard.getLastMove(), copy.getLastMove());
+        assertEquals(iBoard.getKoMove(), copy.getKoMove());
+    }
+
+    @Test
+    public void testInterfaceCopyIndependence() {
+        Board iBoard = stdBoard;
+        DefaultBoard copy = new DefaultBoard(zts.get(19, 19), iBoard);
+        playSomeStuff(iBoard);
         for (int i = 0; i < 19; i++)
             for (int j = 0; j < 19; j++)
                 assertEquals(null, copy.getColorAt(i, j));
@@ -185,12 +218,12 @@ public class DefaultBoardTest {
         }
     }
 
-    private void playSomeStuff(DefaultBoard board) {
+    private void playSomeStuff(Board board) {
         board.play(new Move(Color.Black, 3, 3));
-        board.play(new Move(Color.White, 3, 16));
+        /*board.play(new Move(Color.White, 3, 16));
         board.play(new Move(Color.Black, 4, 17));
         board.play(new Move(Color.White, 2, 2));
         board.play(new Move(Color.Black, 15, 3));
-        board.play(new Move(Color.White, 8, 7));
+        board.play(new Move(Color.White, 8, 7));*/
     }
 }

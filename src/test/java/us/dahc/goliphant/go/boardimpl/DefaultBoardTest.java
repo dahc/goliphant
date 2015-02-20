@@ -220,10 +220,19 @@ public class DefaultBoardTest {
 
     private void playSomeStuff(Board board) {
         board.play(new Move(Color.Black, 3, 3));
-        /*board.play(new Move(Color.White, 3, 16));
+        board.play(new Move(Color.White, 3, 16));
         board.play(new Move(Color.Black, 4, 17));
         board.play(new Move(Color.White, 2, 2));
         board.play(new Move(Color.Black, 15, 3));
-        board.play(new Move(Color.White, 8, 7));*/
+        board.play(new Move(Color.White, 8, 7));
+        board.play(new Move(Color.Black, 5, 5));
+        board.play(new Move(Color.White, 5, 6));
+        board.play(new Move(Color.Black, 6, 4));
+        board.play(new Move(Color.White, 6, 7));
+        board.play(new Move(Color.Black, 7, 5));
+        board.play(new Move(Color.White, 7, 6));
+        board.play(new Move(Color.Black, 6, 6));
+        board.play(new Move(Color.White, 6, 5));
+        board.play(new Move(Color.Black, 8, 8));
     }
 }

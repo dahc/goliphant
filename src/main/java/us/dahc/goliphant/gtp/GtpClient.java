@@ -1,6 +1,7 @@
 package us.dahc.goliphant.gtp;
 
 import org.apache.commons.lang3.StringUtils;
+import us.dahc.goliphant.util.GoliphantException;
 
 import javax.inject.Inject;
 import java.io.InputStream;
@@ -9,14 +10,14 @@ import java.util.Scanner;
 
 public class GtpClient implements Runnable {
 
-    private Dispatcher dispatcher;
+    private GtpDispatcher dispatcher;
 
     private InputStream in;
 
     private PrintStream out;
 
     @Inject
-    public GtpClient(Dispatcher dispatcher, InputStream in, PrintStream out) {
+    public GtpClient(GtpDispatcher dispatcher, InputStream in, PrintStream out) {
         this.dispatcher = dispatcher;
         this.in = in;
         this.out = out;
@@ -28,20 +29,33 @@ public class GtpClient implements Runnable {
             String line = scanner.nextLine();
             try {
                 out.println("= " + dispatcher.dispatch(getCommand(line), getArguments(line)));
-            } catch (Exception e) {
+            } catch (IgnorableLineException e) {
+                // do nothing
+            } catch (GoliphantException e) {
                 out.println("? " + e.getMessage());
             }
         }
         scanner.close();
     }
 
-    private static String getCommand(String line) {
-        return "";
+    private static String getCommand(String line) throws IgnorableLineException {
+        line = StringUtils.removePattern(line, "#.*");
+        try {
+            return StringUtils.normalizeSpace(line).split(" ")[0];
+        } catch (Exception e) {
+            throw new IgnorableLineException();
+        }
     }
 
     private static String[] getArguments(String line) {
-        String normalized = StringUtils.normalizeSpace(line);
-        return new String[] {""};
+        line = StringUtils.removePattern(line, "#.*");
+        String tokens[] = StringUtils.normalizeSpace(line).split(" ");
+        String arguments[] = new String[tokens.length - 1];
+        for (int i = 0; i < arguments.length; i++)
+            arguments[i] = tokens[i + 1];
+        return arguments;
     }
+
+    private static class IgnorableLineException extends GoliphantException {}
 
 }

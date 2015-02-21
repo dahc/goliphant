@@ -28,18 +28,18 @@ public class ZobristTable implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        ZobristTable other;
-        if (object instanceof ZobristTable)
-            other = (ZobristTable) object;
-        else
+        if (object instanceof ZobristTable) {
+            ZobristTable other = (ZobristTable) object;
+            if (getRows() != other.getRows() || getColumns() != other.getColumns())
+                return false;
+            for (int i = 0; i < getRows(); i++)
+                for (int j = 0; j < getColumns(); j++)
+                    if (getEntry(Color.Black, i, j) != other.getEntry(Color.Black, i, j)
+                            || getEntry(Color.White, i, j) != other.getEntry(Color.White, i, j))
+                        return false;
+            return true;
+        } else {
             return false;
-        for (int i = 0; i < getRows(); i++) {
-            for (int j = 0; j < getColumns(); j++) {
-                if (getEntry(Color.Black, i, j) != other.getEntry(Color.Black, i, j)
-                        || getEntry(Color.White, i, j) != other.getEntry(Color.White, i, j))
-                    return false;
-            }
         }
-        return true;
     }
 }

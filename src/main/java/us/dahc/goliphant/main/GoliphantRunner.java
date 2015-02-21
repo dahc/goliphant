@@ -3,7 +3,7 @@ package us.dahc.goliphant.main;
 import us.dahc.goliphant.go.Board;
 import us.dahc.goliphant.go.BoardFactory;
 import us.dahc.goliphant.go.boardimpl.DefaultBoardFactory;
-import us.dahc.goliphant.go.hashing.RandomZobristTableSource;
+import us.dahc.goliphant.util.hashing.RandomZobristTableSource;
 
 import java.util.Random;
 

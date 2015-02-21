@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import us.dahc.goliphant.go.Board;
 import us.dahc.goliphant.go.BoardFactory;
-import us.dahc.goliphant.go.hashing.RandomZobristTableSource;
+import us.dahc.goliphant.util.hashing.RandomZobristTableSource;
 
 import java.util.Random;
 

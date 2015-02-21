@@ -1,8 +1,7 @@
-package us.dahc.goliphant.go.hashing;
+package us.dahc.goliphant.util.hashing;
 
 import org.junit.Before;
 import org.junit.Test;
-import us.dahc.goliphant.go.Color;
 
 import java.util.Random;
 

@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 import us.dahc.goliphant.go.Board;
 import us.dahc.goliphant.go.Color;
 import us.dahc.goliphant.go.Move;
-import us.dahc.goliphant.go.hashing.ZobristTable;
+import us.dahc.goliphant.util.hashing.ZobristTable;
 
 public class DefaultBoard implements Board {
 

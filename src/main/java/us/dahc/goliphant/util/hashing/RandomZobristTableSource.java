@@ -1,4 +1,4 @@
-package us.dahc.goliphant.go.hashing;
+package us.dahc.goliphant.util.hashing;
 
 import java.util.HashMap;
 import java.util.Map;

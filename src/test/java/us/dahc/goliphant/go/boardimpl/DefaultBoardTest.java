@@ -18,8 +18,8 @@ import org.junit.Test;
 import us.dahc.goliphant.go.Board;
 import us.dahc.goliphant.go.Color;
 import us.dahc.goliphant.go.Move;
-import us.dahc.goliphant.go.hashing.RandomZobristTableSource;
-import us.dahc.goliphant.go.hashing.ZobristTableSource;
+import us.dahc.goliphant.util.hashing.RandomZobristTableSource;
+import us.dahc.goliphant.util.hashing.ZobristTableSource;
 
 public class DefaultBoardTest {
 

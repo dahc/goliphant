@@ -1,7 +1,5 @@
 package us.dahc.goliphant.gtp;
 
-import us.dahc.goliphant.util.GoliphantException;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,27 +8,33 @@ import java.util.Map;
 
 public class BaseGtpHandler implements GtpHandler {
 
-    protected Map<String, GtpCommand> commands;
+    protected Map<String, Command> commands;
 
     public BaseGtpHandler(String name, String version) {
-        commands = new HashMap<String, GtpCommand>();
-        commands.put("name", new CannedCommand(name));
-        commands.put("version", new CannedCommand(version));
+        commands = new HashMap<String, Command>();
+        commands.put("name", new StubCommand(name));
+        commands.put("version", new StubCommand(version));
+        commands.put("protocol_version", new StubCommand(PROTOCOL_VERSION));
         commands.put("list_commands", new ListCommands());
         commands.put("known_command", new KnownCommand());
+        commands.put("quit", new QuitCommand());
     }
 
-    public String handle(String command, String... args) throws GoliphantException {
+    public String handle(String command, String... args) throws GtpException {
         if (commands.containsKey(command))
             return commands.get(command).exec(args);
         else
-            throw new GoliphantException("unknown command");
+            throw new GtpException("unknown command");
     }
 
-    class CannedCommand implements GtpCommand {
+    protected interface Command {
+        public String exec(String... arguments) throws GtpException;
+    }
+
+    protected class StubCommand implements Command {
         private String response;
 
-        CannedCommand(String response) {
+        StubCommand(String response) {
             this.response = response;
         }
 
@@ -39,7 +43,7 @@ public class BaseGtpHandler implements GtpHandler {
         }
     }
 
-    class ListCommands implements GtpCommand {
+    class ListCommands implements Command {
         public String exec(String... args) {
             List<String> commandList = new ArrayList<String>(commands.keySet());
             Collections.sort(commandList);
@@ -51,12 +55,18 @@ public class BaseGtpHandler implements GtpHandler {
         }
     }
 
-    class KnownCommand implements GtpCommand {
+    class KnownCommand implements Command {
         public String exec(String... args) {
             if (args.length > 0 && commands.containsKey(args[0]))
                 return "true";
             else
                 return "false";
+        }
+    }
+
+    class QuitCommand implements Command {
+        public String exec(String... args) throws QuitException {
+            throw new QuitException();
         }
     }
 

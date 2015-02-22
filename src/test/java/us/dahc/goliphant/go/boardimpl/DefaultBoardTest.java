@@ -18,8 +18,8 @@ import org.junit.Test;
 import us.dahc.goliphant.go.Board;
 import us.dahc.goliphant.go.Color;
 import us.dahc.goliphant.go.Move;
-import us.dahc.goliphant.util.hashing.RandomZobristTableSource;
-import us.dahc.goliphant.util.hashing.ZobristTableSource;
+import us.dahc.goliphant.util.Size;
+import us.dahc.goliphant.util.hashing.ZobristTable;
 
 public class DefaultBoardTest {
 
@@ -27,13 +27,12 @@ public class DefaultBoardTest {
 
     private DefaultBoard asymBoard;
 
-    private ZobristTableSource zts;
-
     @Before
     public void setup() {
-        zts = new RandomZobristTableSource(new Random());
-        stdBoard = new DefaultBoard(zts.get(19, 19));
-        asymBoard = new DefaultBoard(zts.get(13, 21));
+        ZobristTable stdZobTab = new ZobristTable(new Random(), new Size(19, 19));
+        ZobristTable asymZobTab = new ZobristTable(new Random(), new Size(13, 21));
+        stdBoard = new DefaultBoard(stdZobTab);
+        asymBoard = new DefaultBoard(asymZobTab);
     }
 
     @Test
@@ -111,7 +110,7 @@ public class DefaultBoardTest {
     @Test
     public void testCopyAccuracy() {
         playSomeStuff(stdBoard);
-        DefaultBoard copy = new DefaultBoard(stdBoard);
+        DefaultBoard copy = stdBoard.getCopy();
         for (int i = 0; i < 19; i++)
             for (int j = 0; j < 19; j++)
                 assertEquals(stdBoard.getColorAt(i, j), copy.getColorAt(i, j));
@@ -122,7 +121,7 @@ public class DefaultBoardTest {
 
     @Test
     public void testCopyIndependence() {
-        DefaultBoard copy = new DefaultBoard(stdBoard);
+        DefaultBoard copy = stdBoard.getCopy();
         playSomeStuff(stdBoard);
         for (int i = 0; i < 19; i++)
             for (int j = 0; j < 19; j++)
@@ -134,7 +133,7 @@ public class DefaultBoardTest {
     public void testInterfaceCopyAccuracy() {
         playSomeStuff(stdBoard);
         Board iBoard = stdBoard;
-        DefaultBoard copy = new DefaultBoard(zts.get(19, 19), iBoard);
+        DefaultBoard copy = stdBoard.getCopy(iBoard);
         for (int i = 0; i < 19; i++)
             for (int j = 0; j < 19; j++)
                 assertEquals(iBoard.getColorAt(i, j), copy.getColorAt(i, j));
@@ -146,7 +145,7 @@ public class DefaultBoardTest {
     @Test
     public void testInterfaceCopyIndependence() {
         Board iBoard = stdBoard;
-        DefaultBoard copy = new DefaultBoard(zts.get(19, 19), iBoard);
+        DefaultBoard copy = stdBoard.getCopy(iBoard);
         playSomeStuff(iBoard);
         for (int i = 0; i < 19; i++)
             for (int j = 0; j < 19; j++)

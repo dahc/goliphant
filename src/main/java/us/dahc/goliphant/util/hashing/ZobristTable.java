@@ -1,17 +1,27 @@
 package us.dahc.goliphant.util.hashing;
 
 import us.dahc.goliphant.go.Color;
+import us.dahc.goliphant.util.Size;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.Serializable;
+import java.util.Random;
 
+@Singleton
 public class ZobristTable implements Serializable {
 
     private static final long serialVersionUID = 20150218013122L;
 
     private long[][][] table;
 
-    ZobristTable(long[][][] table) {
-        this.table = table;
+    @Inject
+    public ZobristTable(Random rand, Size size) {
+        table = new long[2][size.getRows()][size.getColumns()];
+        for (int i = 0; i < 2; i++)
+            for (int j = 0; j < size.getRows(); j++)
+                for (int k = 0; k < size.getColumns(); k++)
+                    table[i][j][k] = rand.nextLong();
     }
 
     public long getEntry(Color color, int row, int column) {

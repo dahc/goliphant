@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nullable;
+import javax.inject.Inject;
 
 import us.dahc.goliphant.go.Board;
 import us.dahc.goliphant.go.Color;
@@ -16,27 +17,18 @@ import us.dahc.goliphant.util.hashing.ZobristTable;
 public class DefaultBoard implements Board {
 
     private final int rows;
-
     private final int columns;
-
     private Intersection[][] intersect;
-
     private Map<Intersection, Color> colors;
-
     private Map<Intersection, Group> groups;
-
     private int blackCaptures = 0;
-
     private int whiteCaptures = 0;
-
     private Move lastMove = null;
-
     private Intersection koIntersection = null;
-
     private ZobristTable zobristTable;
-
     private long zobristHash = 0L;
 
+    @Inject
     protected DefaultBoard(ZobristTable zobristTable) {
         this.zobristTable = zobristTable;
         rows = zobristTable.getRows();
@@ -81,6 +73,17 @@ public class DefaultBoard implements Board {
             }
         }
         computeGroups();
+    }
+
+    public DefaultBoard getCopy() {
+        return new DefaultBoard(this);
+    }
+
+    public DefaultBoard getCopy(Board board) {
+        if (board instanceof DefaultBoard)
+            return new DefaultBoard((DefaultBoard) board);
+        else
+            return new DefaultBoard(zobristTable, board);
     }
 
     public int getStonesCapturedBy(Color player) {

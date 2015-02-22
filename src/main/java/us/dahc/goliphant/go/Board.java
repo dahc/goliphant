@@ -27,4 +27,8 @@ public interface Board {
 
     public void play(Move move);
 
+    public Board getCopy();
+
+    public Board getCopy(Board board);
+
 }

@@ -80,7 +80,10 @@ public class DefaultBoard implements Board {
         initializeNewStructures();
     }
 
-    public void resize(int rows, int columns) {
+    public void resize(int rows, int columns) throws InvalidSizeException {
+        if (rows > zobristTable.getMaxRows() || columns > zobristTable.getMaxColumns())
+            throw new InvalidSizeException("max size is " + zobristTable.getMaxRows() + " rows by "
+                                                          + zobristTable.getMaxColumns() + " columns");
         this.rows = rows;
         this.columns = columns;
         reset();

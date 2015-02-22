@@ -11,8 +11,10 @@ import java.util.List;
 import java.util.Random;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
+import org.junit.rules.ExpectedException;
 import us.dahc.goliphant.util.hashing.ZobristTable;
 
 public class DefaultBoardTest {
@@ -20,8 +22,11 @@ public class DefaultBoardTest {
     private DefaultBoard stdBoard;
     private DefaultBoard asymBoard;
 
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
     @Before
-    public void setup() {
+    public void setup() throws Exception {
         ZobristTable stdZobTab = new ZobristTable(new Random());
         ZobristTable asymZobTab = new ZobristTable(new Random());
         stdBoard = new DefaultBoard(stdZobTab);
@@ -59,6 +64,12 @@ public class DefaultBoardTest {
         stdBoard.reset();
         testInitialState();
         testHashHistory();
+    }
+
+    @Test
+    public void testInvalidResize() throws Exception {
+        thrown.expect(InvalidSizeException.class);
+        stdBoard.resize(500, 500);
     }
 
     @Test
@@ -164,6 +175,17 @@ public class DefaultBoardTest {
             for (int j = 0; j < 19; j++)
                 assertEquals(null, copy.getColorAt(i, j));
         assertEquals(19 * 19, copy.getLegalMoves(Color.Black).size());
+    }
+
+    @Test
+    public void testCopySizePreservation() {
+        Board iBoard = stdBoard;
+        Board newStdTypeChangedBoard = asymBoard.getCopy(iBoard);
+        assertEquals(stdBoard.getRows(), newStdTypeChangedBoard.getRows());
+        assertEquals(stdBoard.getColumns(), newStdTypeChangedBoard.getColumns());
+        Board asymCopy = asymBoard.getCopy();
+        assertEquals(asymBoard.getRows(), asymCopy.getRows());
+        assertEquals(asymBoard.getColumns(), asymCopy.getColumns());
     }
 
     @Test

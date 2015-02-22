@@ -13,8 +13,8 @@ import us.dahc.goliphant.util.hashing.ZobristTable;
 
 public class DefaultBoard implements Board {
 
-    private final int rows;
-    private final int columns;
+    private int rows = 19;
+    private int columns = 19;
     private Intersection[][] intersect;
     private Map<Intersection, Color> colors;
     private Map<Intersection, Group> groups;
@@ -29,8 +29,6 @@ public class DefaultBoard implements Board {
     @Inject
     protected DefaultBoard(ZobristTable zobristTable) {
         this.zobristTable = zobristTable;
-        rows = zobristTable.getRows();
-        columns = zobristTable.getColumns();
         initializeNewStructures();
     }
 
@@ -71,6 +69,21 @@ public class DefaultBoard implements Board {
             }
         }
         computeGroups();
+    }
+
+    public void reset() {
+        blackCaptures = 0;
+        whiteCaptures = 0;
+        lastMove = null;
+        koIntersection = null;
+        zobristHash = 0L;
+        initializeNewStructures();
+    }
+
+    public void resize(int rows, int columns) {
+        this.rows = rows;
+        this.columns = columns;
+        reset();
     }
 
     public DefaultBoard getCopy() {

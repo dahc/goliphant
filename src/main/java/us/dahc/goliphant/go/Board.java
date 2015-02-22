@@ -5,9 +5,15 @@ import java.util.Collection;
 
 public interface Board {
 
+    // Lifecycle
+    public Board getCopy();
+    public Board getCopy(Board board);
+    public void reset();
+
     // Geometry
     public int getRows();
     public int getColumns();
+    public void resize(int rows, int columns) throws InvalidSizeException;
 
     // Basic Status
     public int getStonesCapturedBy(Color player);
@@ -19,10 +25,6 @@ public interface Board {
     public boolean isLegal(Move move);
     public Collection<Move> getLegalMoves(Color player);
     public void play(Move move);
-
-    // Copying
-    public Board getCopy();
-    public Board getCopy(Board board);
 
     // Superko Facilities
     public long getZobristHash();

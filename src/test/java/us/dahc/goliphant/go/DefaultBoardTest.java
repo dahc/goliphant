@@ -13,7 +13,6 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 
-import us.dahc.goliphant.util.Size;
 import us.dahc.goliphant.util.hashing.ZobristTable;
 
 public class DefaultBoardTest {
@@ -23,10 +22,11 @@ public class DefaultBoardTest {
 
     @Before
     public void setup() {
-        ZobristTable stdZobTab = new ZobristTable(new Random(), new Size(19, 19));
-        ZobristTable asymZobTab = new ZobristTable(new Random(), new Size(13, 21));
+        ZobristTable stdZobTab = new ZobristTable(new Random());
+        ZobristTable asymZobTab = new ZobristTable(new Random());
         stdBoard = new DefaultBoard(stdZobTab);
         asymBoard = new DefaultBoard(asymZobTab);
+        asymBoard.resize(13, 21);
     }
 
     @Test
@@ -51,6 +51,14 @@ public class DefaultBoardTest {
         assertEquals(0L, stdBoard.getZobristHash());
         assertNull(stdBoard.getLastMove());
         assertNull(stdBoard.getKoMove());
+    }
+
+    @Test
+    public void testReset() {
+        playSomeStuff(stdBoard);
+        stdBoard.reset();
+        testInitialState();
+        testHashHistory();
     }
 
     @Test

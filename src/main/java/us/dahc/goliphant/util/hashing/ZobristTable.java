@@ -1,7 +1,6 @@
 package us.dahc.goliphant.util.hashing;
 
 import us.dahc.goliphant.go.Color;
-import us.dahc.goliphant.util.Size;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -11,16 +10,17 @@ import java.util.Random;
 @Singleton
 public class ZobristTable implements Serializable {
 
-    private static final long serialVersionUID = 20150218013122L;
-
+    private static final long serialVersionUID = 20150222171803L;
+    private static final int maxRows = 100;
+    private static final int maxColumns = 25;
     private long[][][] table;
 
     @Inject
-    public ZobristTable(Random rand, Size size) {
-        table = new long[2][size.getRows()][size.getColumns()];
+    public ZobristTable(Random rand) {
+        table = new long[2][maxRows][maxColumns];
         for (int i = 0; i < 2; i++)
-            for (int j = 0; j < size.getRows(); j++)
-                for (int k = 0; k < size.getColumns(); k++)
+            for (int j = 0; j < maxRows; j++)
+                for (int k = 0; k < maxColumns; k++)
                     table[i][j][k] = rand.nextLong();
     }
 
@@ -28,11 +28,11 @@ public class ZobristTable implements Serializable {
         return table[color == Color.Black ? 0 : 1][row][column];
     }
 
-    public int getRows() {
+    public int getMaxRows() {
         return table[0].length;
     }
 
-    public int getColumns() {
+    public int getMaxColumns() {
         return table[0][0].length;
     }
 
@@ -40,10 +40,10 @@ public class ZobristTable implements Serializable {
     public boolean equals(Object object) {
         if (object instanceof ZobristTable) {
             ZobristTable other = (ZobristTable) object;
-            if (getRows() != other.getRows() || getColumns() != other.getColumns())
+            if (getMaxRows() != other.getMaxRows() || getMaxColumns() != other.getMaxColumns())
                 return false;
-            for (int i = 0; i < getRows(); i++)
-                for (int j = 0; j < getColumns(); j++)
+            for (int i = 0; i < getMaxRows(); i++)
+                for (int j = 0; j < getMaxColumns(); j++)
                     if (getEntry(Color.Black, i, j) != other.getEntry(Color.Black, i, j)
                             || getEntry(Color.White, i, j) != other.getEntry(Color.White, i, j))
                         return false;

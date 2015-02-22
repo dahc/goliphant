@@ -1,4 +1,4 @@
-package us.dahc.goliphant.go.boardimpl;
+package us.dahc.goliphant.go;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,9 +9,6 @@ import java.util.Map;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 
-import us.dahc.goliphant.go.Board;
-import us.dahc.goliphant.go.Color;
-import us.dahc.goliphant.go.Move;
 import us.dahc.goliphant.util.hashing.ZobristTable;
 
 public class DefaultBoard implements Board {
@@ -27,6 +24,7 @@ public class DefaultBoard implements Board {
     private Intersection koIntersection = null;
     private ZobristTable zobristTable;
     private long zobristHash = 0L;
+    private List<Long> hashHistory;
 
     @Inject
     protected DefaultBoard(ZobristTable zobristTable) {
@@ -107,6 +105,7 @@ public class DefaultBoard implements Board {
     }
 
     public void play(Move move) {
+        hashHistory.add(zobristHash);
         Intersection stone = intersect[move.getRow()][move.getColumn()];
         colors.put(stone, move.getColor());
         groups.put(stone, new Group(stone));
@@ -136,6 +135,7 @@ public class DefaultBoard implements Board {
         return result;
     }
 
+    @Nullable
     public Color getColorAt(int row, int column) {
         return colors.get(intersect[row][column]);
     }
@@ -150,6 +150,10 @@ public class DefaultBoard implements Board {
 
     public long getZobristHash() {
         return zobristHash;
+    }
+
+    public List<Long> getPreviousHashes() {
+        return hashHistory;
     }
 
     @Override
@@ -203,6 +207,7 @@ public class DefaultBoard implements Board {
         for (int i = 0; i < rows; i++)
             for (int j = 0; j < columns; j++)
                 intersect[i][j].initGeometry();
+        hashHistory = new ArrayList<Long>();
     }
 
     private void computeGroups() {

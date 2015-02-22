@@ -1,9 +1,7 @@
-package us.dahc.goliphant.go.boardimpl;
+package us.dahc.goliphant.go;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
@@ -15,16 +13,12 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 
-import us.dahc.goliphant.go.Board;
-import us.dahc.goliphant.go.Color;
-import us.dahc.goliphant.go.Move;
 import us.dahc.goliphant.util.Size;
 import us.dahc.goliphant.util.hashing.ZobristTable;
 
 public class DefaultBoardTest {
 
     private DefaultBoard stdBoard;
-
     private DefaultBoard asymBoard;
 
     @Before
@@ -105,6 +99,17 @@ public class DefaultBoardTest {
         assertThat("simple ko illegality", !stdBoard.isLegal(new Move(Color.Black, 6, 6)));
         stdBoard.play(new Move(Color.Black, 8, 8));
         assertThat("no longer ko", stdBoard.isLegal(new Move(Color.Black, 6, 6)));
+    }
+
+    @Test
+    public void testHashHistory() {
+        assertEquals(0, stdBoard.getPreviousHashes().size());
+        stdBoard.play(new Move(Color.Black, 17, 17));
+        assertEquals(1, stdBoard.getPreviousHashes().size());
+        assertThat("current is not in previous", !stdBoard.getPreviousHashes().contains(stdBoard.getZobristHash()));
+        playSomeStuff(stdBoard);
+        assertThat("more play", stdBoard.getPreviousHashes().size(), is(greaterThan(10)));
+        assertThat("current still not previous", !stdBoard.getPreviousHashes().contains(stdBoard.getZobristHash()));
     }
 
     @Test

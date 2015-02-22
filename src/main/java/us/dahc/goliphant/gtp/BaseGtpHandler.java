@@ -2,13 +2,17 @@ package us.dahc.goliphant.gtp;
 
 import us.dahc.goliphant.util.GoliphantException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class BaseGtpDispatcher implements GtpDispatcher {
+public class BaseGtpHandler implements GtpHandler {
 
     protected Map<String, GtpCommand> commands;
 
-    public BaseGtpDispatcher(String name, String version) {
+    public BaseGtpHandler(String name, String version) {
         commands = new HashMap<String, GtpCommand>();
         commands.put("name", new CannedCommand(name));
         commands.put("version", new CannedCommand(version));
@@ -16,7 +20,7 @@ public class BaseGtpDispatcher implements GtpDispatcher {
         commands.put("known_command", new KnownCommand());
     }
 
-    public String dispatch(String command, String... args) throws GoliphantException {
+    public String handle(String command, String... args) throws GoliphantException {
         if (commands.containsKey(command))
             return commands.get(command).exec(args);
         else

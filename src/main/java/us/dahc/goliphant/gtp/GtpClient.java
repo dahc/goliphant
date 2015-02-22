@@ -10,15 +10,13 @@ import java.util.Scanner;
 
 public class GtpClient implements Runnable {
 
-    private GtpDispatcher dispatcher;
-
+    private GtpHandler handler;
     private InputStream in;
-
     private PrintStream out;
 
     @Inject
-    public GtpClient(GtpDispatcher dispatcher, InputStream in, PrintStream out) {
-        this.dispatcher = dispatcher;
+    public GtpClient(GtpHandler handler, InputStream in, PrintStream out) {
+        this.handler = handler;
         this.in = in;
         this.out = out;
     }
@@ -28,7 +26,7 @@ public class GtpClient implements Runnable {
         while (scanner.hasNext()) {
             String line = scanner.nextLine();
             try {
-                out.println("= " + dispatcher.dispatch(getCommand(line), getArguments(line)));
+                out.println("= " + handler.handle(getCommand(line), getArguments(line)) + "\n");
             } catch (IgnorableLineException e) {
                 // do nothing
             } catch (GoliphantException e) {

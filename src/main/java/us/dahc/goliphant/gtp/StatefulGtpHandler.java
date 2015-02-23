@@ -16,7 +16,7 @@ public class StatefulGtpHandler extends BaseGtpHandler {
     @Inject
     public StatefulGtpHandler(GtpClientIdentity clientIdentity, Board board) {
         super(clientIdentity);
-        pastBoards = new ArrayList<Board>();
+        pastBoards = new ArrayList<>();
         currentBoard = board;
         commands.put("boardsize", new BoardsizeCommand());
         commands.put("clear_board", new ClearBoardCommand());

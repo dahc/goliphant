@@ -216,7 +216,7 @@ public class DefaultBoardTest {
 
     @Test
     public void testEdgeIntersections() {
-        List<DefaultBoard.Intersection> edges = new ArrayList<DefaultBoard.Intersection>();
+        List<DefaultBoard.Intersection> edges = new ArrayList<>();
         for (int i = 1; i < stdBoard.getRows() - 1; i++) {
             edges.add(stdBoard.new Intersection(i, 0));
             edges.add(stdBoard.new Intersection(i, stdBoard.getColumns() - 1));
@@ -242,7 +242,7 @@ public class DefaultBoardTest {
 
     @Test
     public void testMiddleIntersections() {
-        List<DefaultBoard.Intersection> mids = new ArrayList<DefaultBoard.Intersection>();
+        List<DefaultBoard.Intersection> mids = new ArrayList<>();
         for (int i = 1; i < stdBoard.getRows() - 1; i++)
             for (int j = 1; j < stdBoard.getColumns() - 1; j++)
                 mids.add(stdBoard.new Intersection(i, j));

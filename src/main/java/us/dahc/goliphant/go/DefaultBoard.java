@@ -1,13 +1,12 @@
 package us.dahc.goliphant.go;
 
+import javax.annotation.Nullable;
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
-import javax.annotation.Nullable;
-import javax.inject.Inject;
 
 import us.dahc.goliphant.util.ZobristTable;
 
@@ -37,8 +36,8 @@ public class DefaultBoard implements Board {
         rows = board.getRows();
         columns = board.getColumns();
         intersect = board.intersect;
-        colors = new HashMap<Intersection, Color>(board.colors);
-        groups = new HashMap<Intersection, Group>(board.groups.size());
+        colors = new HashMap<>(board.colors);
+        groups = new HashMap<>(board.groups.size());
         for (Group group : new HashSet<Group>(board.groups.values()))
             groups.put(group.getRepresentative(), new Group(group));
         for (Intersection stone : colors.keySet())
@@ -155,7 +154,7 @@ public class DefaultBoard implements Board {
     }
 
     public List<Move> getLegalMoves(Color player) {
-        List<Move> result = new ArrayList<Move>(rows * columns);
+        List<Move> result = new ArrayList<>(rows * columns);
         for (int i = 0; i < rows; i++)
             for (int j = 0; j < columns; j++)
                 if (isLegal(player, intersect[i][j]))
@@ -227,15 +226,15 @@ public class DefaultBoard implements Board {
 
     private void initializeNewStructures() {
         intersect = new Intersection[rows][columns];
-        colors = new HashMap<Intersection, Color>();
-        groups = new HashMap<Intersection, Group>();
+        colors = new HashMap<>();
+        groups = new HashMap<>();
         for (int i = 0; i < rows; i++)
             for (int j = 0; j < columns; j++)
                 intersect[i][j] = new Intersection(i, j);
         for (int i = 0; i < rows; i++)
             for (int j = 0; j < columns; j++)
                 intersect[i][j].initGeometry();
-        hashHistory = new ArrayList<Long>();
+        hashHistory = new ArrayList<>();
     }
 
     private void computeGroups() {
@@ -257,7 +256,7 @@ public class DefaultBoard implements Board {
         private Intersection representative;
 
         protected Group(Intersection stone) {
-            members = new ArrayList<Intersection>();
+            members = new ArrayList<>();
             members.add(stone);
             representative = stone;
             pseudoLiberties = 0;
@@ -267,7 +266,7 @@ public class DefaultBoard implements Board {
         }
 
         protected Group(Group group) {
-            members = new ArrayList<Intersection>(group.members);
+            members = new ArrayList<>(group.members);
             representative = group.representative;
             pseudoLiberties = group.pseudoLiberties;
         }
@@ -357,7 +356,7 @@ public class DefaultBoard implements Board {
         }
 
         protected void initGeometry() {
-            neighbors = new ArrayList<Intersection>(4);
+            neighbors = new ArrayList<>(4);
             if (north() != null)
                 neighbors.add(north());
             if (east() != null)
@@ -366,7 +365,7 @@ public class DefaultBoard implements Board {
                 neighbors.add(south());
             if (west() != null)
                 neighbors.add(west());
-            diagonals = new ArrayList<Intersection>(4);
+            diagonals = new ArrayList<>(4);
             if (northeast() != null)
                 diagonals.add(northeast());
             if (southeast() != null)

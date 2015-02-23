@@ -26,7 +26,7 @@ public class BaseGtpHandlerTest {
     public void testTrivialCommands() throws GtpException {
         assertEquals("Test Client", gtpHandler.handle("name"));
         assertEquals("1.0", gtpHandler.handle("version"));
-        assertEquals(GtpHandler.PROTOCOL_VERSION, gtpHandler.handle("protocol_version"));
+        assertEquals(GtpConstants.PROTOCOL_VERSION, gtpHandler.handle("protocol_version"));
     }
 
     @Test

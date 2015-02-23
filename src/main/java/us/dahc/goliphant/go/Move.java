@@ -1,8 +1,8 @@
 package us.dahc.goliphant.go;
 
-public class Move {
+import static us.dahc.goliphant.gtp.GtpConstants.COLUMN_NAMES;
 
-    private static final String columnNames = "ABCDEFGHJKLMNOPRSTUVWXYZ";
+public class Move {
 
     final Color color;
     final int row;
@@ -19,7 +19,7 @@ public class Move {
             this.color = Color.Black;
         else
             this.color = Color.White;
-        this.column = columnNames.indexOf(vertex.toUpperCase().charAt(0));
+        this.column = COLUMN_NAMES.indexOf(vertex.toUpperCase().charAt(0));
         this.row = 19 - Integer.valueOf(vertex.substring(1));
     }
 
@@ -47,6 +47,6 @@ public class Move {
 
     @Override
     public String toString() {
-        return color.name() + " " + columnNames.charAt(column) + String.valueOf(19 - row);
+        return color.name() + " " + COLUMN_NAMES.charAt(column) + String.valueOf(19 - row);
     }
 }

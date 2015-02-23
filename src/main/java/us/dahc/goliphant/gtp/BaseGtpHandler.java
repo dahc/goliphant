@@ -16,7 +16,7 @@ public class BaseGtpHandler implements GtpHandler {
         commands = new HashMap<String, Command>();
         commands.put("name", new StubCommand(clientIdentity.getName()));
         commands.put("version", new StubCommand(clientIdentity.getVersion()));
-        commands.put("protocol_version", new StubCommand(PROTOCOL_VERSION));
+        commands.put("protocol_version", new StubCommand(GtpConstants.PROTOCOL_VERSION));
         commands.put("list_commands", new ListCommands());
         commands.put("known_command", new KnownCommand());
         commands.put("quit", new QuitCommand());

@@ -113,4 +113,39 @@ public class StatefulGtpHandlerTest {
         gtpHandler.handle("undo");
     }
 
+    @Test
+    public void testSetFreeHandicapCommand() throws GtpException {
+        gtpHandler.handle("set_free_handicap", "Q16", "D4");
+        assertEquals(Color.Black, gtpHandler.currentBoard.getColorAt(3, 15));
+        assertEquals(Color.Black, gtpHandler.currentBoard.getColorAt(15, 3));
+    }
+
+    @Test
+    public void testSetFreeHandicapCommand_TooSmall() throws GtpException {
+        thrown.expect(GtpException.class);
+        thrown.expectMessage("invalid handicap");
+        gtpHandler.handle("set_free_handicap", "D4");
+    }
+
+    @Test
+    public void testSetFreeHandicapCommand_NoPassing() throws GtpException {
+        thrown.expect(GtpException.class);
+        thrown.expectMessage("invalid coordinate");
+        gtpHandler.handle("set_free_handicap", "D4", "PASS");
+    }
+
+    @Test
+    public void testSetFreeHandicapCommand_MangledCoord() throws GtpException {
+        thrown.expect(GtpException.class);
+        thrown.expectMessage("invalid coordinate");
+        gtpHandler.handle("set_free_handicap", "Q16", "D4", "16D");
+    }
+
+    @Test
+    public void testSetFreeHandicapCommand_NoRepeats() throws GtpException {
+        thrown.expect(GtpException.class);
+        thrown.expectMessage("repeated vertex");
+        gtpHandler.handle("set_free_handicap", "Q16", "D4", "D16", "Q16");
+    }
+
 }

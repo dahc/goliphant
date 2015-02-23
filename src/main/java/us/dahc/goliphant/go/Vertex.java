@@ -33,6 +33,11 @@ public class Vertex {
     }
 
     @Override
+    public int hashCode() {
+        return (row << 16) | column;
+    }
+
+    @Override
     public boolean equals(Object object) {
         if (object instanceof Vertex)
             return row == ((Vertex) object).row && column == ((Vertex) object).column;

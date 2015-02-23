@@ -2,13 +2,17 @@ package us.dahc.goliphant.gtp;
 
 import org.apache.commons.lang3.StringUtils;
 import us.dahc.goliphant.go.Board;
+import us.dahc.goliphant.go.Color;
 import us.dahc.goliphant.go.InvalidSizeException;
 import us.dahc.goliphant.go.Move;
+import us.dahc.goliphant.go.Vertex;
 import us.dahc.goliphant.util.BoardPrettyPrinter;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class StatefulGtpHandler extends BaseGtpHandler {
 
@@ -27,6 +31,7 @@ public class StatefulGtpHandler extends BaseGtpHandler {
         commands.put("get_komi", new GetKomiCommand());
         commands.put("play", new PlayCommand());
         commands.put("undo", new UndoCommand());
+        commands.put("set_free_handicap", new SetFreeHandicapCommand());
     }
 
     protected class BoardsizeCommand implements BaseGtpHandler.Command {
@@ -100,6 +105,27 @@ public class StatefulGtpHandler extends BaseGtpHandler {
             } else {
                 throw new GtpException("cannot undo");
             }
+            return StringUtils.EMPTY;
+        }
+    }
+
+    protected class SetFreeHandicapCommand implements BaseGtpHandler.Command {
+        public String exec(String... args) throws GtpException {
+            if (args.length < 2)
+                throw new GtpException("invalid handicap");
+            Set<Vertex> stones = new HashSet<>();
+            try {
+                for (String arg : args)
+                    stones.add(new Vertex(arg));
+            } catch (Exception e) {
+                throw new GtpException("invalid coordinate");
+            }
+            if (stones.contains(Vertex.PASS))
+                throw new GtpException("invalid coordinate");
+            if (stones.size() < args.length)
+                throw new GtpException("repeated vertex");
+            for (Vertex stone : stones)
+                currentBoard.play(new Move(Color.Black, stone));
             return StringUtils.EMPTY;
         }
     }

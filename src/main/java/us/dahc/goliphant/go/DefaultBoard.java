@@ -398,11 +398,6 @@ public class DefaultBoard implements Board {
             return diagonals;
         }
 
-        @Override
-        public int hashCode() {
-            return (row << 16) + column;
-        }
-
         private Intersection north() {
             if (row == 0)
                 return null;

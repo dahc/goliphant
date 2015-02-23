@@ -20,6 +20,7 @@ public class StatefulGtpHandler extends BaseGtpHandler {
         currentBoard = board;
         commands.put("boardsize", new BoardsizeCommand());
         commands.put("clear_board", new ClearBoardCommand());
+        commands.put("showboard", new ShowBoardCommand());
     }
 
     class BoardsizeCommand implements BaseGtpHandler.Command {
@@ -45,4 +46,9 @@ public class StatefulGtpHandler extends BaseGtpHandler {
         }
     }
 
+    class ShowBoardCommand implements BaseGtpHandler.Command {
+        public String exec(String... args) {
+            return "\n" + currentBoard.getPrettyString();
+        }
+    }
 }

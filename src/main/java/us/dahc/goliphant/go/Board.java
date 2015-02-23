@@ -1,5 +1,7 @@
 package us.dahc.goliphant.go;
 
+import us.dahc.goliphant.util.BoardPrettyPrinter;
+
 import javax.annotation.Nullable;
 import java.util.Collection;
 
@@ -29,5 +31,10 @@ public interface Board {
     // Superko Facilities
     public long getZobristHash();
     public Collection<Long> getPreviousHashes();
+
+    // Display
+    public default String getPrettyString() {
+        return BoardPrettyPrinter.getPrettyString(this);
+    }
 
 }

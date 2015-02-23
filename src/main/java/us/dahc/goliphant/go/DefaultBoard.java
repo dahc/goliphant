@@ -27,7 +27,7 @@ public class DefaultBoard implements Board {
     private List<Long> hashHistory;
 
     @Inject
-    protected DefaultBoard(ZobristTable zobristTable) {
+    public DefaultBoard(ZobristTable zobristTable) {
         this.zobristTable = zobristTable;
         initializeNewStructures();
     }

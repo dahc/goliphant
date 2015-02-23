@@ -32,6 +32,13 @@ public class Vertex {
         return column;
     }
 
+    // FIXME: Reverse the board's row numbering so this can be Board-independent!
+    public String toString(Board board) {
+        if (this.equals(PASS))
+            return "PASS";
+        return COLUMN_NAMES.charAt(column) + String.valueOf(board.getRows() - row);
+    }
+
     @Override
     public int hashCode() {
         return (row << 16) | column;
@@ -43,12 +50,5 @@ public class Vertex {
             return row == ((Vertex) object).row && column == ((Vertex) object).column;
         else
             return false;
-    }
-
-    @Override
-    public String toString() {
-        if (this.equals(PASS))
-            return "PASS";
-        return COLUMN_NAMES.charAt(column) + String.valueOf(19 - row);
     }
 }

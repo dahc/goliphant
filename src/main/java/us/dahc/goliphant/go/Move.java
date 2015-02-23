@@ -39,16 +39,15 @@ public class Move {
         return vertex.getColumn();
     }
 
+    public String toString(Board board) {
+        return color.name() + " " + vertex.toString(board);
+    }
+
     @Override
     public boolean equals(Object object) {
         if (object instanceof Move)
             return color == ((Move) object).color && vertex.equals(((Move) object).getVertex());
         else
             return false;
-    }
-
-    @Override
-    public String toString() {
-        return color.name() + " " + vertex.toString();
     }
 }

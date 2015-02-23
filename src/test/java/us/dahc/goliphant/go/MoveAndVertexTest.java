@@ -5,8 +5,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import us.dahc.goliphant.util.ZobristTable;
+
+import java.util.Random;
 
 public class MoveAndVertexTest {
+
+    private static Board referenceBoard = new DefaultBoard(new ZobristTable(new Random()));
 
     @Test
     public void testMoveString1() {
@@ -14,7 +19,7 @@ public class MoveAndVertexTest {
         assertEquals(Color.Black, move.getColor());
         assertEquals(0, move.getColumn());
         assertEquals(0, move.getRow());
-        assertEquals("Black A19", move.toString());
+        assertEquals("Black A19", move.toString(referenceBoard));
     }
 
     @Test
@@ -23,7 +28,7 @@ public class MoveAndVertexTest {
         assertEquals(Color.White, move.getColor());
         assertEquals(2, move.getColumn());
         assertEquals(17, move.getRow());
-        assertEquals("White C2", move.toString());
+        assertEquals("White C2", move.toString(referenceBoard));
     }
 
     @Test

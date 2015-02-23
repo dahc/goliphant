@@ -7,6 +7,7 @@ import us.dahc.goliphant.go.InvalidSizeException;
 import us.dahc.goliphant.go.Move;
 import us.dahc.goliphant.go.Vertex;
 import us.dahc.goliphant.util.BoardPrettyPrinter;
+import us.dahc.goliphant.util.StarPointHelper;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ public class StatefulGtpHandler extends BaseGtpHandler {
         commands.put("play", new PlayCommand());
         commands.put("undo", new UndoCommand());
         commands.put("set_free_handicap", new SetFreeHandicapCommand());
+        commands.put("fixed_handicap", new FixedHandicapCommand());
     }
 
     protected class BoardsizeCommand implements BaseGtpHandler.Command {
@@ -127,6 +129,25 @@ public class StatefulGtpHandler extends BaseGtpHandler {
             for (Vertex stone : stones)
                 currentBoard.play(new Move(Color.Black, stone));
             return StringUtils.EMPTY;
+        }
+    }
+
+    protected class FixedHandicapCommand implements BaseGtpHandler.Command {
+        public String exec(String... args) throws GtpException {
+            int handicap;
+            try {
+                handicap = Integer.valueOf(args[0]);
+            } catch (Exception e) {
+                throw new GtpException("handicap not an integer");
+            }
+            if (handicap < 2)
+                throw new GtpException("invalid handicap");
+            StringBuilder stringBuilder = new StringBuilder();
+            for (Vertex stone : StarPointHelper.getHandicapPoints(currentBoard, handicap)) {
+                currentBoard.play(new Move(Color.Black, stone));
+                stringBuilder.append(stone.toString(currentBoard)).append(' ');
+            }
+            return stringBuilder.toString();
         }
     }
 

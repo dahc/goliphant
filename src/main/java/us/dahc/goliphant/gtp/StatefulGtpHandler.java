@@ -25,6 +25,7 @@ public class StatefulGtpHandler extends BaseGtpHandler {
         commands.put("komi", new KomiCommand());
         commands.put("get_komi", new GetKomiCommand());
         commands.put("play", new PlayCommand());
+        commands.put("undo", new UndoCommand());
     }
 
     protected class BoardsizeCommand implements BaseGtpHandler.Command {
@@ -86,6 +87,17 @@ public class StatefulGtpHandler extends BaseGtpHandler {
                 currentBoard.play(move);
             } else {
                 throw new GtpException("illegal move");
+            }
+            return StringUtils.EMPTY;
+        }
+    }
+
+    protected class UndoCommand implements BaseGtpHandler.Command {
+        public String exec(String... args) throws GtpException {
+            if (pastBoards.size() > 0) {
+                currentBoard = pastBoards.remove(pastBoards.size() - 1);
+            } else {
+                throw new GtpException("cannot undo");
             }
             return StringUtils.EMPTY;
         }

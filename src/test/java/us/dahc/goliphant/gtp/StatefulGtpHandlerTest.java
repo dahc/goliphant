@@ -11,6 +11,7 @@ import us.dahc.goliphant.util.ZobristTable;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class StatefulGtpHandlerTest {
 
@@ -89,6 +90,25 @@ public class StatefulGtpHandlerTest {
         thrown.expectMessage("illegal move");
         gtpHandler.handle("play", "black", "a19");
         gtpHandler.handle("play", "white", "a19");
+    }
+
+    @Test
+    public void testUndoCommand() throws GtpException {
+        assertEquals(0L, gtpHandler.currentBoard.getZobristHash());
+        gtpHandler.handle("play", "black", "c4");
+        gtpHandler.handle("play", "white", "d17");
+        assertNotEquals(0L, gtpHandler.currentBoard.getZobristHash());
+        gtpHandler.handle("undo");
+        assertNotEquals(0L, gtpHandler.currentBoard.getZobristHash());
+        gtpHandler.handle("undo");
+        assertEquals(0L, gtpHandler.currentBoard.getZobristHash());
+    }
+
+    @Test
+    public void testUndoCommand_NoHistory() throws GtpException {
+        thrown.expect(GtpException.class);
+        thrown.expectMessage("cannot undo");
+        gtpHandler.handle("undo");
     }
 
 }

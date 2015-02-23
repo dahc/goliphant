@@ -75,6 +75,8 @@ public class StatefulGtpHandlerTest {
         assertEquals(0L, gtpHandler.currentBoard.getZobristHash());
         gtpHandler.handle("play", "black", "a19");
         assertEquals(Color.Black, gtpHandler.currentBoard.getColorAt(0, 0));
+        gtpHandler.handle("play", "white", "pass");
+        assertEquals(1, gtpHandler.currentBoard.getConsecutivePasses());
     }
 
     @Test

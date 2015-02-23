@@ -2,9 +2,7 @@ package us.dahc.goliphant.go;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +11,6 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-
 import org.junit.rules.ExpectedException;
 import us.dahc.goliphant.util.ZobristTable;
 
@@ -52,7 +49,7 @@ public class DefaultBoardTest {
                         stdBoard.isLegal(new Move(Color.Black, i, j)));
             }
         }
-        assertEquals(19 * 19, stdBoard.getLegalMoves(Color.Black).size());
+        assertEquals(19 * 19 + 1, stdBoard.getLegalMoveVertices(Color.Black).size());
         assertEquals(0L, stdBoard.getZobristHash());
         assertNull(stdBoard.getLastMove());
         assertNull(stdBoard.getKoMove());
@@ -85,7 +82,7 @@ public class DefaultBoardTest {
                 if (i != 3 || j != 3)
                     assertThat("wide open square (" + i + ", " + j + ") legality",
                             stdBoard.isLegal(new Move(Color.White, i, j)));
-        assertEquals(19 * 19 - 1, stdBoard.getLegalMoves(Color.White).size());
+        assertEquals(19 * 19, stdBoard.getLegalMoveVertices(Color.White).size());
         assertNotEquals(0L, stdBoard.getZobristHash());
     }
 
@@ -122,6 +119,33 @@ public class DefaultBoardTest {
     }
 
     @Test
+    public void testPassing() {
+        assertTrue(stdBoard.getLegalMoveVertices(Color.Black).contains(Vertex.PASS));
+        assertTrue(stdBoard.getLegalMoveVertices(Color.White).contains(Vertex.PASS));
+        assertEquals(0, stdBoard.getConsecutivePasses());
+        stdBoard.play(new Move(Color.Black, 5, 5));
+        assertEquals(0, stdBoard.getConsecutivePasses());
+        stdBoard.play(new Move(Color.White, Vertex.PASS));
+        assertEquals(1, stdBoard.getConsecutivePasses());
+        stdBoard.play(new Move(Color.Black, 5, 6));
+        assertEquals(0, stdBoard.getConsecutivePasses());
+        stdBoard.play(new Move(Color.White, Vertex.PASS));
+        assertEquals(1, stdBoard.getConsecutivePasses());
+        stdBoard.play(new Move(Color.Black, Vertex.PASS));
+        assertEquals(2, stdBoard.getConsecutivePasses());
+    }
+
+    @Test
+    public void testPassingLeavesZobristPositionUnchanged() {
+        stdBoard.play(new Move(Color.Black, Vertex.PASS));
+        assertEquals(0, stdBoard.getZobristHash());
+        stdBoard.play(new Move(Color.White, 5, 5));
+        long hash = stdBoard.getZobristHash();
+        stdBoard.play(new Move(Color.Black, Vertex.PASS));
+        assertEquals(hash, stdBoard.getZobristHash());
+    }
+
+    @Test
     public void testHashHistory() {
         assertEquals(0, stdBoard.getPreviousHashes().size());
         stdBoard.play(new Move(Color.Black, 17, 17));
@@ -153,7 +177,7 @@ public class DefaultBoardTest {
         for (int i = 0; i < 19; i++)
             for (int j = 0; j < 19; j++)
                 assertEquals(null, copy.getColorAt(i, j));
-        assertEquals(19 * 19, copy.getLegalMoves(Color.Black).size());
+        assertEquals(19 * 19 + 1, copy.getLegalMoveVertices(Color.Black).size());
     }
 
     @Test
@@ -179,7 +203,7 @@ public class DefaultBoardTest {
         for (int i = 0; i < 19; i++)
             for (int j = 0; j < 19; j++)
                 assertEquals(null, copy.getColorAt(i, j));
-        assertEquals(19 * 19, copy.getLegalMoves(Color.Black).size());
+        assertEquals(19 * 19 + 1, copy.getLegalMoveVertices(Color.Black).size());
     }
 
     @Test

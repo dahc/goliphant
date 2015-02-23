@@ -25,6 +25,7 @@ public class DefaultBoard implements Board {
     private ZobristTable zobristTable;
     private long zobristHash = 0L;
     private List<Long> hashHistory;
+    private int consecutivePasses = 0;
 
     @Inject
     public DefaultBoard(ZobristTable zobristTable) {
@@ -46,6 +47,7 @@ public class DefaultBoard implements Board {
         whiteCaptures = board.whiteCaptures;
         komi = board.komi;
         lastMove = board.lastMove;
+        consecutivePasses = board.consecutivePasses;
         koIntersection = board.koIntersection;
         zobristTable = board.zobristTable;
         zobristHash = board.zobristHash;
@@ -59,6 +61,8 @@ public class DefaultBoard implements Board {
         whiteCaptures = board.getStonesCapturedBy(Color.White);
         komi = board.getKomi();
         lastMove = board.getLastMove();
+        consecutivePasses = board.getConsecutivePasses();
+
         if (board.getKoMove() != null)
             koIntersection = intersect[board.getKoMove().getRow()][board.getKoMove().getColumn()];
         initializeNewStructures();
@@ -77,6 +81,7 @@ public class DefaultBoard implements Board {
         blackCaptures = 0;
         whiteCaptures = 0;
         lastMove = null;
+        consecutivePasses = 0;
         koIntersection = null;
         zobristHash = 0L;
         komi = 7.5F;
@@ -118,6 +123,10 @@ public class DefaultBoard implements Board {
             return whiteCaptures;
     }
 
+    public int getConsecutivePasses() {
+        return consecutivePasses;
+    }
+
     @Nullable
     public Move getLastMove() {
         return lastMove;
@@ -132,33 +141,41 @@ public class DefaultBoard implements Board {
     }
 
     public void play(Move move) {
-        hashHistory.add(zobristHash);
-        Intersection stone = intersect[move.getRow()][move.getColumn()];
-        colors.put(stone, move.getColor());
-        groups.put(stone, new Group(stone));
-        koIntersection = null;
-        for (Intersection neighbor : stone.getNeighbors()) {
-            if (colors.containsKey(neighbor)) {
-                if (colors.get(neighbor) == move.getColor())
-                    groups.get(neighbor).absorbFriend(groups.get(stone));
-                else
-                    groups.get(neighbor).contactEnemy(groups.get(stone));
+        if (move.getVertex().equals(Vertex.PASS)) {
+            consecutivePasses++;
+        } else {
+            consecutivePasses = 0;
+            hashHistory.add(zobristHash);
+            Intersection stone = intersect[move.getRow()][move.getColumn()];
+            colors.put(stone, move.getColor());
+            groups.put(stone, new Group(stone));
+            koIntersection = null;
+            for (Intersection neighbor : stone.getNeighbors()) {
+                if (colors.containsKey(neighbor)) {
+                    if (colors.get(neighbor) == move.getColor())
+                        groups.get(neighbor).absorbFriend(groups.get(stone));
+                    else
+                        groups.get(neighbor).contactEnemy(groups.get(stone));
+                }
             }
+            zobristHash ^= zobristTable.getEntry(move.getColor(), move.getRow(), move.getColumn());
         }
-        zobristHash ^= zobristTable.getEntry(move.getColor(), move.getRow(), move.getColumn());
         lastMove = move;
     }
 
     public boolean isLegal(Move move) {
+        if (move.getVertex().equals(Vertex.PASS))
+            return true;
         return isLegal(move.getColor(), intersect[move.getRow()][move.getColumn()]);
     }
 
-    public List<Move> getLegalMoves(Color player) {
-        List<Move> result = new ArrayList<>(rows * columns);
+    public List<Vertex> getLegalMoveVertices(Color player) {
+        List<Vertex> result = new ArrayList<>(rows * columns + 1);
+        result.add(Vertex.PASS);
         for (int i = 0; i < rows; i++)
             for (int j = 0; j < columns; j++)
                 if (isLegal(player, intersect[i][j]))
-                    result.add(new Move(player, i, j));
+                    result.add(intersect[i][j]);
         return result;
     }
 
@@ -344,15 +361,12 @@ public class DefaultBoard implements Board {
         }
     }
 
-    protected class Intersection {
-        private final int row;
-        private final int column;
+    protected class Intersection extends Vertex {
         private List<Intersection> neighbors;
         private List<Intersection> diagonals;
 
         protected Intersection(int row, int column) {
-            this.row = row;
-            this.column = column;
+            super(row, column);
         }
 
         protected void initGeometry() {
@@ -382,22 +396,6 @@ public class DefaultBoard implements Board {
 
         protected List<Intersection> getDiagonals() {
             return diagonals;
-        }
-
-        protected int getRow() {
-            return row;
-        }
-
-        protected int getColumn() {
-            return column;
-        }
-
-        @Override
-        public boolean equals(Object object) {
-            if (object instanceof Intersection)
-                return row == ((Intersection) object).row && column == ((Intersection) object).column;
-            else
-                return false;
         }
 
         @Override

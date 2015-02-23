@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import us.dahc.goliphant.go.Board;
 import us.dahc.goliphant.go.InvalidSizeException;
 import us.dahc.goliphant.go.Move;
+import us.dahc.goliphant.util.BoardPrettyPrinter;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -53,7 +54,7 @@ public class StatefulGtpHandler extends BaseGtpHandler {
 
     protected class ShowBoardCommand implements BaseGtpHandler.Command {
         public String exec(String... args) {
-            return "\n" + currentBoard.getPrettyString();
+            return "\n" + BoardPrettyPrinter.getPrettyString(currentBoard);
         }
     }
 
@@ -82,7 +83,7 @@ public class StatefulGtpHandler extends BaseGtpHandler {
             } catch (Exception e) {
                 throw new GtpException("invalid color or coordinate");
             }
-            if (currentBoard.getLegalMoves(move.getColor()).contains(move)) {
+            if (currentBoard.getLegalMoveVertices(move.getColor()).contains(move.getVertex())) {
                 pastBoards.add(currentBoard.getCopy());
                 currentBoard.play(move);
             } else {

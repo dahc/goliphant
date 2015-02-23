@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-public class MoveTest {
+public class MoveAndVertexTest {
 
     @Test
     public void testMoveString1() {
@@ -14,7 +14,7 @@ public class MoveTest {
         assertEquals(Color.Black, move.getColor());
         assertEquals(0, move.getColumn());
         assertEquals(0, move.getRow());
-        assertTrue(move.toString().equals("Black A19"));
+        assertEquals("Black A19", move.toString());
     }
 
     @Test
@@ -23,7 +23,7 @@ public class MoveTest {
         assertEquals(Color.White, move.getColor());
         assertEquals(2, move.getColumn());
         assertEquals(17, move.getRow());
-        assertTrue(move.toString().equals("White C2"));
+        assertEquals("White C2", move.toString());
     }
 
     @Test
@@ -33,5 +33,11 @@ public class MoveTest {
         assertFalse(move.equals(new Move("white", "A1")));
         assertFalse(move.equals(new Move("black", "A2")));
         assertFalse(move.equals(new Move("black", "B1")));
+    }
+
+    @Test
+    public void testPassVertex() {
+        Move move = new Move("Black", "PASS");
+        assertEquals(move.getVertex(), Vertex.PASS);
     }
 }

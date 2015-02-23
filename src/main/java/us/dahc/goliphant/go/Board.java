@@ -21,22 +21,18 @@ public interface Board {
     public float getKomi();
     public void setKomi(float komi);
     public int getStonesCapturedBy(Color player);
+    public int getConsecutivePasses();
     @Nullable public Color getColorAt(int row, int column);
     @Nullable public Move getLastMove();
     @Nullable public Move getKoMove();
 
     // Play (semantics may vary by implementation)
     public boolean isLegal(Move move);
-    public Collection<Move> getLegalMoves(Color player);
+    public Collection<Vertex> getLegalMoveVertices(Color player);
     public void play(Move move);
 
     // Superko Facilities
     public long getZobristHash();
     public Collection<Long> getPreviousHashes();
-
-    // Display
-    public default String getPrettyString() {
-        return BoardPrettyPrinter.getPrettyString(this);
-    }
 
 }

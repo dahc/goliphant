@@ -5,7 +5,7 @@ import dagger.Provides;
 import us.dahc.goliphant.go.Board;
 import us.dahc.goliphant.go.DefaultBoard;
 import us.dahc.goliphant.gtp.*;
-import us.dahc.goliphant.util.hashing.ZobristTable;
+import us.dahc.goliphant.util.ZobristTable;
 
 import java.io.InputStream;
 import java.io.PrintStream;

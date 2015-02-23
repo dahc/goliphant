@@ -15,7 +15,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import org.junit.rules.ExpectedException;
-import us.dahc.goliphant.util.hashing.ZobristTable;
+import us.dahc.goliphant.util.ZobristTable;
 
 public class DefaultBoardTest {
 

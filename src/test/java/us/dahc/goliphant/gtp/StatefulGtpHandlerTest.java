@@ -5,7 +5,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import us.dahc.goliphant.go.DefaultBoard;
-import us.dahc.goliphant.util.hashing.ZobristTable;
+import us.dahc.goliphant.util.ZobristTable;
 
 import java.util.Random;
 

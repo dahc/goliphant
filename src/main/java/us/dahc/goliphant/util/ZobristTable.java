@@ -1,4 +1,4 @@
-package us.dahc.goliphant.util.hashing;
+package us.dahc.goliphant.util;
 
 import us.dahc.goliphant.go.Color;
 

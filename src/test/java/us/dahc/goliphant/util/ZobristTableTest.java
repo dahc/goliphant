@@ -1,10 +1,11 @@
-package us.dahc.goliphant.util.hashing;
+package us.dahc.goliphant.util;
 
 import static org.junit.Assert.assertEquals;
 
 import org.apache.commons.lang3.SerializationUtils;
 import org.junit.Before;
 import org.junit.Test;
+import us.dahc.goliphant.util.ZobristTable;
 
 import java.util.Random;
 

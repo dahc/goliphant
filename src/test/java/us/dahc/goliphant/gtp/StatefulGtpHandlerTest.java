@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import us.dahc.goliphant.go.Color;
 import us.dahc.goliphant.go.DefaultBoard;
 import us.dahc.goliphant.util.ZobristTable;
 
@@ -66,6 +67,28 @@ public class StatefulGtpHandlerTest {
         thrown.expect(GtpException.class);
         thrown.expectMessage("komi not a float");
         gtpHandler.handle("komi", "nan");
+    }
+
+    @Test
+    public void testPlayCommand() throws GtpException {
+        assertEquals(0L, gtpHandler.currentBoard.getZobristHash());
+        gtpHandler.handle("play", "black", "a19");
+        assertEquals(Color.Black, gtpHandler.currentBoard.getColorAt(0, 0));
+    }
+
+    @Test
+    public void testPlayCommand_InvalidCoord() throws GtpException {
+        thrown.expect(GtpException.class);
+        thrown.expectMessage("invalid color or coordinate");
+        gtpHandler.handle("play", "black", "2");
+    }
+
+    @Test
+    public void testPlayCommand_IllegalMove() throws GtpException {
+        thrown.expect(GtpException.class);
+        thrown.expectMessage("illegal move");
+        gtpHandler.handle("play", "black", "a19");
+        gtpHandler.handle("play", "white", "a19");
     }
 
 }

@@ -3,6 +3,7 @@ package us.dahc.goliphant.gtp;
 import org.apache.commons.lang3.StringUtils;
 import us.dahc.goliphant.go.Board;
 import us.dahc.goliphant.go.InvalidSizeException;
+import us.dahc.goliphant.go.Move;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -23,9 +24,10 @@ public class StatefulGtpHandler extends BaseGtpHandler {
         commands.put("showboard", new ShowBoardCommand());
         commands.put("komi", new KomiCommand());
         commands.put("get_komi", new GetKomiCommand());
+        commands.put("play", new PlayCommand());
     }
 
-    class BoardsizeCommand implements BaseGtpHandler.Command {
+    protected class BoardsizeCommand implements BaseGtpHandler.Command {
         public String exec(String... args) throws GtpException {
             try {
                 int size = Integer.valueOf(args[0]);
@@ -40,7 +42,7 @@ public class StatefulGtpHandler extends BaseGtpHandler {
         }
     }
 
-    class ClearBoardCommand implements BaseGtpHandler.Command {
+    protected class ClearBoardCommand implements BaseGtpHandler.Command {
         public String exec(String... args) {
             pastBoards.clear();
             currentBoard.reset();
@@ -48,13 +50,13 @@ public class StatefulGtpHandler extends BaseGtpHandler {
         }
     }
 
-    class ShowBoardCommand implements BaseGtpHandler.Command {
+    protected class ShowBoardCommand implements BaseGtpHandler.Command {
         public String exec(String... args) {
             return "\n" + currentBoard.getPrettyString();
         }
     }
 
-    class KomiCommand implements BaseGtpHandler.Command {
+    protected class KomiCommand implements BaseGtpHandler.Command {
         public String exec(String... args) throws GtpException {
             try {
                 currentBoard.setKomi(Float.valueOf(args[0]));
@@ -65,9 +67,27 @@ public class StatefulGtpHandler extends BaseGtpHandler {
         }
     }
 
-    class GetKomiCommand implements BaseGtpHandler.Command {
+    protected class GetKomiCommand implements BaseGtpHandler.Command {
         public String exec(String... args) throws GtpException {
             return String.format("%.1f", currentBoard.getKomi());
+        }
+    }
+
+    protected class PlayCommand implements BaseGtpHandler.Command {
+        public String exec(String... args) throws GtpException {
+            Move move;
+            try {
+                move = new Move(args[0], args[1]);
+            } catch (Exception e) {
+                throw new GtpException("invalid color or coordinate");
+            }
+            if (currentBoard.getLegalMoves(move.getColor()).contains(move)) {
+                pastBoards.add(currentBoard.getCopy());
+                currentBoard.play(move);
+            } else {
+                throw new GtpException("illegal move");
+            }
+            return StringUtils.EMPTY;
         }
     }
 

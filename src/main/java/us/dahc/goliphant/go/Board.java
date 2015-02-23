@@ -18,6 +18,8 @@ public interface Board {
     public void resize(int rows, int columns) throws InvalidSizeException;
 
     // Basic Status
+    public float getKomi();
+    public void setKomi(float komi);
     public int getStonesCapturedBy(Color player);
     @Nullable public Color getColorAt(int row, int column);
     @Nullable public Move getLastMove();

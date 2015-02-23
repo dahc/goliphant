@@ -18,6 +18,7 @@ public class DefaultBoard implements Board {
     private Intersection[][] intersect;
     private Map<Intersection, Color> colors;
     private Map<Intersection, Group> groups;
+    private float komi = 7.5F;
     private int blackCaptures = 0;
     private int whiteCaptures = 0;
     private Move lastMove = null;
@@ -44,6 +45,7 @@ public class DefaultBoard implements Board {
             groups.put(stone, groups.get(board.groups.get(stone).getRepresentative()));
         blackCaptures = board.blackCaptures;
         whiteCaptures = board.whiteCaptures;
+        komi = board.komi;
         lastMove = board.lastMove;
         koIntersection = board.koIntersection;
         zobristTable = board.zobristTable;
@@ -56,6 +58,7 @@ public class DefaultBoard implements Board {
         columns = board.getColumns();
         blackCaptures = board.getStonesCapturedBy(Color.Black);
         whiteCaptures = board.getStonesCapturedBy(Color.White);
+        komi = board.getKomi();
         lastMove = board.getLastMove();
         if (board.getKoMove() != null)
             koIntersection = intersect[board.getKoMove().getRow()][board.getKoMove().getColumn()];
@@ -77,6 +80,7 @@ public class DefaultBoard implements Board {
         lastMove = null;
         koIntersection = null;
         zobristHash = 0L;
+        komi = 7.5F;
         initializeNewStructures();
     }
 
@@ -98,6 +102,14 @@ public class DefaultBoard implements Board {
             return new DefaultBoard((DefaultBoard) board);
         else
             return new DefaultBoard(zobristTable, board);
+    }
+
+    public void setKomi(float komi) {
+        this.komi = komi;
+    }
+
+    public float getKomi() {
+        return komi;
     }
 
     public int getStonesCapturedBy(Color player) {

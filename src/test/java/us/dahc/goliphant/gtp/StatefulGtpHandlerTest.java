@@ -54,4 +54,18 @@ public class StatefulGtpHandlerTest {
         assertEquals(0, gtpHandler.pastBoards.size());
     }
 
+    @Test
+    public void testKomiCommands() throws GtpException {
+        gtpHandler.handle("komi", "5.5");
+        assertEquals(5.5F, gtpHandler.currentBoard.getKomi(), 0.1F);
+        assertEquals("5.5", gtpHandler.handle("get_komi"));
+    }
+
+    @Test
+    public void testKomiCommand_NonFloat() throws GtpException {
+        thrown.expect(GtpException.class);
+        thrown.expectMessage("komi not a float");
+        gtpHandler.handle("komi", "nan");
+    }
+
 }

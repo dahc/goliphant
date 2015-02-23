@@ -56,6 +56,7 @@ public class DefaultBoardTest {
         assertEquals(0L, stdBoard.getZobristHash());
         assertNull(stdBoard.getLastMove());
         assertNull(stdBoard.getKoMove());
+        assertEquals(7.5F, stdBoard.getKomi(), 0.1F);
     }
 
     @Test
@@ -134,6 +135,7 @@ public class DefaultBoardTest {
     @Test
     public void testCopyAccuracy() {
         playSomeStuff(stdBoard);
+        stdBoard.setKomi(5.5F);
         DefaultBoard copy = stdBoard.getCopy();
         for (int i = 0; i < 19; i++)
             for (int j = 0; j < 19; j++)
@@ -141,6 +143,7 @@ public class DefaultBoardTest {
         assertEquals(stdBoard.getZobristHash(), copy.getZobristHash());
         assertEquals(stdBoard.getLastMove(), copy.getLastMove());
         assertEquals(stdBoard.getKoMove(), copy.getKoMove());
+        assertEquals(stdBoard.getKomi(), copy.getKomi(), 0.1F);
     }
 
     @Test
@@ -156,6 +159,7 @@ public class DefaultBoardTest {
     @Test
     public void testInterfaceCopyAccuracy() {
         playSomeStuff(stdBoard);
+        stdBoard.setKomi(5.5F);
         Board iBoard = stdBoard;
         DefaultBoard copy = stdBoard.getCopy(iBoard);
         for (int i = 0; i < 19; i++)
@@ -164,6 +168,7 @@ public class DefaultBoardTest {
         assertEquals(iBoard.getZobristHash(), copy.getZobristHash());
         assertEquals(iBoard.getLastMove(), copy.getLastMove());
         assertEquals(iBoard.getKoMove(), copy.getKoMove());
+        assertEquals(iBoard.getKomi(), copy.getKomi(), 0.1F);
     }
 
     @Test

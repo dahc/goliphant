@@ -21,13 +21,15 @@ public class StatefulGtpHandler extends BaseGtpHandler {
         commands.put("boardsize", new BoardsizeCommand());
         commands.put("clear_board", new ClearBoardCommand());
         commands.put("showboard", new ShowBoardCommand());
+        commands.put("komi", new KomiCommand());
+        commands.put("get_komi", new GetKomiCommand());
     }
 
     class BoardsizeCommand implements BaseGtpHandler.Command {
         public String exec(String... args) throws GtpException {
             try {
-                int newSize = Integer.valueOf(args[0]);
-                currentBoard.resize(newSize, newSize);
+                int size = Integer.valueOf(args[0]);
+                currentBoard.resize(size, size);
             } catch (InvalidSizeException e) {
                 throw new GtpException(e.getMessage());
             } catch (Exception e) {
@@ -51,4 +53,22 @@ public class StatefulGtpHandler extends BaseGtpHandler {
             return "\n" + currentBoard.getPrettyString();
         }
     }
+
+    class KomiCommand implements BaseGtpHandler.Command {
+        public String exec(String... args) throws GtpException {
+            try {
+                currentBoard.setKomi(Float.valueOf(args[0]));
+            } catch (Exception e) {
+                throw new GtpException("komi not a float");
+            }
+            return StringUtils.EMPTY;
+        }
+    }
+
+    class GetKomiCommand implements BaseGtpHandler.Command {
+        public String exec(String... args) throws GtpException {
+            return String.format("%.1f", currentBoard.getKomi());
+        }
+    }
+
 }

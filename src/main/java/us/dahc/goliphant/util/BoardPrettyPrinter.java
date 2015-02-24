@@ -17,11 +17,11 @@ public class BoardPrettyPrinter {
         for (int j = 0; j < board.getColumns(); j++)
             stringBuilder.append(' ').append(GtpConstants.COLUMN_NAMES.charAt(j));
         stringBuilder.append('\n');
-        for (int i = 0; i < board.getRows(); i++) {
-            formatter.format("%1$ 3d", board.getRows() - i);
+        for (int i = board.getRows() - 1; i >= 0; i--) {
+            formatter.format("%1$ 3d", i + 1);
             for (int j = 0; j < board.getColumns(); j++)
                 stringBuilder.append(' ').append(getChar(board, stars, i, j));
-            formatter.format("%1$- 3d\n", board.getRows() - i);
+            formatter.format("%1$- 3d\n", i + 1);
         }
         stringBuilder.append("   ");
         for (int j = 0; j < board.getColumns(); j++)

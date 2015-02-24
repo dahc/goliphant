@@ -39,8 +39,9 @@ public class Move {
         return vertex.getColumn();
     }
 
-    public String toString(Board board) {
-        return color.name() + " " + vertex.toString(board);
+    @Override
+    public String toString() {
+        return color.name() + " " + vertex.toString();
     }
 
     @Override
@@ -50,4 +51,5 @@ public class Move {
         else
             return false;
     }
+
 }

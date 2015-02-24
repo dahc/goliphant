@@ -145,7 +145,7 @@ public class StatefulGtpHandler extends BaseGtpHandler {
             StringBuilder stringBuilder = new StringBuilder();
             for (Vertex stone : StarPointHelper.getHandicapPoints(currentBoard, handicap)) {
                 currentBoard.play(new Move(Color.Black, stone));
-                stringBuilder.append(stone.toString(currentBoard)).append(' ');
+                stringBuilder.append(stone.toString()).append(' ');
             }
             return stringBuilder.toString();
         }

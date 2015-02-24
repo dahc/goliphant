@@ -73,7 +73,7 @@ public class StatefulGtpHandlerTest {
     @Test
     public void testPlayCommand() throws GtpException {
         assertEquals(0L, gtpHandler.currentBoard.getZobristHash());
-        gtpHandler.handle("play", "black", "a19");
+        gtpHandler.handle("play", "black", "a1");
         assertEquals(Color.Black, gtpHandler.currentBoard.getColorAt(0, 0));
         gtpHandler.handle("play", "white", "pass");
         assertEquals(1, gtpHandler.currentBoard.getConsecutivePasses());
@@ -116,8 +116,8 @@ public class StatefulGtpHandlerTest {
     @Test
     public void testSetFreeHandicapCommand() throws GtpException {
         gtpHandler.handle("set_free_handicap", "Q16", "D4");
-        assertEquals(Color.Black, gtpHandler.currentBoard.getColorAt(3, 15));
-        assertEquals(Color.Black, gtpHandler.currentBoard.getColorAt(15, 3));
+        assertEquals(Color.Black, gtpHandler.currentBoard.getColorAt(3, 3));
+        assertEquals(Color.Black, gtpHandler.currentBoard.getColorAt(15, 15));
     }
 
     @Test

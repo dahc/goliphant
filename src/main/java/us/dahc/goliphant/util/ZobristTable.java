@@ -28,12 +28,12 @@ public class ZobristTable implements Serializable {
         return table[color == Color.Black ? 0 : 1][row][column];
     }
 
-    public int getMaxRows() {
-        return table[0].length;
+    public static int getMaxRows() {
+        return maxRows;
     }
 
-    public int getMaxColumns() {
-        return table[0][0].length;
+    public static int getMaxColumns() {
+        return maxColumns;
     }
 
     @Override

@@ -43,17 +43,17 @@ public class StarPointHelper {
 
     private static List<Vertex> getStarPoints(Board board, int edgeDistance, int total) {
         List<Vertex> starPoints = new ArrayList<>();
-        starPoints.add(new Vertex(board.getRows() - edgeDistance, edgeDistance - 1));                   // D4
-        starPoints.add(new Vertex(edgeDistance - 1, board.getColumns() - edgeDistance));                // Q16
-        starPoints.add(new Vertex(edgeDistance - 1, edgeDistance - 1));                                 // D16
-        starPoints.add(new Vertex(board.getRows() - edgeDistance, board.getColumns() - edgeDistance));  // Q4
+        starPoints.add(new Vertex(edgeDistance - 1, edgeDistance - 1));                                 // D4
+        starPoints.add(new Vertex(board.getRows() - edgeDistance, board.getColumns() - edgeDistance));  // Q16
+        starPoints.add(new Vertex(board.getRows() - edgeDistance, edgeDistance - 1));                   // D16
+        starPoints.add(new Vertex(edgeDistance - 1, board.getColumns() - edgeDistance));                // Q4
         if (total > 5) {
             starPoints.add(new Vertex(board.getRows() / 2, edgeDistance - 1));                          // D10
             starPoints.add(new Vertex(board.getRows() / 2, board.getColumns() - edgeDistance));         // Q10
         }
         if (total > 7) {
-            starPoints.add(new Vertex(board.getRows() - edgeDistance, board.getColumns() / 2));         // K4
-            starPoints.add(new Vertex(edgeDistance - 1, board.getColumns() / 2));                       // K16
+            starPoints.add(new Vertex(edgeDistance - 1, board.getColumns() / 2));                       // K4
+            starPoints.add(new Vertex(board.getRows() - edgeDistance, board.getColumns() / 2));         // K16
         }
         starPoints.add(new Vertex(board.getRows() / 2, board.getColumns() / 2));                        // K10
         return starPoints;

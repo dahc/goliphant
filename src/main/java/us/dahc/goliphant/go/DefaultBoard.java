@@ -33,6 +33,8 @@ public class DefaultBoard implements Board {
         initializeNewStructures();
     }
 
+    // FIXME: Refactor this constructor/copy/reset mess.
+
     protected DefaultBoard(DefaultBoard board) {
         rows = board.getRows();
         columns = board.getColumns();

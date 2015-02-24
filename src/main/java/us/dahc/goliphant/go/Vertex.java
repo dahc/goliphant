@@ -20,7 +20,7 @@ public class Vertex {
             this.column = PASS.column;
         } else {
             this.column = COLUMN_NAMES.indexOf(vertex.toUpperCase().charAt(0));
-            this.row = 19 - Integer.valueOf(vertex.substring(1));
+            this.row = Integer.valueOf(vertex.substring(1)) - 1;
         }
     }
 
@@ -32,11 +32,12 @@ public class Vertex {
         return column;
     }
 
-    // FIXME: Reverse the board's row numbering so this can be Board-independent!
-    public String toString(Board board) {
+    @Override
+    public String toString() {
         if (this.equals(PASS))
             return "PASS";
-        return COLUMN_NAMES.charAt(column) + String.valueOf(board.getRows() - row);
+        else
+            return COLUMN_NAMES.charAt(column) + String.valueOf(row + 1);
     }
 
     @Override
@@ -51,4 +52,5 @@ public class Vertex {
         else
             return false;
     }
+
 }

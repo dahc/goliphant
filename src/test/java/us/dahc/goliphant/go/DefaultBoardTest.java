@@ -101,6 +101,19 @@ public class DefaultBoardTest {
     }
 
     @Test
+    public void testMultiCapture() {
+        stdBoard.play(new Move(Color.Black, 1, 1));
+        stdBoard.play(new Move(Color.White, 0, 1));
+        stdBoard.play(new Move(Color.Black, 1, 0));
+        stdBoard.play(new Move(Color.White, 0, 0));
+        stdBoard.play(new Move(Color.Black, 0, 2));
+        assertThat("immediate neighbor was captured", stdBoard.getColorAt(0, 1), is(nullValue()));
+        assertThat("other stone was captured", stdBoard.getColorAt(0, 0), is(nullValue()));
+        assertEquals(2, stdBoard.getStonesCapturedBy(Color.Black));
+        assertEquals(0, stdBoard.getStonesCapturedBy(Color.White));
+    }
+
+    @Test
     public void testSimpleKo() {
         stdBoard.play(new Move(Color.Black, 5, 5));
         stdBoard.play(new Move(Color.White, 5, 6));

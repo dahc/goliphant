@@ -316,7 +316,8 @@ public class DefaultBoard implements Board {
                     else
                         whiteCaptures++;
                     for (Intersection neighbor : member.getNeighbors())
-                        groups.get(neighbor).pseudoLiberties++;
+                        if (captured.getOpponent().equals(colors.get(neighbor)))
+                            groups.get(neighbor).pseudoLiberties++;
                 }
                 if (members.size() == 1 && group.members.size() == 1 && group.pseudoLiberties == 1)
                     koIntersection = members.get(0);

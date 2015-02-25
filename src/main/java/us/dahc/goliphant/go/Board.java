@@ -1,7 +1,5 @@
 package us.dahc.goliphant.go;
 
-import us.dahc.goliphant.util.BoardPrettyPrinter;
-
 import javax.annotation.Nullable;
 import java.util.Collection;
 

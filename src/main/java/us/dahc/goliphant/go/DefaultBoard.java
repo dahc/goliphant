@@ -143,6 +143,8 @@ public class DefaultBoard implements Board {
     }
 
     public void play(Move move) {
+        lastMove = move;
+        koIntersection = null;
         if (move.getVertex().equals(Vertex.PASS)) {
             consecutivePasses++;
         } else {
@@ -151,7 +153,6 @@ public class DefaultBoard implements Board {
             Intersection stone = intersect[move.getRow()][move.getColumn()];
             colors.put(stone, move.getColor());
             groups.put(stone, new Group(stone));
-            koIntersection = null;
             for (Intersection neighbor : stone.getNeighbors()) {
                 if (colors.containsKey(neighbor)) {
                     if (colors.get(neighbor) == move.getColor())
@@ -162,7 +163,6 @@ public class DefaultBoard implements Board {
             }
             zobristHash ^= zobristTable.getEntry(move.getColor(), move.getRow(), move.getColumn());
         }
-        lastMove = move;
     }
 
     public boolean isLegal(Move move) {

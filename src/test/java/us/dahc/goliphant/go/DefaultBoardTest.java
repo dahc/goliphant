@@ -119,6 +119,21 @@ public class DefaultBoardTest {
     }
 
     @Test
+    public void testSimpleKo_PassReset() {
+        stdBoard.play(new Move(Color.Black, 5, 5));
+        stdBoard.play(new Move(Color.White, 5, 6));
+        stdBoard.play(new Move(Color.Black, 6, 4));
+        stdBoard.play(new Move(Color.White, 6, 7));
+        stdBoard.play(new Move(Color.Black, 7, 5));
+        stdBoard.play(new Move(Color.White, 7, 6));
+        stdBoard.play(new Move(Color.Black, 6, 6));
+        stdBoard.play(new Move(Color.White, 6, 5));
+        assertThat("move is ko", stdBoard.getKoMove().equals(new Move(Color.Black, 6, 6)));
+        stdBoard.play(new Move(Color.Black, Vertex.PASS));
+        assertThat("no longer ko", stdBoard.getKoMove(), is(nullValue()));
+    }
+
+    @Test
     public void testPassing() {
         assertTrue(stdBoard.getLegalMoveVertices(Color.Black).contains(Vertex.PASS));
         assertTrue(stdBoard.getLegalMoveVertices(Color.White).contains(Vertex.PASS));

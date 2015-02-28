@@ -1,41 +1,24 @@
 package us.dahc.goliphant.toys;
 
-import dagger.Module;
-import dagger.Provides;
+import com.google.inject.AbstractModule;
 import us.dahc.goliphant.go.Board;
 import us.dahc.goliphant.go.DefaultBoard;
-import us.dahc.goliphant.gtp.*;
-import us.dahc.goliphant.util.ZobristTable;
+import us.dahc.goliphant.gtp.GtpClientIdentity;
+import us.dahc.goliphant.gtp.GtpHandler;
+import us.dahc.goliphant.gtp.StatefulGtpHandler;
 
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.util.Random;
 
-@Module(injects = GtpClient.class)
-public class DummyGtpClientModule {
+public class DummyGtpClientModule extends AbstractModule {
 
-    @Provides GtpHandler provideGtpHandler(GtpClientIdentity clientIdentity, Board board) {
-        return new StatefulGtpHandler(clientIdentity, board);
-    }
-
-    @Provides GtpClientIdentity provideGtpClientIdentity() {
-        return new GtpClientIdentity("Dummy Client", "1.0");
-    }
-
-    @Provides Board provideBoard(ZobristTable zobristTable) {
-        return new DefaultBoard(zobristTable);
-    }
-
-    @Provides ZobristTable provideZobristTable() {
-        return new ZobristTable(new Random());
-    }
-
-    @Provides InputStream provideInputStream() {
-        return System.in;
-    }
-
-    @Provides PrintStream providePrintStream() {
-        return System.out;
+    @Override
+    protected void configure() {
+        bind(GtpHandler.class).to(StatefulGtpHandler.class);
+        bind(Board.class).to(DefaultBoard.class);
+        bind(GtpClientIdentity.class).toInstance(new GtpClientIdentity("Dummy Client", "1.0"));
+        bind(InputStream.class).toInstance(System.in);
+        bind(PrintStream.class).toInstance(System.out);
     }
 
 }

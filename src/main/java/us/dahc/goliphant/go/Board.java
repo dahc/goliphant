@@ -13,6 +13,10 @@ public interface Board {
     // Geometry
     public int getRows();
     public int getColumns();
+    public Vertex getVertexAt(int row, int column);
+    public Collection<? extends Vertex> getAllVertices();
+    public Collection<? extends Vertex> getNeighbors(Vertex vertex);
+    public Collection<? extends Vertex> getDiagonals(Vertex vertex);
     public void resize(int rows, int columns) throws InvalidSizeException;
 
     // Basic Status
@@ -20,13 +24,14 @@ public interface Board {
     public void setKomi(float komi);
     public int getStonesCapturedBy(Color player);
     public int getConsecutivePasses();
+    @Nullable public Color getColorAt(Vertex vertex);
     @Nullable public Color getColorAt(int row, int column);
     @Nullable public Move getLastMove();
     @Nullable public Move getKoMove();
 
     // Play (semantics may vary by implementation)
     public boolean isLegal(Move move);
-    public Collection<Vertex> getLegalMoveVertices(Color player);
+    public Collection<? extends Vertex> getLegalMoveVertices(Color player);
     public void play(Move move);
 
     // Superko Facilities

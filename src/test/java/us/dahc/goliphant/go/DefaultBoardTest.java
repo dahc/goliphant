@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
@@ -171,6 +172,15 @@ public class DefaultBoardTest {
         long hash = stdBoard.getZobristHash();
         stdBoard.play(new Move(Color.Black, Vertex.PASS));
         assertEquals(hash, stdBoard.getZobristHash());
+    }
+
+    @Test
+    public void testGetAllVertices() {
+        Collection<Vertex> allVertices = stdBoard.getAllVertices();
+        assertEquals(stdBoard.getRows() * stdBoard.getColumns(), allVertices.size());
+        for (int i = 0; i < stdBoard.getRows(); i++)
+            for (int j = 0; j < stdBoard.getColumns(); j++)
+                assertTrue(allVertices.contains(stdBoard.getVertexAt(i, j)));
     }
 
     @Test

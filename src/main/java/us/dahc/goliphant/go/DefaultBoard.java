@@ -3,6 +3,7 @@ package us.dahc.goliphant.go;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -192,9 +193,28 @@ public class DefaultBoard implements Board {
         return result;
     }
 
+    @Override
+    public List<Vertex> getAllVertices() {
+        List<Vertex> result = new ArrayList<>(rows * columns);
+        for (int i = 0; i < rows; i++)
+            for (int j = 0; j < columns; j++)
+                result.add(intersect[i][j]);
+        return result;
+    }
+
+    @Override
+    public Vertex getVertexAt(int row, int column) {
+        return intersect[row][column];
+    }
+
     @Override @Nullable
     public Color getColorAt(int row, int column) {
         return colors.get(intersect[row][column]);
+    }
+
+    @Override @Nullable
+    public Color getColorAt(Vertex vertex) {
+        return colors.get(vertex);
     }
 
     @Override
@@ -205,6 +225,22 @@ public class DefaultBoard implements Board {
     @Override
     public int getColumns() {
         return columns;
+    }
+
+    @Override
+    public Collection<Intersection> getNeighbors(Vertex vertex) {
+        if (vertex instanceof Intersection)
+            return ((Intersection) vertex).getNeighbors();
+        else
+            return intersect[vertex.getRow()][vertex.getColumn()].getNeighbors();
+    }
+
+    @Override
+    public Collection<Intersection> getDiagonals(Vertex vertex) {
+        if (vertex instanceof Intersection)
+            return ((Intersection) vertex).getDiagonals();
+        else
+            return intersect[vertex.getRow()][vertex.getColumn()].getDiagonals();
     }
 
     @Override

@@ -22,6 +22,7 @@ public class BaseGtpHandler implements GtpHandler {
         commands.put("quit", new QuitCommand());
     }
 
+    @Override
     public String handle(String command, String... args) throws GtpException {
         if (commands.containsKey(command))
             return commands.get(command).exec(args);
@@ -40,12 +41,14 @@ public class BaseGtpHandler implements GtpHandler {
             this.response = response;
         }
 
+        @Override
         public String exec(String... args) {
             return response;
         }
     }
 
     class ListCommands implements Command {
+        @Override
         public String exec(String... args) {
             List<String> commandList = new ArrayList<String>(commands.keySet());
             Collections.sort(commandList);
@@ -58,6 +61,7 @@ public class BaseGtpHandler implements GtpHandler {
     }
 
     class KnownCommand implements Command {
+        @Override
         public String exec(String... args) {
             if (args.length > 0 && commands.containsKey(args[0]))
                 return "true";
@@ -67,6 +71,7 @@ public class BaseGtpHandler implements GtpHandler {
     }
 
     class QuitCommand implements Command {
+        @Override
         public String exec(String... args) throws QuitException {
             throw new QuitException();
         }

@@ -38,6 +38,7 @@ public class StatefulGtpHandler extends BaseGtpHandler {
     }
 
     protected class BoardsizeCommand implements BaseGtpHandler.Command {
+        @Override
         public String exec(String... args) throws GtpException {
             try {
                 int size = Integer.valueOf(args[0]);
@@ -53,6 +54,7 @@ public class StatefulGtpHandler extends BaseGtpHandler {
     }
 
     protected class ClearBoardCommand implements BaseGtpHandler.Command {
+        @Override
         public String exec(String... args) {
             pastBoards.clear();
             currentBoard.reset();
@@ -61,12 +63,14 @@ public class StatefulGtpHandler extends BaseGtpHandler {
     }
 
     protected class ShowBoardCommand implements BaseGtpHandler.Command {
+        @Override
         public String exec(String... args) {
             return "\n" + BoardPrettyPrinter.getPrettyString(currentBoard);
         }
     }
 
     protected class KomiCommand implements BaseGtpHandler.Command {
+        @Override
         public String exec(String... args) throws GtpException {
             try {
                 currentBoard.setKomi(Float.valueOf(args[0]));
@@ -78,12 +82,14 @@ public class StatefulGtpHandler extends BaseGtpHandler {
     }
 
     protected class GetKomiCommand implements BaseGtpHandler.Command {
+        @Override
         public String exec(String... args) throws GtpException {
             return String.format("%.1f", currentBoard.getKomi());
         }
     }
 
     protected class PlayCommand implements BaseGtpHandler.Command {
+        @Override
         public String exec(String... args) throws GtpException {
             Move move;
             try {
@@ -102,6 +108,7 @@ public class StatefulGtpHandler extends BaseGtpHandler {
     }
 
     protected class UndoCommand implements BaseGtpHandler.Command {
+        @Override
         public String exec(String... args) throws GtpException {
             if (pastBoards.size() > 0) {
                 currentBoard = pastBoards.remove(pastBoards.size() - 1);
@@ -113,6 +120,7 @@ public class StatefulGtpHandler extends BaseGtpHandler {
     }
 
     protected class SetFreeHandicapCommand implements BaseGtpHandler.Command {
+        @Override
         public String exec(String... args) throws GtpException {
             if (currentBoard.getZobristHash() != 0)
                 throw new GtpException("board not empty");
@@ -136,6 +144,7 @@ public class StatefulGtpHandler extends BaseGtpHandler {
     }
 
     protected class FixedHandicapCommand implements BaseGtpHandler.Command {
+        @Override
         public String exec(String... args) throws GtpException {
             if (currentBoard.getZobristHash() != 0)
                 throw new GtpException("board not empty");
@@ -157,7 +166,6 @@ public class StatefulGtpHandler extends BaseGtpHandler {
     }
 
     protected class PlaceFreeHandicapCommand extends FixedHandicapCommand {
-
         @Override
         public String exec(String... args) throws GtpException {
             if (currentBoard.getZobristHash() != 0)

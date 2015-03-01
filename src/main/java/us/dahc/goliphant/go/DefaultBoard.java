@@ -79,6 +79,7 @@ public class DefaultBoard implements Board {
         computeGroups();
     }
 
+    @Override
     public void reset() {
         blackCaptures = 0;
         whiteCaptures = 0;
@@ -90,6 +91,7 @@ public class DefaultBoard implements Board {
         initializeNewStructures();
     }
 
+    @Override
     public void resize(int rows, int columns) throws InvalidSizeException {
         if (rows > zobristTable.getMaxRows() || columns > zobristTable.getMaxColumns())
             throw new InvalidSizeException("max size is " + zobristTable.getMaxRows() + " rows by "
@@ -99,10 +101,12 @@ public class DefaultBoard implements Board {
         reset();
     }
 
+    @Override
     public DefaultBoard getCopy() {
         return new DefaultBoard(this);
     }
 
+    @Override
     public DefaultBoard getCopy(Board board) {
         if (board instanceof DefaultBoard)
             return new DefaultBoard((DefaultBoard) board);
@@ -110,14 +114,17 @@ public class DefaultBoard implements Board {
             return new DefaultBoard(zobristTable, board);
     }
 
+    @Override
     public void setKomi(float komi) {
         this.komi = komi;
     }
 
+    @Override
     public float getKomi() {
         return komi;
     }
 
+    @Override
     public int getStonesCapturedBy(Color player) {
         if (player == Color.Black)
             return blackCaptures;
@@ -125,16 +132,17 @@ public class DefaultBoard implements Board {
             return whiteCaptures;
     }
 
+    @Override
     public int getConsecutivePasses() {
         return consecutivePasses;
     }
 
-    @Nullable
+    @Override @Nullable
     public Move getLastMove() {
         return lastMove;
     }
 
-    @Nullable
+    @Override @Nullable
     public Move getKoMove() {
         if (koIntersection == null)
             return null;
@@ -142,6 +150,7 @@ public class DefaultBoard implements Board {
             return new Move(lastMove.getColor().getOpponent(), koIntersection.getRow(), koIntersection.getColumn());
     }
 
+    @Override
     public void play(Move move) {
         lastMove = move;
         koIntersection = null;
@@ -165,12 +174,14 @@ public class DefaultBoard implements Board {
         }
     }
 
+    @Override
     public boolean isLegal(Move move) {
         if (move.getVertex().equals(Vertex.PASS))
             return true;
         return isLegal(move.getColor(), intersect[move.getRow()][move.getColumn()]);
     }
 
+    @Override
     public List<Vertex> getLegalMoveVertices(Color player) {
         List<Vertex> result = new ArrayList<>(rows * columns + 1);
         result.add(Vertex.PASS);
@@ -181,23 +192,27 @@ public class DefaultBoard implements Board {
         return result;
     }
 
-    @Nullable
+    @Override @Nullable
     public Color getColorAt(int row, int column) {
         return colors.get(intersect[row][column]);
     }
 
+    @Override
     public int getRows() {
         return rows;
     }
 
+    @Override
     public int getColumns() {
         return columns;
     }
 
+    @Override
     public long getZobristHash() {
         return zobristHash;
     }
 
+    @Override
     public List<Long> getPreviousHashes() {
         return hashHistory;
     }

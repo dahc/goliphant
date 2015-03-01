@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -216,6 +217,7 @@ public class DefaultBoardTest {
             for (int j = 0; j < 19; j++)
                 assertEquals(null, copy.getColorAt(i, j));
         assertEquals(19 * 19 + 1, copy.getLegalMoveVertices(Color.Black).size());
+        assertEquals(0, copy.getPreviousHashes().size());
     }
 
     @Test

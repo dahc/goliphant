@@ -46,6 +46,7 @@ public class DefaultBoard implements Board {
             groups.put(group.getRepresentative(), new Group(group));
         for (Intersection stone : colors.keySet())
             groups.put(stone, groups.get(board.groups.get(stone).getRepresentative()));
+        hashHistory = new ArrayList<>(board.hashHistory);
         blackCaptures = board.blackCaptures;
         whiteCaptures = board.whiteCaptures;
         komi = board.komi;
@@ -65,7 +66,6 @@ public class DefaultBoard implements Board {
         komi = board.getKomi();
         lastMove = board.getLastMove();
         consecutivePasses = board.getConsecutivePasses();
-
         if (board.getKoMove() != null)
             koIntersection = intersect[board.getKoMove().getRow()][board.getKoMove().getColumn()];
         initializeNewStructures();

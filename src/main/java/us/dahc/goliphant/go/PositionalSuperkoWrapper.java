@@ -1,7 +1,9 @@
 package us.dahc.goliphant.go;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class PositionalSuperkoWrapper extends AbstractBoardWrapper {
 
@@ -37,10 +39,11 @@ public class PositionalSuperkoWrapper extends AbstractBoardWrapper {
     @Override
     public Collection<? extends Vertex> getLegalMoveVertices(Color player) {
         Collection<? extends Vertex> vertices = wrappedBoard.getLegalMoveVertices(player);
+        List<? extends Vertex> legalVertices = new ArrayList<>(vertices);
         for (Vertex vertex : vertices)
             if (!isLegal(new Move(player, vertex)))
-                vertices.remove(vertex);
-        return vertices;
+                legalVertices.remove(vertex);
+        return legalVertices;
     }
 
 }

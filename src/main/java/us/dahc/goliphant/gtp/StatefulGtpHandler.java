@@ -5,6 +5,7 @@ import us.dahc.goliphant.go.Board;
 import us.dahc.goliphant.go.Color;
 import us.dahc.goliphant.go.InvalidSizeException;
 import us.dahc.goliphant.go.Move;
+import us.dahc.goliphant.go.SuperkoAware;
 import us.dahc.goliphant.go.Vertex;
 import us.dahc.goliphant.util.BoardPrettyPrinter;
 import us.dahc.goliphant.util.StarPointHelper;
@@ -21,7 +22,7 @@ public class StatefulGtpHandler extends BaseGtpHandler {
     protected List<Board> pastBoards;
 
     @Inject
-    public StatefulGtpHandler(GtpClientIdentity clientIdentity, Board board) {
+    public StatefulGtpHandler(GtpClientIdentity clientIdentity, @SuperkoAware Board board) {
         super(clientIdentity);
         pastBoards = new ArrayList<>();
         currentBoard = board;

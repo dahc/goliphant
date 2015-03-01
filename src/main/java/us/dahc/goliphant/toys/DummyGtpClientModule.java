@@ -3,6 +3,8 @@ package us.dahc.goliphant.toys;
 import com.google.inject.AbstractModule;
 import us.dahc.goliphant.go.Board;
 import us.dahc.goliphant.go.DefaultBoard;
+import us.dahc.goliphant.go.PositionalSuperkoWrapper;
+import us.dahc.goliphant.go.SuperkoAware;
 import us.dahc.goliphant.gtp.GtpClientIdentity;
 import us.dahc.goliphant.gtp.GtpHandler;
 import us.dahc.goliphant.gtp.StatefulGtpHandler;
@@ -15,6 +17,7 @@ public class DummyGtpClientModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(GtpHandler.class).to(StatefulGtpHandler.class);
+        bind(Board.class).annotatedWith(SuperkoAware.class).to(PositionalSuperkoWrapper.class);
         bind(Board.class).to(DefaultBoard.class);
         bind(GtpClientIdentity.class).toInstance(new GtpClientIdentity("Dummy Client", "1.0"));
         bind(InputStream.class).toInstance(System.in);

@@ -36,6 +36,8 @@ public class PositionalSuperkoWrapperTest {
         board.play(new Move(Color.Black, 0, 0));
         assertFalse(board.isLegal(new Move(Color.White, 0, 1)));
         assertTrue(board.isLegal(new Move(Color.Black, 0, 1)));
+        assertFalse(board.getLegalMoveVertices(Color.White).contains(board.getVertexAt(0, 1)));
+        assertTrue(board.getLegalMoveVertices(Color.Black).contains(board.getVertexAt(0, 1)));
     }
 
 }

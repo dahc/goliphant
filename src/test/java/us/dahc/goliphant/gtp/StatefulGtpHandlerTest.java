@@ -50,7 +50,7 @@ public class StatefulGtpHandlerTest {
 
     @Test
     public void testClearBoardCommand() throws GtpException {
-        // TODO: Play some stuff first...
+        playSomeStuff(gtpHandler);
         gtpHandler.handle("clear_board");
         assertEquals(0L, gtpHandler.currentBoard.getZobristHash());
         assertEquals(0, gtpHandler.pastBoards.size());
@@ -128,6 +128,12 @@ public class StatefulGtpHandlerTest {
     }
 
     @Test
+    public void testSetFreeHandicapCommand_Large() throws GtpException {
+        gtpHandler.handle("set_free_handicap", "D4", "Q16", "D16", "Q4", "D10", "Q10", "K4", "K16", "K10", "A1");
+        assertEquals(Color.Black, gtpHandler.currentBoard.getColorAt(0, 0));
+    }
+
+    @Test
     public void testSetFreeHandicapCommand_NoPassing() throws GtpException {
         thrown.expect(GtpException.class);
         thrown.expectMessage("invalid coordinate");
@@ -146,6 +152,78 @@ public class StatefulGtpHandlerTest {
         thrown.expect(GtpException.class);
         thrown.expectMessage("repeated vertex");
         gtpHandler.handle("set_free_handicap", "Q16", "D4", "D16", "Q16");
+    }
+
+    @Test
+    public void testSetFreeHandicapCommand_BoardNotEmpty() throws GtpException {
+        thrown.expect(GtpException.class);
+        thrown.expectMessage("board not empty");
+        playSomeStuff(gtpHandler);
+        gtpHandler.handle("set_free_handicap", "Q16", "D4", "D16", "Q16");
+    }
+
+    @Test
+    public void testFixedHandicapCommand() throws GtpException {
+        gtpHandler.handle("fixed_handicap", "2");
+        assertEquals(Color.Black, gtpHandler.currentBoard.getColorAt(3, 3));
+        assertEquals(Color.Black, gtpHandler.currentBoard.getColorAt(15, 15));
+    }
+
+    @Test
+    public void testFixedHandicapCommand_TooSmall() throws GtpException {
+        thrown.expect(GtpException.class);
+        thrown.expectMessage("invalid handicap");
+        gtpHandler.handle("fixed_handicap", "1");
+    }
+
+    @Test
+    public void testFixedHandicapCommand_TooBig() throws GtpException {
+        thrown.expect(GtpException.class);
+        thrown.expectMessage("invalid handicap");
+        gtpHandler.handle("fixed_handicap", "10");
+    }
+
+    @Test
+    public void testFixedHandicapCommand_BoardNotEmpty() throws GtpException {
+        thrown.expect(GtpException.class);
+        thrown.expectMessage("board not empty");
+        playSomeStuff(gtpHandler);
+        gtpHandler.handle("fixed_handicap", "2");
+    }
+
+    @Test
+    public void testPlaceFreeHandicapCommand() throws GtpException {
+        gtpHandler.handle("place_free_handicap", "2");
+        assertEquals(Color.Black, gtpHandler.currentBoard.getColorAt(3, 3));
+        assertEquals(Color.Black, gtpHandler.currentBoard.getColorAt(15, 15));
+    }
+
+    @Test
+    public void testPlaceFreeHandicapCommand_TooSmall() throws GtpException {
+        thrown.expect(GtpException.class);
+        thrown.expectMessage("invalid handicap");
+        gtpHandler.handle("place_free_handicap", "1");
+    }
+
+    @Test
+    public void testPlaceFreeHandicapCommand_Large() throws GtpException {
+        gtpHandler.handle("place_free_handicap", "15");
+        assertNotEquals(0L, gtpHandler.currentBoard.getZobristHash());
+    }
+
+    @Test
+    public void testPlaceFreeHandicapCommand_BoardNotEmpty() throws GtpException {
+        thrown.expect(GtpException.class);
+        thrown.expectMessage("board not empty");
+        playSomeStuff(gtpHandler);
+        gtpHandler.handle("place_free_handicap", "2");
+    }
+
+    private void playSomeStuff(GtpHandler handler) throws GtpException {
+        handler.handle("play", "black", "d4");
+        handler.handle("play", "white", "k10");
+        handler.handle("play", "black", "d15");
+        handler.handle("play", "white", "q16");
     }
 
 }

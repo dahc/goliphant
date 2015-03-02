@@ -5,16 +5,18 @@ import us.dahc.goliphant.go.Move;
 import us.dahc.goliphant.go.Vertex;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.HashMap;
 
-public class SgfNode extends HashMap<String, String> {
+public class SgfNode {
 
     public static final String COORDINATE_LETTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     private SgfGameTree rootGameTree;
+    private HashMap<String, String> textMap;
 
     public SgfNode(SgfGameTree rootGameTree) {
-        super();
+        textMap = new HashMap<>();
         this.rootGameTree = rootGameTree;
     }
 
@@ -22,12 +24,21 @@ public class SgfNode extends HashMap<String, String> {
         return rootGameTree;
     }
 
+    public Collection<String> getProperties() {
+        return textMap.keySet();
+    }
+
+    @Nullable
+    public String getTextProperty(String property) {
+        return textMap.get(property);
+    }
+
     @Nullable
     public Move getMove() throws SgfException {
-        if (containsKey("W"))
-            return new Move(Color.White, parseVertex(get("W")));
-        else if (containsKey("B"))
-            return new Move(Color.Black, parseVertex(get("B")));
+        if (textMap.containsKey("W"))
+            return new Move(Color.White, parseVertex(textMap.get("W")));
+        else if (textMap.containsKey("B"))
+            return new Move(Color.Black, parseVertex(textMap.get("B")));
         else
             return null;
     }
@@ -82,7 +93,7 @@ public class SgfNode extends HashMap<String, String> {
         }
         if (!propertyValueDone)
             throw new SgfException("unended property value for '" + sbp.toString() + "'");
-        put(sbp.toString(), sbv.toString());
+        textMap.put(sbp.toString(), sbv.toString());
         return position;
     }
 

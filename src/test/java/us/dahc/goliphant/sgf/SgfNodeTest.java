@@ -30,9 +30,11 @@ public class SgfNodeTest {
         SgfNode node = new SgfNode(gameTree);
         node.parse(";W[aa]".getBytes(), 0);
         assertEquals(new Move("White", "A19"), node.getMove());
+        assertEquals(1, node.getProperties().size());
         node = new SgfNode(gameTree);
         node.parse(";B[sa]".getBytes(), 0);
         assertEquals(new Move("Black", "A1"), node.getMove());
+        assertEquals(1, node.getProperties().size());
     }
 
     @Test
@@ -40,7 +42,8 @@ public class SgfNodeTest {
         SgfNode node = new SgfNode(gameTree);
         node.parse(";C[brilliant!]W[sa];B[jk]C[not here yet]".getBytes(), 0);
         assertEquals(new Move("White", "A1"), node.getMove());
-        assertEquals("brilliant!", node.get("C"));
+        assertEquals("brilliant!", node.getTextProperty("C"));
+        assertEquals(2, node.getProperties().size());
     }
 
     @Test
@@ -48,7 +51,7 @@ public class SgfNodeTest {
         SgfNode node = new SgfNode(gameTree);
         node.parse(";C[this comment has no move];B[jk]C[not here yet]".getBytes(), 0);
         assertNull(node.getMove());
-        assertEquals("this comment has no move", node.get("C"));
+        assertEquals("this comment has no move", node.getTextProperty("C"));
     }
 
     @Test

@@ -10,6 +10,8 @@ import java.util.HashMap;
 
 public class SgfNode extends HashMap<String, Object> {
 
+    public static final String COORDINATE_LETTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
     private SgfGameTree rootGameTree;
 
     public SgfNode(SgfGameTree rootGameTree) {
@@ -85,7 +87,7 @@ public class SgfNode extends HashMap<String, Object> {
                 propertyValueDone = true;
                 break;
             } else {
-                sbv.append(bytes[position]);
+                sbv.append((char) bytes[position]);
             }
             position++;
         }
@@ -97,9 +99,11 @@ public class SgfNode extends HashMap<String, Object> {
 
     Vertex parseVertex(String string, int position) throws ParseException {
         try {
-            return new Vertex(rootGameTree.getSetupBoard().getRows() - string.charAt(0) + 'a', string.charAt(1) - 'a');
+            return rootGameTree.getSetupBoard().getVertexAt(
+                    rootGameTree.getSetupBoard().getRows() - COORDINATE_LETTERS.indexOf(string.charAt(0)) - 1,
+                    COORDINATE_LETTERS.indexOf(string.charAt(1)));
         } catch (Exception e) {
-            throw new ParseException("bad vertex", position);
+            throw new ParseException("bad vertex: " + e, position);
         }
     }
 

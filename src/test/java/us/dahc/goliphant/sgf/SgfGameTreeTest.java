@@ -3,15 +3,13 @@ package us.dahc.goliphant.sgf;
 import org.junit.Before;
 import org.junit.Test;
 import us.dahc.goliphant.go.DefaultBoard;
-import us.dahc.goliphant.go.Move;
 import us.dahc.goliphant.util.ZobristTable;
 
-import java.text.ParseException;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
 
-public class SgfNodeTest {
+public class SgfGameTreeTest {
 
     private SgfGameTree gameTree;
 
@@ -21,10 +19,9 @@ public class SgfNodeTest {
     }
 
     @Test
-    public void testSingleNode() throws ParseException {
-        SgfNode node = new SgfNode(gameTree);
-        node.parse(";W[aa]".getBytes(), 0);
-        assertEquals(new Move("White", "A19"), node.getMove());
+    public void testGetRootGameTree() {
+        assertEquals(gameTree, gameTree.getRootGameTree());
+        SgfGameTree child = new SgfGameTree(gameTree);
+        assertEquals(gameTree, child.getRootGameTree());
     }
-
 }

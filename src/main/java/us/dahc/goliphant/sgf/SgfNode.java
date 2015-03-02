@@ -43,7 +43,7 @@ public class SgfNode extends HashMap<String, String> {
                 case ';':
                 case ')':
                 case '(':
-                    return position;
+                    return position - 1;
                 default:
                     position = parseProperty(bytes, position);
                     break;

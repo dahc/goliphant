@@ -24,4 +24,11 @@ public class SgfGameTreeTest {
         SgfGameTree child = new SgfGameTree(gameTree);
         assertEquals(gameTree, child.getRootGameTree());
     }
+
+    @Test
+    public void testSimpleParsing() throws SgfException {
+        gameTree.parse("(;SZ[19]HA[0]AB[dd][pp];W[dp];B[pd])".getBytes(), 0);
+        assertEquals(3, gameTree.getNodes().size());
+    }
+
 }

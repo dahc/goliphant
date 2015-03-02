@@ -34,7 +34,6 @@ public class SgfGameTree {
     }
 
     int parse(byte[] bytes, int position) throws SgfException {
-        int start = position;
         while (++position < bytes.length) {
             switch (bytes[position]) {
                 case ')':

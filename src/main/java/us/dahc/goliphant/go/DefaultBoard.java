@@ -11,6 +11,9 @@ import java.util.Map;
 
 import us.dahc.goliphant.util.ZobristTable;
 
+import static us.dahc.goliphant.util.GoliphantConstants.MAX_ROWS;
+import static us.dahc.goliphant.util.GoliphantConstants.MAX_COLUMNS;
+
 public class DefaultBoard implements Board {
 
     private int rows = 19;
@@ -94,9 +97,8 @@ public class DefaultBoard implements Board {
 
     @Override
     public void resize(int rows, int columns) throws InvalidSizeException {
-        if (rows > zobristTable.getMaxRows() || columns > zobristTable.getMaxColumns())
-            throw new InvalidSizeException("max size is " + zobristTable.getMaxRows() + " rows by "
-                                                          + zobristTable.getMaxColumns() + " columns");
+        if (rows > MAX_ROWS || columns > MAX_COLUMNS)
+            throw new InvalidSizeException("max size is " + MAX_ROWS + " rows by " + MAX_COLUMNS + " columns");
         this.rows = rows;
         this.columns = columns;
         reset();

@@ -8,7 +8,6 @@ import us.dahc.goliphant.go.DefaultBoard;
 import us.dahc.goliphant.go.Move;
 import us.dahc.goliphant.util.ZobristTable;
 
-import java.text.ParseException;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
@@ -27,7 +26,7 @@ public class SgfNodeTest {
     public ExpectedException thrown = ExpectedException.none();
 
     @Test
-    public void testSingleProperty() throws ParseException {
+    public void testSingleProperty() throws SgfException {
         SgfNode node = new SgfNode(gameTree);
         node.parse(";W[aa]".getBytes(), 0);
         assertEquals(new Move("White", "A19"), node.getMove());
@@ -37,7 +36,7 @@ public class SgfNodeTest {
     }
 
     @Test
-    public void testMultiProperty() throws ParseException {
+    public void testMultiProperty() throws SgfException {
         SgfNode node = new SgfNode(gameTree);
         node.parse(";C[brilliant!]W[sa];B[jk]C[not here yet]".getBytes(), 0);
         assertEquals(new Move("White", "A1"), node.getMove());
@@ -45,7 +44,7 @@ public class SgfNodeTest {
     }
 
     @Test
-    public void testNullMove() throws ParseException {
+    public void testNullMove() throws SgfException {
         SgfNode node = new SgfNode(gameTree);
         node.parse(";C[this comment has no move];B[jk]C[not here yet]".getBytes(), 0);
         assertNull(node.getMove());
@@ -53,14 +52,14 @@ public class SgfNodeTest {
     }
 
     @Test
-    public void testIncompleteProperty() throws ParseException {
-        thrown.expect(ParseException.class);
+    public void testIncompleteProperty() throws SgfException {
+        thrown.expect(SgfException.class);
         new SgfNode(gameTree).parse(";C".getBytes(), 0);
     }
 
     @Test
-    public void testIncompletePropertyValue() throws ParseException {
-        thrown.expect(ParseException.class);
+    public void testIncompletePropertyValue() throws SgfException {
+        thrown.expect(SgfException.class);
         new SgfNode(gameTree).parse(";C[that was great".getBytes(), 0);
     }
 

@@ -2,7 +2,6 @@ package us.dahc.goliphant.sgf;
 
 import us.dahc.goliphant.go.Board;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -34,7 +33,7 @@ public class SgfGameTree {
         return rootGameTree == null ? this : rootGameTree;
     }
 
-    int parse(byte[] bytes, int position) throws ParseException {
+    int parse(byte[] bytes, int position) throws SgfException {
         int start = position;
         while (++position < bytes.length) {
             switch (bytes[position]) {
@@ -52,7 +51,7 @@ public class SgfGameTree {
                     break;
             }
         }
-        throw new ParseException("no matching close paren found ')'", start);
+        throw new SgfException("no matching close paren found ')'");
     }
 
     public Collection<SgfGameTree> getChildGameTrees() {

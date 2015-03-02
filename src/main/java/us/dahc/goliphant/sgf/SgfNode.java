@@ -5,10 +5,9 @@ import us.dahc.goliphant.go.Move;
 import us.dahc.goliphant.go.Vertex;
 
 import javax.annotation.Nullable;
-import java.text.ParseException;
 import java.util.HashMap;
 
-public class SgfNode extends HashMap<String, Object> {
+public class SgfNode extends HashMap<String, String> {
 
     public static final String COORDINATE_LETTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -24,26 +23,16 @@ public class SgfNode extends HashMap<String, Object> {
     }
 
     @Nullable
-    public Move getMove() {
+    public Move getMove() throws SgfException {
         if (containsKey("W"))
-            return new Move(Color.White, (Vertex) get("W"));
+            return new Move(Color.White, parseVertex(get("W")));
         else if (containsKey("B"))
-            return new Move(Color.Black, (Vertex) get("B"));
+            return new Move(Color.Black, parseVertex(get("B")));
         else
             return null;
     }
 
-    public Object put(String key, String value, int position) throws ParseException {
-        switch (key) {
-            case "W":
-            case "B":
-                return super.put(key, parseVertex(value, position));
-            default:
-                return super.put(key, value);
-        }
-    }
-
-    int parse(byte[] bytes, int position) throws ParseException {
+    int parse(byte[] bytes, int position) throws SgfException {
         while (++position < bytes.length) {
             switch (bytes[position]) {
                 case ' ':
@@ -63,12 +52,12 @@ public class SgfNode extends HashMap<String, Object> {
         return position;
     }
 
-    int parseProperty(byte[] bytes, int position) throws ParseException {
+    int parseProperty(byte[] bytes, int position) throws SgfException {
         StringBuilder sbp = new StringBuilder(2);
         boolean propertyDone = false;
         while (position < bytes.length && !propertyDone) {
             if (bytes[position] < 0)
-                throw new ParseException(String.format("unexpected (non-ASCII) byte 0x%2X", bytes[position]), position);
+                throw new SgfException(String.format("unexpected (non-ASCII) byte 0x%2X", bytes[position]));
             if (Character.isAlphabetic(bytes[position]) && Character.isUpperCase(bytes[position])) {
                 sbp.append((char) bytes[position]);
             } else if (bytes[position] == '[') {
@@ -77,13 +66,13 @@ public class SgfNode extends HashMap<String, Object> {
             position++;
         }
         if (!propertyDone)
-            throw new ParseException("unended property", position);
+            throw new SgfException("unended property");
         StringBuilder sbv = new StringBuilder();
         boolean propertyValueDone = false;
-        while (position < bytes.length && !propertyValueDone) {
+        while (position < bytes.length) {
             if (bytes[position] < 0)
-                throw new ParseException(String.format("unexpected (non-ASCII) byte 0x%2X", bytes[position]), position);
-            if (bytes[position] == ']') {
+                throw new SgfException(String.format("unexpected (non-ASCII) byte 0x%2X", bytes[position]));
+            if (bytes[position] == ']' && (position == bytes.length - 1 || bytes[position + 1] != '[')) {
                 propertyValueDone = true;
                 break;
             } else {
@@ -92,18 +81,18 @@ public class SgfNode extends HashMap<String, Object> {
             position++;
         }
         if (!propertyValueDone)
-            throw new ParseException("unended property value for '" + sbp.toString() + "'", position);
-        put(sbp.toString(), sbv.toString(), position);
+            throw new SgfException("unended property value for '" + sbp.toString() + "'");
+        put(sbp.toString(), sbv.toString());
         return position;
     }
 
-    Vertex parseVertex(String string, int position) throws ParseException {
+    Vertex parseVertex(String string) throws SgfException {
         try {
             return rootGameTree.getSetupBoard().getVertexAt(
                     rootGameTree.getSetupBoard().getRows() - COORDINATE_LETTERS.indexOf(string.charAt(0)) - 1,
                     COORDINATE_LETTERS.indexOf(string.charAt(1)));
         } catch (Exception e) {
-            throw new ParseException("bad vertex: " + e, position);
+            throw new SgfException("bad vertex", e);
         }
     }
 

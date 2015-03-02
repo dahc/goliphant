@@ -6,8 +6,6 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
 
 public class SgfParser {
 
@@ -18,14 +16,14 @@ public class SgfParser {
         this.board = board;
     }
 
-    public Collection<SgfGameTree> parseFile(String pathToFile) throws IOException, SgfException {
+    public SgfGameTree parseFile(String pathToFile) throws IOException, SgfException {
         return parse(Files.readAllBytes(Paths.get(pathToFile)));
     }
 
-    public Collection<SgfGameTree> parse(byte[] bytes) throws SgfException {
-        Collection<SgfGameTree> gameTrees = new ArrayList<>();
-
-        return gameTrees;
+    public SgfGameTree parse(byte[] bytes) throws SgfException {
+        SgfGameTree gameTree = new SgfGameTree(board);
+        gameTree.parse(bytes, 0);
+        return gameTree;
     }
 
 }

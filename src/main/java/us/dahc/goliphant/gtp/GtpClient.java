@@ -41,7 +41,7 @@ public class GtpClient implements Runnable {
     }
 
     private static String getCommand(String line) {
-        return StringUtils.normalizeSpace(line).split(" ")[0];
+        return line.split(" ")[0];
     }
 
     private static String[] getArguments(String line) {

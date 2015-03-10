@@ -110,7 +110,7 @@ public class SgfGameLog {
     }
 
     private Vertex getVertexAt(String sgf, int index) {
-        return new Vertex(COORDINATE_LETTERS.indexOf(sgf.charAt(index + 1)),
+        return Vertex.get(COORDINATE_LETTERS.indexOf(sgf.charAt(index + 1)),
                 COORDINATE_LETTERS.indexOf(sgf.charAt(boardRows - index - 1)));
     }
 

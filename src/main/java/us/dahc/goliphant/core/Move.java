@@ -6,7 +6,7 @@ public class Move {
     final Vertex vertex;
 
     public Move(Color color, int row, int column) {
-        this.vertex = new Vertex(row, column);
+        this.vertex = Vertex.get(row, column);
         this.color = color;
     }
 
@@ -16,7 +16,7 @@ public class Move {
     }
 
     public Move(String color, String vertex) {
-        this.vertex = new Vertex(vertex);
+        this.vertex = Vertex.get(vertex);
         if (color.toUpperCase().charAt(0) == 'B')
             this.color = Color.Black;
         else

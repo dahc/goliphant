@@ -6,21 +6,33 @@ public class Vertex {
 
     public static final Vertex PASS = new Vertex(-1, -1);
 
+    private static final Vertex[][] values = new Vertex[Board.MAX_ROWS][Board.MAX_COLUMNS];
+
+    static {
+        for (int i = 0; i < Board.MAX_ROWS; i++)
+            for (int j = 0; j < Board.MAX_COLUMNS; j++)
+                values[i][j] = new Vertex(i, j);
+    }
+
     protected final int row;
     protected final int column;
 
-    public Vertex(int row, int column) {
+    protected Vertex(int row, int column) {
         this.row = row;
         this.column = column;
     }
 
-    public Vertex(String vertex) {
+    public static Vertex get(int row, int column) {
+        return values[row][column];
+    }
+
+    public static Vertex get(String vertex) {
         if (vertex.equalsIgnoreCase("PASS")) {
-            this.row = PASS.row;
-            this.column = PASS.column;
+            return PASS;
         } else {
-            this.column = COLUMN_NAMES.indexOf(vertex.toUpperCase().charAt(0));
-            this.row = Integer.valueOf(vertex.substring(1)) - 1;
+            int row = Integer.valueOf(vertex.substring(1)) - 1;
+            int column = COLUMN_NAMES.indexOf(vertex.toUpperCase().charAt(0));
+            return values[row][column];
         }
     }
 

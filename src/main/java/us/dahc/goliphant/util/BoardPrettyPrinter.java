@@ -32,7 +32,7 @@ public class BoardPrettyPrinter {
     protected static char getChar(Board board, List<Vertex> stars, int row, int column) {
         Color color = board.getColorAt(row, column);
         if (color == null) {
-            if (stars.contains(new Vertex(row, column)))
+            if (stars.contains(Vertex.get(row, column)))
                 return '+';
             else
                 return '.';

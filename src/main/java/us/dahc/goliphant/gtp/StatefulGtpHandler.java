@@ -131,7 +131,7 @@ public class StatefulGtpHandler extends BaseGtpHandler {
             Set<Vertex> stones = new HashSet<>();
             try {
                 for (String arg : args)
-                    stones.add(new Vertex(arg));
+                    stones.add(Vertex.get(arg));
             } catch (Exception e) {
                 throw new GtpException("invalid coordinate");
             }

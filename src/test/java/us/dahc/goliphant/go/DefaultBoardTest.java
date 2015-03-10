@@ -54,7 +54,7 @@ public class DefaultBoardTest {
         assertEquals(0L, stdBoard.getZobristHash());
         assertNull(stdBoard.getLastMove());
         assertNull(stdBoard.getKoMove());
-        assertEquals(Board.DEFAULT_KOMI, stdBoard.getKomi(), 0.1F);
+        assertEquals(0.0F, stdBoard.getKomi(), 0.1F);
     }
 
     @Test

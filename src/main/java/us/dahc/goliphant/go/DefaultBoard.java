@@ -18,7 +18,7 @@ public class DefaultBoard implements Board {
     private Intersection[][] intersect;
     private Map<Intersection, Color> colors;
     private Map<Intersection, Group> groups;
-    private float komi = DEFAULT_KOMI;
+    private float komi = 0.0F;
     private int blackCaptures = 0;
     private int whiteCaptures = 0;
     private Move lastMove = null;
@@ -88,7 +88,7 @@ public class DefaultBoard implements Board {
         consecutivePasses = 0;
         koIntersection = null;
         zobristHash = 0L;
-        komi = DEFAULT_KOMI;
+        komi = 0.0F;
         initializeNewStructures();
     }
 

@@ -5,6 +5,10 @@ import java.util.Collection;
 
 public interface Board {
 
+    public static final int MAX_ROWS = 52;          // imposed by SGF, a-zA-Z
+    public static final int MAX_COLUMNS = 25;       // imposed by GTP, A-Z sans I
+    public static final float DEFAULT_KOMI = 7.5F;
+
     // Lifecycle
     public Board getCopy();
     public Board getCopy(Board board);

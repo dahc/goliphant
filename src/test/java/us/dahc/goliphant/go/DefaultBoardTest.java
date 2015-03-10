@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -55,7 +54,7 @@ public class DefaultBoardTest {
         assertEquals(0L, stdBoard.getZobristHash());
         assertNull(stdBoard.getLastMove());
         assertNull(stdBoard.getKoMove());
-        assertEquals(7.5F, stdBoard.getKomi(), 0.1F);
+        assertEquals(Board.DEFAULT_KOMI, stdBoard.getKomi(), 0.1F);
     }
 
     @Test

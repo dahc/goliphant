@@ -1,5 +1,6 @@
 package us.dahc.goliphant.util;
 
+import us.dahc.goliphant.go.Board;
 import us.dahc.goliphant.go.Color;
 
 import javax.inject.Inject;
@@ -15,10 +16,10 @@ public class ZobristTable implements Serializable {
 
     @Inject
     public ZobristTable(Random rand) {
-        table = new long[2][GoliphantConstants.MAX_ROWS][GoliphantConstants.MAX_COLUMNS];
+        table = new long[2][Board.MAX_ROWS][Board.MAX_COLUMNS];
         for (int i = 0; i < 2; i++)
-            for (int j = 0; j < GoliphantConstants.MAX_ROWS; j++)
-                for (int k = 0; k < GoliphantConstants.MAX_COLUMNS; k++)
+            for (int j = 0; j < Board.MAX_ROWS; j++)
+                for (int k = 0; k < Board.MAX_COLUMNS; k++)
                     table[i][j][k] = rand.nextLong();
     }
 
@@ -30,8 +31,8 @@ public class ZobristTable implements Serializable {
     public boolean equals(Object object) {
         if (object instanceof ZobristTable) {
             ZobristTable other = (ZobristTable) object;
-            for (int i = 0; i < GoliphantConstants.MAX_ROWS; i++)
-                for (int j = 0; j < GoliphantConstants.MAX_COLUMNS; j++)
+            for (int i = 0; i < Board.MAX_ROWS; i++)
+                for (int j = 0; j < Board.MAX_COLUMNS; j++)
                     if (getEntry(Color.Black, i, j) != other.getEntry(Color.Black, i, j)
                             || getEntry(Color.White, i, j) != other.getEntry(Color.White, i, j))
                         return false;

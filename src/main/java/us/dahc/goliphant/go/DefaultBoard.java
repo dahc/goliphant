@@ -11,9 +11,6 @@ import java.util.Map;
 
 import us.dahc.goliphant.util.ZobristTable;
 
-import static us.dahc.goliphant.util.GoliphantConstants.MAX_ROWS;
-import static us.dahc.goliphant.util.GoliphantConstants.MAX_COLUMNS;
-
 public class DefaultBoard implements Board {
 
     private int rows = 19;
@@ -21,7 +18,7 @@ public class DefaultBoard implements Board {
     private Intersection[][] intersect;
     private Map<Intersection, Color> colors;
     private Map<Intersection, Group> groups;
-    private float komi = 7.5F;
+    private float komi = DEFAULT_KOMI;
     private int blackCaptures = 0;
     private int whiteCaptures = 0;
     private Move lastMove = null;
@@ -91,7 +88,7 @@ public class DefaultBoard implements Board {
         consecutivePasses = 0;
         koIntersection = null;
         zobristHash = 0L;
-        komi = 7.5F;
+        komi = DEFAULT_KOMI;
         initializeNewStructures();
     }
 

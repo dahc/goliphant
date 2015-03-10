@@ -1,5 +1,7 @@
 package us.dahc.goliphant.gtp;
 
+import us.dahc.goliphant.core.ApplicationIdentity;
+
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,7 +14,7 @@ public class BaseGtpHandler implements GtpHandler {
     protected Map<String, Command> commands;
 
     @Inject
-    public BaseGtpHandler(GtpClientIdentity clientIdentity) {
+    public BaseGtpHandler(ApplicationIdentity clientIdentity) {
         commands = new HashMap<String, Command>();
         commands.put("name", new StubCommand(clientIdentity.getName()));
         commands.put("version", new StubCommand(clientIdentity.getVersion()));

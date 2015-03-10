@@ -1,4 +1,4 @@
-package us.dahc.goliphant.util;
+package us.dahc.goliphant.core;
 
 @SuppressWarnings("serial")
 public class GoliphantException extends Exception {

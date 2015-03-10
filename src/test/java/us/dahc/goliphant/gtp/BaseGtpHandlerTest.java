@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import us.dahc.goliphant.core.ApplicationIdentity;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.number.OrderingComparison.greaterThan;
@@ -19,7 +20,7 @@ public class BaseGtpHandlerTest {
 
     @Before
     public void setup() {
-        gtpHandler = new BaseGtpHandler(new GtpClientIdentity("Test Client", "1.0"));
+        gtpHandler = new BaseGtpHandler(new ApplicationIdentity("Test Client", "1.0"));
     }
 
     @Test

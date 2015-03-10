@@ -1,9 +1,10 @@
 package us.dahc.goliphant.util;
 
-import us.dahc.goliphant.go.Color;
-import us.dahc.goliphant.go.Move;
-import us.dahc.goliphant.go.Vertex;
-import us.dahc.goliphant.gtp.GtpClientIdentity;
+import us.dahc.goliphant.core.ApplicationIdentity;
+import us.dahc.goliphant.core.Color;
+import us.dahc.goliphant.core.GoliphantException;
+import us.dahc.goliphant.core.Move;
+import us.dahc.goliphant.core.Vertex;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -28,10 +29,10 @@ public class SgfGameLog {
     private List<Move> moves;
     private Collection<Vertex> whitePlacements;
     private Collection<Vertex> blackPlacements;
-    private GtpClientIdentity applicationIdentity;
+    private ApplicationIdentity applicationIdentity;
 
     @Inject
-    public SgfGameLog(GtpClientIdentity applicationIdentity) {
+    public SgfGameLog(ApplicationIdentity applicationIdentity) {
         moves = new ArrayList<>();
         whitePlacements = new ArrayList<>();
         blackPlacements = new ArrayList<>();

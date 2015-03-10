@@ -1,4 +1,4 @@
-package us.dahc.goliphant.go;
+package us.dahc.goliphant.core;
 
 import javax.annotation.Nullable;
 import java.util.Collection;

@@ -1,4 +1,4 @@
-package us.dahc.goliphant.go;
+package us.dahc.goliphant.core;
 
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;

@@ -1,4 +1,4 @@
-package us.dahc.goliphant.go;
+package us.dahc.goliphant.core;
 
 import javax.inject.Qualifier;
 import java.lang.annotation.Documented;

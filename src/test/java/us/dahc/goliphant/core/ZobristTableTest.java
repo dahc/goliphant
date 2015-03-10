@@ -1,4 +1,4 @@
-package us.dahc.goliphant.util;
+package us.dahc.goliphant.core;
 
 import static org.junit.Assert.assertEquals;
 

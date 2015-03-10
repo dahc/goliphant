@@ -1,7 +1,7 @@
 package us.dahc.goliphant.util;
 
-import us.dahc.goliphant.go.Board;
-import us.dahc.goliphant.go.Vertex;
+import us.dahc.goliphant.core.Board;
+import us.dahc.goliphant.core.Vertex;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,7 +9,7 @@ import java.util.List;
 
 import static java.lang.Integer.min;
 
-// FIXME: This is really janky for asymmetric boards. (But does anybody really care?)
+// FIXME: This is pretty much ignores asymmetric boards. (But does anybody really care?)
 public class StarPointHelper {
 
     public static List<Vertex> getDisplayPoints(Board board) {

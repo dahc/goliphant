@@ -1,4 +1,4 @@
-package us.dahc.goliphant.go;
+package us.dahc.goliphant.core;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
-import us.dahc.goliphant.util.ZobristTable;
 
 public class DefaultBoard implements Board {
 

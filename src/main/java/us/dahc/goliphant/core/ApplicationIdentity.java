@@ -1,11 +1,11 @@
-package us.dahc.goliphant.gtp;
+package us.dahc.goliphant.core;
 
-public class GtpClientIdentity {
+public class ApplicationIdentity {
 
     private String name;
     private String version;
 
-    public GtpClientIdentity(String name, String version) {
+    public ApplicationIdentity(String name, String version) {
         this.name = name;
         this.version = version;
     }

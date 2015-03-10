@@ -1,6 +1,4 @@
-package us.dahc.goliphant.go;
-
-import us.dahc.goliphant.util.GoliphantException;
+package us.dahc.goliphant.core;
 
 public class InvalidSizeException extends GoliphantException {
 

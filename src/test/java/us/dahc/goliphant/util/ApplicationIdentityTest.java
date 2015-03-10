@@ -1,17 +1,18 @@
-package us.dahc.goliphant.gtp;
+package us.dahc.goliphant.util;
 
 import org.junit.Before;
 import org.junit.Test;
+import us.dahc.goliphant.core.ApplicationIdentity;
 
 import static org.junit.Assert.assertEquals;
 
-public class GtpClientIdentityTest {
+public class ApplicationIdentityTest {
 
-    private GtpClientIdentity clientIdentity;
+    private ApplicationIdentity clientIdentity;
 
     @Before
     public void setup() {
-        clientIdentity = new GtpClientIdentity("Test Client", "1.0");
+        clientIdentity = new ApplicationIdentity("Test Client", "1.0");
     }
 
     @Test

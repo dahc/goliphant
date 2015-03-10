@@ -1,7 +1,4 @@
-package us.dahc.goliphant.util;
-
-import us.dahc.goliphant.go.Board;
-import us.dahc.goliphant.go.Color;
+package us.dahc.goliphant.core;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

@@ -1,4 +1,4 @@
-package us.dahc.goliphant.go;
+package us.dahc.goliphant.core;
 
 import javax.inject.Inject;
 import java.util.ArrayList;

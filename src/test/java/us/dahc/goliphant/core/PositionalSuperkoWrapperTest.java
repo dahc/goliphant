@@ -1,8 +1,7 @@
-package us.dahc.goliphant.go;
+package us.dahc.goliphant.core;
 
 import org.junit.Before;
 import org.junit.Test;
-import us.dahc.goliphant.util.ZobristTable;
 
 import java.util.Random;
 

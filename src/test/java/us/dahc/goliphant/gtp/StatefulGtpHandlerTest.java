@@ -4,9 +4,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import us.dahc.goliphant.go.Color;
-import us.dahc.goliphant.go.DefaultBoard;
-import us.dahc.goliphant.util.ZobristTable;
+import us.dahc.goliphant.core.Color;
+import us.dahc.goliphant.core.DefaultBoard;
+import us.dahc.goliphant.core.ZobristTable;
+import us.dahc.goliphant.core.ApplicationIdentity;
 
 import java.util.Random;
 
@@ -22,7 +23,7 @@ public class StatefulGtpHandlerTest {
 
     @Before
     public void setup() {
-        gtpHandler = new StatefulGtpHandler(new GtpClientIdentity("Test Client", "1.0"),
+        gtpHandler = new StatefulGtpHandler(new ApplicationIdentity("Test Client", "1.0"),
                                             new DefaultBoard(new ZobristTable(new Random())));
     }
 

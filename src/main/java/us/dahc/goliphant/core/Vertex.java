@@ -1,4 +1,4 @@
-package us.dahc.goliphant.go;
+package us.dahc.goliphant.core;
 
 import static us.dahc.goliphant.gtp.GtpConstants.COLUMN_NAMES;
 

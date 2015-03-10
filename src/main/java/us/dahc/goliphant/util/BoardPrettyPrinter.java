@@ -1,8 +1,8 @@
 package us.dahc.goliphant.util;
 
-import us.dahc.goliphant.go.Board;
-import us.dahc.goliphant.go.Color;
-import us.dahc.goliphant.go.Vertex;
+import us.dahc.goliphant.core.Board;
+import us.dahc.goliphant.core.Color;
+import us.dahc.goliphant.core.Vertex;
 import us.dahc.goliphant.gtp.GtpConstants;
 
 import java.util.Formatter;
@@ -29,7 +29,7 @@ public class BoardPrettyPrinter {
         return stringBuilder.toString();
     }
 
-    public static char getChar(Board board, List<Vertex> stars, int row, int column) {
+    protected static char getChar(Board board, List<Vertex> stars, int row, int column) {
         Color color = board.getColorAt(row, column);
         if (color == null) {
             if (stars.contains(new Vertex(row, column)))

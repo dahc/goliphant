@@ -1,8 +1,7 @@
-package us.dahc.goliphant.util;
+package us.dahc.goliphant.core;
 
 import org.junit.Before;
 import org.junit.Test;
-import us.dahc.goliphant.core.ApplicationIdentity;
 
 import static org.junit.Assert.assertEquals;
 

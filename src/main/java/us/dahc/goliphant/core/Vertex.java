@@ -6,6 +6,9 @@ public class Vertex {
 
     public static final Vertex PASS = new Vertex(-1, -1);
 
+    protected final int row;
+    protected final int column;
+
     private static final Vertex[][] values = new Vertex[Board.MAX_ROWS][Board.MAX_COLUMNS];
 
     static {
@@ -13,9 +16,6 @@ public class Vertex {
             for (int j = 0; j < Board.MAX_COLUMNS; j++)
                 values[i][j] = new Vertex(i, j);
     }
-
-    protected final int row;
-    protected final int column;
 
     protected Vertex(int row, int column) {
         this.row = row;

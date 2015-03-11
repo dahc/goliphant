@@ -145,7 +145,7 @@ public class DefaultBoard implements Board {
         if (koIntersection == null)
             return null;
         else
-            return new Move(lastMove.getColor().getOpponent(), koIntersection.getRow(), koIntersection.getColumn());
+            return Move.get(lastMove.getColor().getOpponent(), koIntersection.getRow(), koIntersection.getColumn());
     }
 
     @Override

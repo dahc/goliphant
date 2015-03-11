@@ -46,7 +46,7 @@ public class DefaultBoardTest {
                 assertThat("initial (" + i + ", " + j + ") emptiness",
                         stdBoard.getColorAt(i, j), is(nullValue()));
                 assertThat("initial (" + i + ", " + j + ") legality",
-                        stdBoard.isLegal(new Move(Color.Black, i, j)));
+                        stdBoard.isLegal(Move.get(Color.Black, i, j)));
             }
         }
         assertEquals(19 * 19 + 1, stdBoard.getLegalMoveVertices(Color.Black).size());
@@ -73,40 +73,40 @@ public class DefaultBoardTest {
     @Test
     public void testPlay() {
         assertEquals(null, stdBoard.getColorAt(3, 3));
-        stdBoard.play(new Move(Color.Black, 3, 3));
+        stdBoard.play(Move.get(Color.Black, 3, 3));
         assertEquals(Color.Black, stdBoard.getColorAt(3, 3));
-        assertEquals(new Move(Color.Black, 3, 3), stdBoard.getLastMove());
-        assertThat("play on other stone", !stdBoard.isLegal(new Move(Color.White, 3, 3)));
+        assertEquals(Move.get(Color.Black, 3, 3), stdBoard.getLastMove());
+        assertThat("play on other stone", !stdBoard.isLegal(Move.get(Color.White, 3, 3)));
         for (int i = 0; i < stdBoard.getRows(); i++)
             for (int j = 0; j < stdBoard.getColumns(); j++)
                 if (i != 3 || j != 3)
                     assertThat("wide open square (" + i + ", " + j + ") legality",
-                            stdBoard.isLegal(new Move(Color.White, i, j)));
+                            stdBoard.isLegal(Move.get(Color.White, i, j)));
         assertEquals(19 * 19, stdBoard.getLegalMoveVertices(Color.White).size());
         assertNotEquals(0L, stdBoard.getZobristHash());
     }
 
     @Test
     public void testCornerCapture() {
-        stdBoard.play(new Move(Color.Black, 0, 1));
-        stdBoard.play(new Move(Color.White, 0, 0));
-        stdBoard.play(new Move(Color.Black, 1, 0));
+        stdBoard.play(Move.get(Color.Black, 0, 1));
+        stdBoard.play(Move.get(Color.White, 0, 0));
+        stdBoard.play(Move.get(Color.Black, 1, 0));
         assertThat("stone was captured", stdBoard.getColorAt(0, 0), is(nullValue()));
         assertThat("black did capture", stdBoard.getStonesCapturedBy(Color.Black), is(equalTo(1)));
         assertThat("white did not capture", stdBoard.getStonesCapturedBy(Color.White), is(equalTo(0)));
         assertThat("capturing stones remain", stdBoard.getColorAt(0, 1), is(Color.Black));
         assertThat("capturing stones remain", stdBoard.getColorAt(1, 0), is(Color.Black));
-        assertThat("corner now illegal for white", !stdBoard.isLegal(new Move(Color.White, 0, 0)));
-        assertThat("corner legal for black", stdBoard.isLegal(new Move(Color.Black, 0, 0)));
+        assertThat("corner now illegal for white", !stdBoard.isLegal(Move.get(Color.White, 0, 0)));
+        assertThat("corner legal for black", stdBoard.isLegal(Move.get(Color.Black, 0, 0)));
     }
 
     @Test
     public void testMultiCapture() {
-        stdBoard.play(new Move(Color.Black, 1, 1));
-        stdBoard.play(new Move(Color.White, 0, 1));
-        stdBoard.play(new Move(Color.Black, 1, 0));
-        stdBoard.play(new Move(Color.White, 0, 0));
-        stdBoard.play(new Move(Color.Black, 0, 2));
+        stdBoard.play(Move.get(Color.Black, 1, 1));
+        stdBoard.play(Move.get(Color.White, 0, 1));
+        stdBoard.play(Move.get(Color.Black, 1, 0));
+        stdBoard.play(Move.get(Color.White, 0, 0));
+        stdBoard.play(Move.get(Color.Black, 0, 2));
         assertThat("immediate neighbor was captured", stdBoard.getColorAt(0, 1), is(nullValue()));
         assertThat("other stone was captured", stdBoard.getColorAt(0, 0), is(nullValue()));
         assertEquals(2, stdBoard.getStonesCapturedBy(Color.Black));
@@ -115,34 +115,34 @@ public class DefaultBoardTest {
 
     @Test
     public void testSimpleKo() {
-        stdBoard.play(new Move(Color.Black, 5, 5));
-        stdBoard.play(new Move(Color.White, 5, 6));
-        stdBoard.play(new Move(Color.Black, 6, 4));
-        stdBoard.play(new Move(Color.White, 6, 7));
-        stdBoard.play(new Move(Color.Black, 7, 5));
-        stdBoard.play(new Move(Color.White, 7, 6));
-        stdBoard.play(new Move(Color.Black, 6, 6));
-        assertThat("surrounded but capturing", stdBoard.isLegal(new Move(Color.White, 6, 5)));
-        stdBoard.play(new Move(Color.White, 6, 5));
+        stdBoard.play(Move.get(Color.Black, 5, 5));
+        stdBoard.play(Move.get(Color.White, 5, 6));
+        stdBoard.play(Move.get(Color.Black, 6, 4));
+        stdBoard.play(Move.get(Color.White, 6, 7));
+        stdBoard.play(Move.get(Color.Black, 7, 5));
+        stdBoard.play(Move.get(Color.White, 7, 6));
+        stdBoard.play(Move.get(Color.Black, 6, 6));
+        assertThat("surrounded but capturing", stdBoard.isLegal(Move.get(Color.White, 6, 5)));
+        stdBoard.play(Move.get(Color.White, 6, 5));
         assertThat("initial capture occurred", stdBoard.getColorAt(6, 6), is(nullValue()));
-        assertThat("simple ko fact", stdBoard.getKoMove().equals(new Move(Color.Black, 6, 6)));
-        assertThat("simple ko illegality", !stdBoard.isLegal(new Move(Color.Black, 6, 6)));
-        stdBoard.play(new Move(Color.Black, 8, 8));
-        assertThat("no longer ko", stdBoard.isLegal(new Move(Color.Black, 6, 6)));
+        assertThat("simple ko fact", stdBoard.getKoMove().equals(Move.get(Color.Black, 6, 6)));
+        assertThat("simple ko illegality", !stdBoard.isLegal(Move.get(Color.Black, 6, 6)));
+        stdBoard.play(Move.get(Color.Black, 8, 8));
+        assertThat("no longer ko", stdBoard.isLegal(Move.get(Color.Black, 6, 6)));
     }
 
     @Test
     public void testSimpleKo_PassReset() {
-        stdBoard.play(new Move(Color.Black, 5, 5));
-        stdBoard.play(new Move(Color.White, 5, 6));
-        stdBoard.play(new Move(Color.Black, 6, 4));
-        stdBoard.play(new Move(Color.White, 6, 7));
-        stdBoard.play(new Move(Color.Black, 7, 5));
-        stdBoard.play(new Move(Color.White, 7, 6));
-        stdBoard.play(new Move(Color.Black, 6, 6));
-        stdBoard.play(new Move(Color.White, 6, 5));
-        assertThat("move is ko", stdBoard.getKoMove().equals(new Move(Color.Black, 6, 6)));
-        stdBoard.play(new Move(Color.Black, Vertex.PASS));
+        stdBoard.play(Move.get(Color.Black, 5, 5));
+        stdBoard.play(Move.get(Color.White, 5, 6));
+        stdBoard.play(Move.get(Color.Black, 6, 4));
+        stdBoard.play(Move.get(Color.White, 6, 7));
+        stdBoard.play(Move.get(Color.Black, 7, 5));
+        stdBoard.play(Move.get(Color.White, 7, 6));
+        stdBoard.play(Move.get(Color.Black, 6, 6));
+        stdBoard.play(Move.get(Color.White, 6, 5));
+        assertThat("move is ko", stdBoard.getKoMove().equals(Move.get(Color.Black, 6, 6)));
+        stdBoard.play(Move.get(Color.Black, Vertex.PASS));
         assertThat("no longer ko", stdBoard.getKoMove(), is(nullValue()));
     }
 
@@ -151,25 +151,25 @@ public class DefaultBoardTest {
         assertTrue(stdBoard.getLegalMoveVertices(Color.Black).contains(Vertex.PASS));
         assertTrue(stdBoard.getLegalMoveVertices(Color.White).contains(Vertex.PASS));
         assertEquals(0, stdBoard.getConsecutivePasses());
-        stdBoard.play(new Move(Color.Black, 5, 5));
+        stdBoard.play(Move.get(Color.Black, 5, 5));
         assertEquals(0, stdBoard.getConsecutivePasses());
-        stdBoard.play(new Move(Color.White, Vertex.PASS));
+        stdBoard.play(Move.get(Color.White, Vertex.PASS));
         assertEquals(1, stdBoard.getConsecutivePasses());
-        stdBoard.play(new Move(Color.Black, 5, 6));
+        stdBoard.play(Move.get(Color.Black, 5, 6));
         assertEquals(0, stdBoard.getConsecutivePasses());
-        stdBoard.play(new Move(Color.White, Vertex.PASS));
+        stdBoard.play(Move.get(Color.White, Vertex.PASS));
         assertEquals(1, stdBoard.getConsecutivePasses());
-        stdBoard.play(new Move(Color.Black, Vertex.PASS));
+        stdBoard.play(Move.get(Color.Black, Vertex.PASS));
         assertEquals(2, stdBoard.getConsecutivePasses());
     }
 
     @Test
     public void testPassingLeavesZobristPositionUnchanged() {
-        stdBoard.play(new Move(Color.Black, Vertex.PASS));
+        stdBoard.play(Move.get(Color.Black, Vertex.PASS));
         assertEquals(0, stdBoard.getZobristHash());
-        stdBoard.play(new Move(Color.White, 5, 5));
+        stdBoard.play(Move.get(Color.White, 5, 5));
         long hash = stdBoard.getZobristHash();
-        stdBoard.play(new Move(Color.Black, Vertex.PASS));
+        stdBoard.play(Move.get(Color.Black, Vertex.PASS));
         assertEquals(hash, stdBoard.getZobristHash());
     }
 
@@ -185,7 +185,7 @@ public class DefaultBoardTest {
     @Test
     public void testHashHistory() {
         assertEquals(0, stdBoard.getPreviousHashes().size());
-        stdBoard.play(new Move(Color.Black, 17, 17));
+        stdBoard.play(Move.get(Color.Black, 17, 17));
         assertEquals(1, stdBoard.getPreviousHashes().size());
         assertThat("current is not in previous", !stdBoard.getPreviousHashes().contains(stdBoard.getZobristHash()));
         playSomeStuff(stdBoard);
@@ -321,20 +321,20 @@ public class DefaultBoardTest {
     }
 
     private void playSomeStuff(Board board) {
-        board.play(new Move(Color.Black, 3, 3));
-        board.play(new Move(Color.White, 3, 16));
-        board.play(new Move(Color.Black, 4, 17));
-        board.play(new Move(Color.White, 2, 2));
-        board.play(new Move(Color.Black, 15, 3));
-        board.play(new Move(Color.White, 8, 7));
-        board.play(new Move(Color.Black, 5, 5));
-        board.play(new Move(Color.White, 5, 6));
-        board.play(new Move(Color.Black, 6, 4));
-        board.play(new Move(Color.White, 6, 7));
-        board.play(new Move(Color.Black, 7, 5));
-        board.play(new Move(Color.White, 7, 6));
-        board.play(new Move(Color.Black, 6, 6));
-        board.play(new Move(Color.White, 6, 5));
-        board.play(new Move(Color.Black, 8, 8));
+        board.play(Move.get(Color.Black, 3, 3));
+        board.play(Move.get(Color.White, 3, 16));
+        board.play(Move.get(Color.Black, 4, 17));
+        board.play(Move.get(Color.White, 2, 2));
+        board.play(Move.get(Color.Black, 15, 3));
+        board.play(Move.get(Color.White, 8, 7));
+        board.play(Move.get(Color.Black, 5, 5));
+        board.play(Move.get(Color.White, 5, 6));
+        board.play(Move.get(Color.Black, 6, 4));
+        board.play(Move.get(Color.White, 6, 7));
+        board.play(Move.get(Color.Black, 7, 5));
+        board.play(Move.get(Color.White, 7, 6));
+        board.play(Move.get(Color.Black, 6, 6));
+        board.play(Move.get(Color.White, 6, 5));
+        board.play(Move.get(Color.Black, 8, 8));
     }
 }

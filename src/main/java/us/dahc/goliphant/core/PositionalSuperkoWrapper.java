@@ -41,7 +41,7 @@ public class PositionalSuperkoWrapper extends AbstractBoardWrapper {
         Collection<? extends Vertex> vertices = wrappedBoard.getLegalMoveVertices(player);
         List<? extends Vertex> legalVertices = new ArrayList<>(vertices);
         for (Vertex vertex : vertices)
-            if (!isLegal(new Move(player, vertex)))
+            if (!isLegal(Move.get(player, vertex)))
                 legalVertices.remove(vertex);
         return legalVertices;
     }

@@ -2,25 +2,38 @@ package us.dahc.goliphant.core;
 
 public class Move {
 
-    final Color color;
-    final Vertex vertex;
+    protected final Color color;
+    protected final Vertex vertex;
 
-    public Move(Color color, int row, int column) {
-        this.vertex = Vertex.get(row, column);
-        this.color = color;
+    private static final Move BLACK_PASS = new Move(Color.Black, Vertex.PASS);
+    private static final Move WHITE_PASS = new Move(Color.White, Vertex.PASS);
+    private static final Move[][][] values = new Move[2][Board.MAX_ROWS][Board.MAX_COLUMNS];
+
+    static {
+        for (int i = 0; i < 2; i++)
+            for (int j = 0; j < Board.MAX_ROWS; j++)
+                for (int k = 0; k < Board.MAX_COLUMNS; k++)
+                    values[i][j][k] = new Move(i == 0 ? Color.Black : Color.White, Vertex.get(j, k));
     }
 
-    public Move(Color color, Vertex vertex) {
+    protected Move(Color color, Vertex vertex) {
         this.vertex = vertex;
         this.color = color;
     }
 
-    public Move(String color, String vertex) {
-        this.vertex = Vertex.get(vertex);
-        if (color.toUpperCase().charAt(0) == 'B')
-            this.color = Color.Black;
+    public static Move get(Color color, int row, int column) {
+        return values[color == Color.Black ? 0 : 1][row][column];
+    }
+
+    public static Move get(Color color, Vertex vertex) {
+        if (vertex.equals(Vertex.PASS))
+            return color == Color.Black ? BLACK_PASS : WHITE_PASS;
         else
-            this.color = Color.White;
+            return values[color == Color.Black ? 0 : 1][vertex.getRow()][vertex.getColumn()];
+    }
+
+    public static Move get(String color, String vertex) {
+        return get(color.toUpperCase().charAt(0) == 'B' ? Color.Black : Color.White, Vertex.get(vertex));
     }
 
     public Color getColor() {

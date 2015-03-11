@@ -95,7 +95,7 @@ public class StatefulGtpHandler extends BaseGtpHandler {
         public String exec(String... args) throws GtpException {
             Move move;
             try {
-                move = new Move(args[0], args[1]);
+                move = Move.get(args[0], args[1]);
             } catch (Exception e) {
                 throw new GtpException("invalid color or coordinate");
             }
@@ -140,7 +140,7 @@ public class StatefulGtpHandler extends BaseGtpHandler {
             if (stones.size() < args.length)
                 throw new GtpException("repeated vertex");
             for (Vertex stone : stones)
-                currentBoard.play(new Move(Color.Black, stone));
+                currentBoard.play(Move.get(Color.Black, stone));
             return StringUtils.EMPTY;
         }
     }
@@ -160,7 +160,7 @@ public class StatefulGtpHandler extends BaseGtpHandler {
                 throw new GtpException("invalid handicap");
             StringBuilder stringBuilder = new StringBuilder();
             for (Vertex stone : StarPointHelper.getHandicapPoints(currentBoard, handicap)) {
-                currentBoard.play(new Move(Color.Black, stone));
+                currentBoard.play(Move.get(Color.Black, stone));
                 stringBuilder.append(stone.toString()).append(' ');
             }
             return stringBuilder.toString();

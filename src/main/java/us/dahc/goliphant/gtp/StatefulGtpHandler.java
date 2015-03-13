@@ -1,14 +1,14 @@
 package us.dahc.goliphant.gtp;
 
 import org.apache.commons.lang3.StringUtils;
+import us.dahc.goliphant.core.ApplicationIdentity;
 import us.dahc.goliphant.core.Board;
 import us.dahc.goliphant.core.Color;
-import us.dahc.goliphant.core.FilterList;
+import us.dahc.goliphant.core.filters.FilterList;
 import us.dahc.goliphant.core.InvalidSizeException;
 import us.dahc.goliphant.core.Move;
-import us.dahc.goliphant.core.SuperkoFilter;
 import us.dahc.goliphant.core.Vertex;
-import us.dahc.goliphant.core.ApplicationIdentity;
+import us.dahc.goliphant.core.filters.SuperkoFilter;
 import us.dahc.goliphant.util.BoardPrettyPrinter;
 import us.dahc.goliphant.util.StarPointHelper;
 

@@ -1,4 +1,8 @@
-package us.dahc.goliphant.core;
+package us.dahc.goliphant.core.filters;
+
+import us.dahc.goliphant.core.Board;
+import us.dahc.goliphant.core.Color;
+import us.dahc.goliphant.core.Move;
 
 import java.util.ArrayList;
 import java.util.Collection;

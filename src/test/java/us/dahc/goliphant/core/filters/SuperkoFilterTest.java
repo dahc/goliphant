@@ -1,7 +1,12 @@
-package us.dahc.goliphant.core;
+package us.dahc.goliphant.core.filters;
 
 import org.junit.Before;
 import org.junit.Test;
+import us.dahc.goliphant.core.Board;
+import us.dahc.goliphant.core.Color;
+import us.dahc.goliphant.core.DefaultBoard;
+import us.dahc.goliphant.core.Move;
+import us.dahc.goliphant.core.ZobristTable;
 
 import java.util.Random;
 

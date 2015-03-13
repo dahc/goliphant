@@ -17,7 +17,6 @@ public interface Board {
     // Geometry
     public int getRows();
     public int getColumns();
-    public Vertex getVertexAt(int row, int column);
     public Collection<? extends Vertex> getAllVertices();
     public Collection<? extends Vertex> getNeighbors(Vertex vertex);
     public Collection<? extends Vertex> getDiagonals(Vertex vertex);

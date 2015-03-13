@@ -164,11 +164,6 @@ public class DefaultBoard implements Board {
         return result;
     }
 
-    @Override
-    public Vertex getVertexAt(int row, int column) {
-        return intersect[row][column];
-    }
-
     @Override @Nullable
     public Color getColorAt(int row, int column) {
         return colors.get(intersect[row][column]);

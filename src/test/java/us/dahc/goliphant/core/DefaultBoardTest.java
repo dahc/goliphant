@@ -179,7 +179,7 @@ public class DefaultBoardTest {
         assertEquals(stdBoard.getRows() * stdBoard.getColumns(), allVertices.size());
         for (int i = 0; i < stdBoard.getRows(); i++)
             for (int j = 0; j < stdBoard.getColumns(); j++)
-                assertTrue(allVertices.contains(stdBoard.getVertexAt(i, j)));
+                assertTrue(allVertices.contains(Vertex.get(i, j)));
     }
 
     @Test

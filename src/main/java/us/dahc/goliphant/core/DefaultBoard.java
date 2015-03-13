@@ -180,13 +180,13 @@ public class DefaultBoard implements Board {
     }
 
     @Override
-    public List<Vertex> getLegalMoveVertices(Color player) {
-        List<Vertex> result = new ArrayList<>(rows * columns + 1);
-        result.add(Vertex.PASS);
+    public List<Move> getLegalMoves(Color player) {
+        List<Move> result = new ArrayList<>(rows * columns + 1);
+        result.add(Move.get(player, Vertex.PASS));
         for (int i = 0; i < rows; i++)
             for (int j = 0; j < columns; j++)
                 if (isLegal(player, intersect[i][j]))
-                    result.add(intersect[i][j]);
+                    result.add(Move.get(player, i, j));
         return result;
     }
 

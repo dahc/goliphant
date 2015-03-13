@@ -9,18 +9,21 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class PositionalSuperkoWrapperTest {
+public class SuperkoFilterTest {
 
     private Board board;
+    private FilterList filterList;
 
     @Before
     public void setup() {
-        board = new PositionalSuperkoWrapper(new DefaultBoard(new ZobristTable(new Random())));
+        board = new DefaultBoard(new DefaultBoard(new ZobristTable(new Random())));
+        filterList = new FilterList();
+        filterList.add(new SuperkoFilter());
     }
 
     @Test
     public void testWithoutSuperKo() {
-        assertEquals(board.getRows() * board.getColumns() + 1, board.getLegalMoveVertices(Color.Black).size());
+        assertEquals(board.getRows() * board.getColumns() + 1, filterList.apply(board, Color.Black).size());
     }
 
     @Test
@@ -33,10 +36,8 @@ public class PositionalSuperkoWrapperTest {
         board.play(Move.get(Color.White, 0, 1)); // repeatable
         board.play(Move.get(Color.White, 0, 2));
         board.play(Move.get(Color.Black, 0, 0));
-        assertFalse(board.isLegal(Move.get(Color.White, 0, 1)));
-        assertTrue(board.isLegal(Move.get(Color.Black, 0, 1)));
-        assertFalse(board.getLegalMoveVertices(Color.White).contains(board.getVertexAt(0, 1)));
-        assertTrue(board.getLegalMoveVertices(Color.Black).contains(board.getVertexAt(0, 1)));
+        assertFalse(filterList.apply(board, Color.White).contains(Move.get(Color.White, 0, 1)));
+        assertTrue(filterList.apply(board, Color.Black).contains(Move.get(Color.Black, 0, 1)));
     }
 
 }

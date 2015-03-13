@@ -3,9 +3,10 @@ package us.dahc.goliphant.gtp;
 import org.apache.commons.lang3.StringUtils;
 import us.dahc.goliphant.core.Board;
 import us.dahc.goliphant.core.Color;
+import us.dahc.goliphant.core.FilterList;
 import us.dahc.goliphant.core.InvalidSizeException;
 import us.dahc.goliphant.core.Move;
-import us.dahc.goliphant.core.SuperkoAware;
+import us.dahc.goliphant.core.SuperkoFilter;
 import us.dahc.goliphant.core.Vertex;
 import us.dahc.goliphant.core.ApplicationIdentity;
 import us.dahc.goliphant.util.BoardPrettyPrinter;
@@ -20,13 +21,16 @@ import java.util.Set;
 public class StatefulGtpHandler extends BaseGtpHandler {
 
     protected Board currentBoard;
+    protected FilterList filterList;
     protected List<Board> pastBoards;
 
     @Inject
-    public StatefulGtpHandler(ApplicationIdentity clientIdentity, @SuperkoAware Board board) {
+    public StatefulGtpHandler(ApplicationIdentity clientIdentity, Board board) {
         super(clientIdentity);
         pastBoards = new ArrayList<>();
         currentBoard = board;
+        filterList = new FilterList();
+        filterList.add(new SuperkoFilter());
         commands.put("boardsize", new BoardsizeCommand());
         commands.put("clear_board", new ClearBoardCommand());
         commands.put("showboard", new ShowBoardCommand());
@@ -99,7 +103,7 @@ public class StatefulGtpHandler extends BaseGtpHandler {
             } catch (Exception e) {
                 throw new GtpException("invalid color or coordinate");
             }
-            if (currentBoard.getLegalMoveVertices(move.getColor()).contains(move.getVertex())) {
+            if (filterList.apply(currentBoard, move.getColor()).contains(move)) {
                 pastBoards.add(currentBoard.getCopy());
                 currentBoard.play(move);
             } else {

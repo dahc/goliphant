@@ -34,7 +34,7 @@ public interface Board {
 
     // Play (semantics may vary by implementation)
     public boolean isLegal(Move move);
-    public Collection<? extends Vertex> getLegalMoveVertices(Color player);
+    public Collection<? extends Move> getLegalMoves(Color player);
     public void play(Move move);
 
     // Superko Facilities

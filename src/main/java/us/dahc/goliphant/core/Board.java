@@ -2,6 +2,7 @@ package us.dahc.goliphant.core;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.List;
 
 public interface Board {
 
@@ -10,7 +11,7 @@ public interface Board {
 
     // Lifecycle
     public Board getCopy();
-    public Board getCopy(Board board);
+    public void setTo(Board board);
     public void reset();
 
     // Geometry
@@ -39,6 +40,6 @@ public interface Board {
 
     // Superko Facilities
     public long getZobristHash();
-    public Collection<Long> getPreviousHashes();
+    public List<Long> getPreviousHashes();
 
 }

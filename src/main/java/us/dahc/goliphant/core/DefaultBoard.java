@@ -20,7 +20,7 @@ public class DefaultBoard implements Board {
     private int blackCaptures = 0;
     private int whiteCaptures = 0;
     private Move lastMove = null;
-    private Intersection koIntersection = null;
+    private Vertex koVertex = null;
     private ZobristTable zobristTable;
     private long zobristHash = 0L;
     private List<Long> hashHistory;
@@ -29,53 +29,10 @@ public class DefaultBoard implements Board {
     @Inject
     public DefaultBoard(ZobristTable zobristTable) {
         this.zobristTable = zobristTable;
-        initializeNewStructures();
-    }
-
-    // FIXME: Refactor this constructor/copy/reset mess.
-
-    protected DefaultBoard(DefaultBoard board) {
-        rows = board.getRows();
-        columns = board.getColumns();
-        intersect = board.intersect;
-        colors = new HashMap<>(board.colors);
-        groups = new HashMap<>(board.groups.size());
-        for (Group group : new HashSet<Group>(board.groups.values()))
-            groups.put(group.getRepresentative(), new Group(group));
-        for (Intersection stone : colors.keySet())
-            groups.put(stone, groups.get(board.groups.get(stone).getRepresentative()));
-        hashHistory = new ArrayList<>(board.hashHistory);
-        blackCaptures = board.blackCaptures;
-        whiteCaptures = board.whiteCaptures;
-        komi = board.komi;
-        lastMove = board.lastMove;
-        consecutivePasses = board.consecutivePasses;
-        koIntersection = board.koIntersection;
-        zobristTable = board.zobristTable;
-        zobristHash = board.zobristHash;
-    }
-
-    protected DefaultBoard(ZobristTable zobristTable, Board board) {
-        this.zobristTable = zobristTable;
-        rows = board.getRows();
-        columns = board.getColumns();
-        blackCaptures = board.getStonesCapturedBy(Color.Black);
-        whiteCaptures = board.getStonesCapturedBy(Color.White);
-        komi = board.getKomi();
-        lastMove = board.getLastMove();
-        consecutivePasses = board.getConsecutivePasses();
-        if (board.getKoMove() != null)
-            koIntersection = intersect[board.getKoMove().getRow()][board.getKoMove().getColumn()];
-        initializeNewStructures();
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                if (board.getColorAt(i, j) != null) {
-                    colors.put(intersect[i][j], board.getColorAt(i, j));
-                    zobristHash ^= zobristTable.getEntry(board.getColorAt(i, j), i, j);
-                }
-            }
-        }
-        computeGroups();
+        initializeIntersections();
+        hashHistory = new ArrayList<>();
+        colors = new HashMap<>();
+        groups = new HashMap<>();
     }
 
     @Override
@@ -84,10 +41,12 @@ public class DefaultBoard implements Board {
         whiteCaptures = 0;
         lastMove = null;
         consecutivePasses = 0;
-        koIntersection = null;
+        koVertex = null;
         zobristHash = 0L;
         komi = 0.0F;
-        initializeNewStructures();
+        hashHistory.clear();
+        colors.clear();
+        groups.clear();
     }
 
     @Override
@@ -97,19 +56,24 @@ public class DefaultBoard implements Board {
         this.rows = rows;
         this.columns = columns;
         reset();
+        initializeIntersections();
     }
 
     @Override
     public DefaultBoard getCopy() {
-        return new DefaultBoard(this);
+        DefaultBoard board = new DefaultBoard(zobristTable);
+        board.setBasics(this);
+        board.copyStructures(this);
+        return board;
     }
 
     @Override
-    public DefaultBoard getCopy(Board board) {
+    public void setTo(Board board) {
+        setBasics(board);
         if (board instanceof DefaultBoard)
-            return new DefaultBoard((DefaultBoard) board);
+            copyStructures((DefaultBoard) board);
         else
-            return new DefaultBoard(zobristTable, board);
+            computeStructures(board);
     }
 
     @Override
@@ -142,16 +106,16 @@ public class DefaultBoard implements Board {
 
     @Override @Nullable
     public Move getKoMove() {
-        if (koIntersection == null)
+        if (koVertex == null)
             return null;
         else
-            return Move.get(lastMove.getColor().getOpponent(), koIntersection.getRow(), koIntersection.getColumn());
+            return Move.get(lastMove.getColor().getOpponent(), koVertex.getRow(), koVertex.getColumn());
     }
 
     @Override
     public void play(Move move) {
         lastMove = move;
-        koIntersection = null;
+        koVertex = null;
         if (move.getVertex().equals(Vertex.PASS)) {
             consecutivePasses++;
         } else {
@@ -176,7 +140,8 @@ public class DefaultBoard implements Board {
     public boolean isLegal(Move move) {
         if (move.getVertex().equals(Vertex.PASS))
             return true;
-        return isLegal(move.getColor(), intersect[move.getRow()][move.getColumn()]);
+        else
+            return isLegal(move.getColor(), intersect[move.getRow()][move.getColumn()]);
     }
 
     @Override
@@ -264,7 +229,7 @@ public class DefaultBoard implements Board {
     }
 
     private boolean isLegal(Color color, Intersection intersection) {
-        if (colors.containsKey(intersection) || intersection == koIntersection)
+        if (colors.containsKey(intersection) || intersection == koVertex)
             return false;
         List<Intersection> neighbors = intersection.getNeighbors();
         for (Intersection neighbor : neighbors)
@@ -291,20 +256,41 @@ public class DefaultBoard implements Board {
         return false;
     }
 
-    private void initializeNewStructures() {
-        intersect = new Intersection[rows][columns];
-        colors = new HashMap<>();
-        groups = new HashMap<>();
-        for (int i = 0; i < rows; i++)
-            for (int j = 0; j < columns; j++)
-                intersect[i][j] = new Intersection(i, j);
-        for (int i = 0; i < rows; i++)
-            for (int j = 0; j < columns; j++)
-                intersect[i][j].initGeometry();
-        hashHistory = new ArrayList<>();
+    private void setBasics(Board board) {
+        rows = board.getRows();
+        columns = board.getColumns();
+        blackCaptures = board.getStonesCapturedBy(Color.Black);
+        whiteCaptures = board.getStonesCapturedBy(Color.White);
+        komi = board.getKomi();
+        lastMove = board.getLastMove();
+        consecutivePasses = board.getConsecutivePasses();
+        koVertex = getKoMove() == null ? null : getKoMove().getVertex();
+        zobristHash = board.getZobristHash();
+        hashHistory = new ArrayList<>(board.getPreviousHashes());
     }
 
-    private void computeGroups() {
+    private void copyStructures(DefaultBoard board) {
+        intersect = board.intersect;
+        colors = new HashMap<>(board.colors);
+        groups = new HashMap<>(board.groups.size());
+        for (Group group : new HashSet<>(board.groups.values()))
+            groups.put(group.getRepresentative(), new Group(group));
+        for (Intersection stone : colors.keySet())
+            groups.put(stone, groups.get(board.groups.get(stone).getRepresentative()));
+    }
+
+    private void computeStructures(Board board) {
+        if (intersect.length != board.getRows() || intersect[0].length != board.getColumns()) {
+            try {
+                resize(board.getRows(), board.getColumns());
+            } catch (GoliphantException e) {
+                // impossible since these dimensions came from an existing board
+            }
+        }
+        for (int i = 0; i < rows; i++)
+            for (int j = 0; j < columns; j++)
+                if (board.getColorAt(i, j) != null)
+                    colors.put(intersect[i][j], board.getColorAt(i, j));
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                 if (!groups.containsKey(intersect[i][j])) {
@@ -315,6 +301,16 @@ public class DefaultBoard implements Board {
                 }
             }
         }
+    }
+
+    private void initializeIntersections() {
+        intersect = new Intersection[rows][columns];
+        for (int i = 0; i < rows; i++)
+            for (int j = 0; j < columns; j++)
+                intersect[i][j] = new Intersection(i, j);
+        for (int i = 0; i < rows; i++)
+            for (int j = 0; j < columns; j++)
+                intersect[i][j].initGeometry();
     }
 
     protected class Group {
@@ -368,7 +364,7 @@ public class DefaultBoard implements Board {
                             groups.get(neighbor).pseudoLiberties++;
                 }
                 if (members.size() == 1 && group.members.size() == 1 && group.pseudoLiberties == 1)
-                    koIntersection = members.get(0);
+                    koVertex = members.get(0);
             }
         }
 

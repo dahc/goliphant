@@ -219,11 +219,12 @@ public class DefaultBoardTest {
     }
 
     @Test
-    public void testInterfaceCopyAccuracy() {
+    public void testSetToAccuracy() {
+        Board copy = stdBoard.getCopy();
         playSomeStuff(stdBoard);
         stdBoard.setKomi(5.5F);
         Board iBoard = stdBoard;
-        DefaultBoard copy = stdBoard.getCopy(iBoard);
+        copy.setTo(iBoard);
         for (int i = 0; i < 19; i++)
             for (int j = 0; j < 19; j++)
                 assertEquals(iBoard.getColorAt(i, j), copy.getColorAt(i, j));
@@ -234,10 +235,9 @@ public class DefaultBoardTest {
     }
 
     @Test
-    public void testInterfaceCopyIndependence() {
-        Board iBoard = stdBoard;
-        DefaultBoard copy = stdBoard.getCopy(iBoard);
-        playSomeStuff(iBoard);
+    public void testSetToIndependence() {
+        DefaultBoard copy = stdBoard.getCopy();
+        playSomeStuff(stdBoard);
         for (int i = 0; i < 19; i++)
             for (int j = 0; j < 19; j++)
                 assertEquals(null, copy.getColorAt(i, j));
@@ -246,10 +246,9 @@ public class DefaultBoardTest {
 
     @Test
     public void testCopySizePreservation() {
-        Board iBoard = stdBoard;
-        Board newStdTypeChangedBoard = asymBoard.getCopy(iBoard);
-        assertEquals(stdBoard.getRows(), newStdTypeChangedBoard.getRows());
-        assertEquals(stdBoard.getColumns(), newStdTypeChangedBoard.getColumns());
+        stdBoard.setTo(asymBoard);
+        assertEquals(stdBoard.getRows(), asymBoard.getRows());
+        assertEquals(stdBoard.getColumns(), asymBoard.getColumns());
         Board asymCopy = asymBoard.getCopy();
         assertEquals(asymBoard.getRows(), asymCopy.getRows());
         assertEquals(asymBoard.getColumns(), asymCopy.getColumns());

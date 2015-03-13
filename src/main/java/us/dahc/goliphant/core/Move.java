@@ -59,10 +59,7 @@ public class Move {
 
     @Override
     public boolean equals(Object object) {
-        if (object instanceof Move)
-            return color == ((Move) object).color && vertex.equals(((Move) object).getVertex());
-        else
-            return false;
+        return object instanceof Move && color == ((Move) object).color && vertex.equals(((Move) object).getVertex());
     }
 
 }

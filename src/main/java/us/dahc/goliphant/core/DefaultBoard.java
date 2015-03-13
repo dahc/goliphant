@@ -3,6 +3,7 @@ package us.dahc.goliphant.core;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -138,10 +139,8 @@ public class DefaultBoard implements Board {
 
     @Override
     public boolean isLegal(Move move) {
-        if (move.getVertex().equals(Vertex.PASS))
-            return true;
-        else
-            return isLegal(move.getColor(), intersect[move.getRow()][move.getColumn()]);
+        return move.getVertex().equals(Vertex.PASS)
+                || isLegal(move.getColor(), intersect[move.getRow()][move.getColumn()]);
     }
 
     @Override
@@ -159,8 +158,7 @@ public class DefaultBoard implements Board {
     public List<Vertex> getAllVertices() {
         List<Vertex> result = new ArrayList<>(rows * columns);
         for (int i = 0; i < rows; i++)
-            for (int j = 0; j < columns; j++)
-                result.add(intersect[i][j]);
+            result.addAll(Arrays.asList(intersect[i]));
         return result;
     }
 
@@ -217,10 +215,7 @@ public class DefaultBoard implements Board {
 
     @Override
     public boolean equals(Object object) {
-        if (object instanceof Board)
-            return zobristHash == ((Board) object).getZobristHash();
-        else
-            return false;
+        return object instanceof Board && zobristHash == ((Board) object).getZobristHash();
     }
 
     private boolean isLegal(Color color, Intersection intersection) {
@@ -374,10 +369,7 @@ public class DefaultBoard implements Board {
 
         @Override
         public boolean equals(Object object) {
-            if (object instanceof Group)
-                return representative.equals(((Group) object).representative);
-            else
-                return false;
+            return object instanceof Group && representative.equals(((Group) object).representative);
         }
 
         @Override

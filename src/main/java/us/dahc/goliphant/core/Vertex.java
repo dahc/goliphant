@@ -59,10 +59,7 @@ public class Vertex {
 
     @Override
     public boolean equals(Object object) {
-        if (object instanceof Vertex)
-            return row == ((Vertex) object).row && column == ((Vertex) object).column;
-        else
-            return false;
+        return object instanceof Vertex && row == ((Vertex) object).row && column == ((Vertex) object).column;
     }
 
 }

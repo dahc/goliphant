@@ -16,7 +16,7 @@ public class SuperkoFilterTest {
 
     @Before
     public void setup() {
-        board = new DefaultBoard(new DefaultBoard(new ZobristTable(new Random())));
+        board = new DefaultBoard(new ZobristTable(new Random()));
         filterList = new FilterList();
         filterList.add(new SuperkoFilter());
     }

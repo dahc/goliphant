@@ -18,7 +18,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>us.dahc.goliphant.toys.DummyGtpClientRunner</mainClass>
+                            <mainClass>us.dahc.goliphant.toys.randbot.RandomBotRunner</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -47,6 +47,11 @@
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
             <version>3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>1</version>
         </dependency>
     </dependencies>
 

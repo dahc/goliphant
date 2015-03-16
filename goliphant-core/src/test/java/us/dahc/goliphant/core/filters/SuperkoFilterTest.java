@@ -28,7 +28,7 @@ public class SuperkoFilterTest {
 
     @Test
     public void testWithoutSuperKo() {
-        assertEquals(board.getRows() * board.getColumns() + 1, filterList.apply(board, Color.Black).size());
+        assertEquals(board.getRows() * board.getColumns(), filterList.apply(board, Color.Black).size());
     }
 
     @Test

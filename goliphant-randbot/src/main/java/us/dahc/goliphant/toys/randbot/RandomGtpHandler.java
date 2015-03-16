@@ -4,6 +4,7 @@ import us.dahc.goliphant.core.ApplicationIdentity;
 import us.dahc.goliphant.core.Board;
 import us.dahc.goliphant.core.Color;
 import us.dahc.goliphant.core.Move;
+import us.dahc.goliphant.core.Vertex;
 import us.dahc.goliphant.core.filters.EyeLikeFilter;
 import us.dahc.goliphant.core.filters.FilterList;
 import us.dahc.goliphant.core.filters.SuperkoFilter;
@@ -43,7 +44,11 @@ public final class RandomGtpHandler extends StatefulGtpHandler {
             else
                 throw new GtpException("invalid color");
             List<Move> options = genMoveFilters.apply(currentBoard, player);
-            Move move = options.get(random.nextInt(options.size()));
+            Move move;
+            if (options.size() == 0)
+                move = Move.get(player, Vertex.PASS);
+            else
+                move = options.get(random.nextInt(options.size()));
             currentBoard.play(move);
             return move.getVertex().toString();
         }

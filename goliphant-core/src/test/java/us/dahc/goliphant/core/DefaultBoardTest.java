@@ -49,7 +49,7 @@ public class DefaultBoardTest {
                         stdBoard.isLegal(Move.get(Color.Black, i, j)));
             }
         }
-        assertEquals(19 * 19 + 1, stdBoard.getLegalMoves(Color.Black).size());
+        assertEquals(19 * 19, stdBoard.getLegalMoves(Color.Black).size());
         assertEquals(0L, stdBoard.getZobristHash());
         assertNull(stdBoard.getLastMove());
         assertNull(stdBoard.getKoMove());
@@ -82,7 +82,7 @@ public class DefaultBoardTest {
                 if (i != 3 || j != 3)
                     assertThat("wide open square (" + i + ", " + j + ") legality",
                             stdBoard.isLegal(Move.get(Color.White, i, j)));
-        assertEquals(19 * 19, stdBoard.getLegalMoves(Color.White).size());
+        assertEquals(19 * 19 - 1, stdBoard.getLegalMoves(Color.White).size());
         assertNotEquals(0L, stdBoard.getZobristHash());
     }
 
@@ -148,8 +148,6 @@ public class DefaultBoardTest {
 
     @Test
     public void testPassing() {
-        assertTrue(stdBoard.getLegalMoves(Color.Black).contains(Move.get(Color.Black, Vertex.PASS)));
-        assertTrue(stdBoard.getLegalMoves(Color.White).contains(Move.get(Color.White, Vertex.PASS)));
         assertEquals(0, stdBoard.getConsecutivePasses());
         stdBoard.play(Move.get(Color.Black, 5, 5));
         assertEquals(0, stdBoard.getConsecutivePasses());
@@ -214,7 +212,7 @@ public class DefaultBoardTest {
         for (int i = 0; i < 19; i++)
             for (int j = 0; j < 19; j++)
                 assertEquals(null, copy.getColorAt(i, j));
-        assertEquals(19 * 19 + 1, copy.getLegalMoves(Color.Black).size());
+        assertEquals(19 * 19, copy.getLegalMoves(Color.Black).size());
         assertEquals(0, copy.getPreviousHashes().size());
     }
 
@@ -241,7 +239,7 @@ public class DefaultBoardTest {
         for (int i = 0; i < 19; i++)
             for (int j = 0; j < 19; j++)
                 assertEquals(null, copy.getColorAt(i, j));
-        assertEquals(19 * 19 + 1, copy.getLegalMoves(Color.Black).size());
+        assertEquals(19 * 19, copy.getLegalMoves(Color.Black).size());
     }
 
     @Test

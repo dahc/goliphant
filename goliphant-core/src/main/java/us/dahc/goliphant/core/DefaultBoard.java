@@ -3,7 +3,6 @@ package us.dahc.goliphant.core;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -146,7 +145,6 @@ public class DefaultBoard implements Board {
     @Override
     public List<Move> getLegalMoves(Color player) {
         List<Move> result = new ArrayList<>(rows * columns + 1);
-        result.add(Move.get(player, Vertex.PASS));
         for (int i = 0; i < rows; i++)
             for (int j = 0; j < columns; j++)
                 if (isLegal(player, intersect[i][j]))
@@ -158,7 +156,8 @@ public class DefaultBoard implements Board {
     public List<Vertex> getAllVertices() {
         List<Vertex> result = new ArrayList<>(rows * columns);
         for (int i = 0; i < rows; i++)
-            result.addAll(Arrays.asList(intersect[i]));
+            for (int j = 0; j < columns; j++)
+                result.add(intersect[i][j]);
         return result;
     }
 

@@ -103,7 +103,8 @@ public class StatefulGtpHandler extends BaseGtpHandler {
             } catch (Exception e) {
                 throw new GtpException("invalid color or coordinate");
             }
-            if (filterList.apply(currentBoard, move.getColor()).contains(move)) {
+            if (filterList.apply(currentBoard, move.getColor()).contains(move)
+                    || move.getVertex().equals(Vertex.PASS)) {
                 pastBoards.add(currentBoard.getCopy());
                 currentBoard.play(move);
             } else {

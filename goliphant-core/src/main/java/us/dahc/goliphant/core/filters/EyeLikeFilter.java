@@ -8,8 +8,6 @@ public class EyeLikeFilter implements Filter {
 
     @Override
     public boolean accept(Board board, Move move) {
-        if (move.getVertex().equals(Vertex.PASS))
-            return true;
         for (Vertex vertex : board.getNeighbors(move.getVertex()))
             if (board.getColorAt(vertex) != move.getColor())
                 return true;

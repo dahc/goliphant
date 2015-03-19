@@ -16,6 +16,7 @@
     <modules>
         <module>goliphant-core</module>
         <module>goliphant-randbot</module>
+        <module>goliphant-mctsbot</module>
     </modules>
 
     <build>

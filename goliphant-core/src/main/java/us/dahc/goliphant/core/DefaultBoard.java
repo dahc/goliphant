@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 
 public class DefaultBoard implements Board {
 
@@ -29,6 +28,7 @@ public class DefaultBoard implements Board {
     private ZobristTable zobristTable;
     private long zobristHash = 0L;
     private List<Long> hashHistory;
+    private int moveNumber = 0;
     private int consecutivePasses = 0;
     private Filter randomMoveFilter = new EyeLikeFilter();
 
@@ -46,6 +46,7 @@ public class DefaultBoard implements Board {
         blackCaptures = 0;
         whiteCaptures = 0;
         lastMove = null;
+        moveNumber = 0;
         consecutivePasses = 0;
         koVertex = null;
         zobristHash = 0L;
@@ -101,6 +102,11 @@ public class DefaultBoard implements Board {
     }
 
     @Override
+    public int getMoveNumber() {
+        return moveNumber;
+    }
+
+    @Override
     public int getConsecutivePasses() {
         return consecutivePasses;
     }
@@ -121,6 +127,7 @@ public class DefaultBoard implements Board {
     @Override
     public void play(Move move) {
         lastMove = move;
+        moveNumber++;
         koVertex = null;
         if (move.getVertex().equals(Vertex.PASS)) {
             consecutivePasses++;
@@ -274,6 +281,7 @@ public class DefaultBoard implements Board {
         whiteCaptures = board.getStonesCapturedBy(Color.White);
         komi = board.getKomi();
         lastMove = board.getLastMove();
+        moveNumber = board.getMoveNumber();
         consecutivePasses = board.getConsecutivePasses();
         koVertex = getKoMove() == null ? null : getKoMove().getVertex();
         zobristHash = board.getZobristHash();

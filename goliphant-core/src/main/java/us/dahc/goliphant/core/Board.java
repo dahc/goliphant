@@ -27,6 +27,7 @@ public interface Board {
     public float getKomi();
     public void setKomi(float komi);
     public int getStonesCapturedBy(Color player);
+    public int getMoveNumber();
     public int getConsecutivePasses();
     @Nullable public Color getColorAt(Vertex vertex);
     @Nullable public Color getColorAt(int row, int column);

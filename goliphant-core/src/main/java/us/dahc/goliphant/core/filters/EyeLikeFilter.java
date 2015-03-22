@@ -4,7 +4,7 @@ import us.dahc.goliphant.core.Board;
 import us.dahc.goliphant.core.Move;
 import us.dahc.goliphant.core.Vertex;
 
-public class EyeLikeFilter implements Filter {
+public class EyeLikeFilter extends Filter {
 
     @Override
     public boolean accept(Board board, Move move) {

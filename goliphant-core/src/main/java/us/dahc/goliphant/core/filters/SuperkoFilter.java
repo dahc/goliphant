@@ -3,7 +3,7 @@ package us.dahc.goliphant.core.filters;
 import us.dahc.goliphant.core.Board;
 import us.dahc.goliphant.core.Move;
 
-public class SuperkoFilter implements Filter {
+public class SuperkoFilter extends Filter {
 
     @Override
     public boolean accept(Board board, Move move) {

@@ -72,10 +72,12 @@ public class DefaultBoardTest {
 
     @Test
     public void testPlay() {
+        assertEquals(0, stdBoard.getMoveNumber());
         assertEquals(null, stdBoard.getColorAt(3, 3));
         stdBoard.play(Move.get(Color.Black, 3, 3));
         assertEquals(Color.Black, stdBoard.getColorAt(3, 3));
         assertEquals(Move.get(Color.Black, 3, 3), stdBoard.getLastMove());
+        assertEquals(1, stdBoard.getMoveNumber());
         assertThat("play on other stone", !stdBoard.isLegal(Move.get(Color.White, 3, 3)));
         for (int i = 0; i < stdBoard.getRows(); i++)
             for (int j = 0; j < stdBoard.getColumns(); j++)

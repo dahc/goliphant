@@ -10,6 +10,8 @@ import java.util.List;
 public class FilterList extends ArrayList<Filter> {
 
     public List<Move> apply(Board board, Color player) {
+        for (Filter filter : this)
+            filter.init(board);
         List<Move> results = new ArrayList<>();
         for (Move move : board.getLegalMoves(player)) {
             boolean accept = true;

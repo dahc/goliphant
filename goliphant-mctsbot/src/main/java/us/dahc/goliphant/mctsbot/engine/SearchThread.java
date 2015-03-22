@@ -6,6 +6,7 @@ import us.dahc.goliphant.core.Move;
 import us.dahc.goliphant.core.Vertex;
 import us.dahc.goliphant.core.filters.EyeLikeFilter;
 import us.dahc.goliphant.core.filters.FilterList;
+import us.dahc.goliphant.core.filters.LooseAreaFilter;
 import us.dahc.goliphant.core.filters.SuperkoFilter;
 import us.dahc.goliphant.mcts.Tree;
 import us.dahc.goliphant.mcts.TreeNode;
@@ -31,6 +32,7 @@ public class SearchThread extends Thread {
         this.board = board;
         this.random = random;
         filters = new FilterList();
+        filters.add(new LooseAreaFilter());
         filters.add(new EyeLikeFilter());
         filters.add(new SuperkoFilter());
     }

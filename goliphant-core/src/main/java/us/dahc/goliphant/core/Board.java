@@ -3,6 +3,7 @@ package us.dahc.goliphant.core;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 public interface Board {
 
@@ -35,6 +36,7 @@ public interface Board {
     // Play (semantics may vary by implementation)
     public boolean isLegal(Move move);
     public Collection<? extends Move> getLegalMoves(Color player);
+    public Move getRandomMove(Color player, Random random);
     public void play(Move move);
 
     // Superko Facilities

@@ -5,10 +5,13 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import us.dahc.goliphant.core.ApplicationIdentity;
+import us.dahc.goliphant.core.Board;
 import us.dahc.goliphant.core.DefaultBoard;
 import us.dahc.goliphant.core.ZobristTable;
 import us.dahc.goliphant.gtp.GtpException;
 import us.dahc.goliphant.gtp.GtpHandler;
+import us.dahc.goliphant.mcts.UcbPolicy;
+import us.dahc.goliphant.mctsbot.engine.MctsEngine;
 
 import java.util.Random;
 
@@ -24,8 +27,9 @@ public class MctsGtpHandlerTest {
     @Before
     public void setup() {
         Random random = new Random();
+        Board board = new DefaultBoard(new ZobristTable(random));
         gtpHandler = new MctsGtpHandler(new ApplicationIdentity("Test Client", "1.0"),
-                new DefaultBoard(new ZobristTable(random)), random);
+                new MctsEngine(board, new UcbPolicy(2)), board);
     }
 
     @Test

@@ -1,5 +1,8 @@
 package us.dahc.goliphant.core;
 
+import us.dahc.goliphant.core.filters.EyeLikeFilter;
+import us.dahc.goliphant.core.filters.Filter;
+
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -8,6 +11,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
 public class DefaultBoard implements Board {
 
@@ -25,6 +30,7 @@ public class DefaultBoard implements Board {
     private long zobristHash = 0L;
     private List<Long> hashHistory;
     private int consecutivePasses = 0;
+    private Filter randomMoveFilter = new EyeLikeFilter();
 
     @Inject
     public DefaultBoard(ZobristTable zobristTable) {
@@ -143,6 +149,21 @@ public class DefaultBoard implements Board {
     }
 
     @Override
+    public Move getRandomMove(Color player, Random random) {
+        List<Intersection> tried = new ArrayList<>();
+        while (tried.size() < rows * columns) {
+            Intersection candidate = intersect[random.nextInt(rows)][random.nextInt(columns)];
+            if (!tried.contains(candidate)) {
+                if (isLegal(player, candidate) && randomMoveFilter.accept(this, Move.get(player, candidate)))
+                    return Move.get(player, candidate);
+                else
+                    tried.add(candidate);
+            }
+        }
+        return Move.get(player, Vertex.PASS);
+    }
+
+    @Override
     public List<Move> getLegalMoves(Color player) {
         List<Move> result = new ArrayList<>(rows * columns + 1);
         for (int i = 0; i < rows; i++)
@@ -214,7 +235,8 @@ public class DefaultBoard implements Board {
 
     @Override
     public boolean equals(Object object) {
-        return object instanceof Board && zobristHash == ((Board) object).getZobristHash();
+        return object instanceof Board && ((Board) object).getRows() == rows
+                && ((Board) object).getColumns() == columns && zobristHash == ((Board) object).getZobristHash();
     }
 
     private boolean isLegal(Color color, Intersection intersection) {

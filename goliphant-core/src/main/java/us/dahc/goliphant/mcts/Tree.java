@@ -17,17 +17,17 @@ public class Tree {
         rootNode = new TreeNode(null, rootBoard.getLastMove());
     }
 
-    public void setRootNode(TreeNode treeNode) {
+    public synchronized void setRootNode(TreeNode treeNode) {
         rootBoard.play(treeNode.getMove());
         rootNode = treeNode;
         rootNode.setParent(null);
     }
 
-    public TreeNode getRootNode() {
+    public synchronized TreeNode getRootNode() {
         return rootNode;
     }
 
-    public Board getRootBoard() {
+    public synchronized Board getRootBoard() {
         return rootBoard;
     }
 

@@ -43,7 +43,7 @@ public class TreeNode {
         if (pending)
             pendingSimulations -= simulations;
         if (parent != null)
-            parent.addResults(simulations, wins, false);
+            parent.addResults(simulations, simulations - wins, false);
     }
 
     @Nullable public TreeNode getParent() {

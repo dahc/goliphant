@@ -4,30 +4,21 @@ import us.dahc.goliphant.core.ApplicationIdentity;
 import us.dahc.goliphant.core.Board;
 import us.dahc.goliphant.core.Color;
 import us.dahc.goliphant.core.Move;
-import us.dahc.goliphant.core.Vertex;
-import us.dahc.goliphant.core.filters.EyeLikeFilter;
-import us.dahc.goliphant.core.filters.FilterList;
-import us.dahc.goliphant.core.filters.SuperkoFilter;
 import us.dahc.goliphant.gtp.BaseGtpHandler;
 import us.dahc.goliphant.gtp.GtpException;
 import us.dahc.goliphant.gtp.StatefulGtpHandler;
+import us.dahc.goliphant.mctsbot.engine.Engine;
 
 import javax.inject.Inject;
-import java.util.List;
-import java.util.Random;
 
-public final class MctsGtpHandler extends StatefulGtpHandler {
+public class MctsGtpHandler extends StatefulGtpHandler {
 
-    private Random random;
-    private FilterList genMoveFilters;
+    protected Engine engine;
 
     @Inject
-    public MctsGtpHandler(ApplicationIdentity clientIdentity, Board board, Random random) {
+    public MctsGtpHandler(ApplicationIdentity clientIdentity, Engine engine, Board board) {
         super(clientIdentity, board);
-        this.random = random;
-        genMoveFilters = new FilterList();
-        genMoveFilters.add(new EyeLikeFilter());
-        genMoveFilters.add(new SuperkoFilter());
+        this.engine = engine;
         commands.put("genmove", new GenMoveCommand());
     }
 
@@ -43,12 +34,7 @@ public final class MctsGtpHandler extends StatefulGtpHandler {
                 player = Color.White;
             else
                 throw new GtpException("invalid color");
-            List<Move> options = genMoveFilters.apply(currentBoard, player);
-            Move move;
-            if (options.size() == 0)
-                move = Move.get(player, Vertex.PASS);
-            else
-                move = options.get(random.nextInt(options.size()));
+            Move move = engine.getMove(currentBoard, player);
             currentBoard.play(move);
             return move.getVertex().toString();
         }

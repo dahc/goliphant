@@ -32,14 +32,18 @@ public class LooseAreaFilter extends Filter {
                 accepted[i][j] = advanced;
         if (advanced)
             return;
-        if (board.getMoveNumber() < 5) {
+        if (board.getMoveNumber() < 1) {
+            accepted[board.getRows()/2][board.getColumns()/2] = true;
+        } else if (board.getMoveNumber() < 10) {
             initSurroundings(board, StarPointHelper.getHandicapPoints(board, 5), 1);
         } else if (board.getMoveNumber() < 10) {
-            initSurroundings(board, StarPointHelper.getHandicapPoints(board, 9), 2);
+            initSurroundings(board, StarPointHelper.getHandicapPoints(board, 9), 1);
         } else {
-            initSurroundings(board, StarPointHelper.getHandicapPoints(board, 4), 4);
-            initSurroundings(board, StarPointHelper.getHandicapPoints(board, 9), 3);
+            initSurroundings(board, StarPointHelper.getHandicapPoints(board, 4), 3);
+            initSurroundings(board, StarPointHelper.getHandicapPoints(board, 9), 2);
         }
+        if (board.getMoveNumber() > 0)
+            initEdgeLines(board, 2);
 
     }
 
@@ -60,15 +64,28 @@ public class LooseAreaFilter extends Filter {
             initSurroundings(board, StarPointHelper.getHandicapPoints(board, 4), 1);
         } else if (board.getMoveNumber() < 20) {
             initSurroundings(board, StarPointHelper.getHandicapPoints(board, 4), 2);
-            initSurroundings(board, StarPointHelper.getHandicapPoints(board, 9), 2);
         } else if (board.getMoveNumber() < 30) {
             initSurroundings(board, StarPointHelper.getHandicapPoints(board, 4), 3);
             initSurroundings(board, StarPointHelper.getHandicapPoints(board, 9), 2);
         } else {
-            initSurroundings(board, StarPointHelper.getHandicapPoints(board, 4), 4);
-            initSurroundings(board, StarPointHelper.getHandicapPoints(board, 9), 3);
+            initSurroundings(board, StarPointHelper.getHandicapPoints(board, 8), 3);
+            initSurroundings(board, StarPointHelper.getHandicapPoints(board, 9), 2);
         }
+        if (board.getMoveNumber() > 8) {
+            initEdgeLines(board, 2);
+            initEdgeLines(board, 3);
+        }
+    }
 
+    protected void initEdgeLines(Board board, int line) {
+        for (int i = line; i < board.getRows() - line; i++) {
+            accepted[i][line] = true;
+            accepted[i][board.getColumns() - line - 1] = true;
+        }
+        for (int i = line; i < board.getColumns() - line; i++) {
+            accepted[line][i] = true;
+            accepted[board.getRows() - line - 1][i] = true;
+        }
     }
 
     protected void initSurroundings(Board board, Collection<? extends Vertex> vertices, int delta) {
